@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>@ViewBag.Title - ASP.NET MVC with Angular JS</title>
+        @Styles.Render("~/Content/css")
+        @Scripts.Render("~/bundles/modernizr")
+    </head>
+    <body data-ng-app="main">
+        <div class="view">
+            <header>
+                <div class="top-menu">
+                    <div class="container">
+                        <div class="pull-right">
+                            <div class="lang-dropdown">
+                                <a href="#"><img src="/Content/img/flags/us.png" alt=""> Eng</a>
+                                <ul>
+                                    <li>
+                                        <a href="#"><img src="/Content/img/flags/us.png" alt=""> Eng</a>
+                                    </li>
+                                    <li>
+                                        <a href="#"><img src="/Content/img/flags/kw.png" alt=""> Ar</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <ul>
+                                <li><a href="#">Manufractures</a></li>
+                                <li><a href="#">Vendors</a></li>
+                                <li><a href="#">Contact Us</a></li>
+                                <li><a href="#">Blog</a></li>
+                                <li><a href="#">News</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="middle-blk">
+                    <div class="container">
+                        <div class="logo pull-left">
+                            <a href="http://www.2easy2pay.com/"><img src="~/Content/img/logo.jpg" alt="2easy2pay"></a>
+                        </div>
+                        <div class="my-account-blk pull-right mobile-hide">
+                            <ul>
+                                <li class="dropdown-myaccount">
+                                    <a href="#" class="my-account"><i></i><span>My Account</span></a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#"><i class="icon-logIn"></i> Log In</a></li>
+                                        <li><a href="#"><i class="icon-wishlist"></i> Wishlist</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-blk mobile-hide">
+                    <div class="container">
+                        <ul class="nav-menu">
+                            <li class="main-menu-wrap">
+                                <a class="toggle-menu" href="#"><i></i></a>
+                                <ul class="main-menu">
+                                    <li><a href="#">Us Imported</a></li>
+                                    <li><a href="#">Computer</a></li>
+                                    <li><a href="#">Mobile & Tablets</a></li>
+                                    <li><a href="#">Gaming</a></li>
+                                    <li><a href="#">Men</a></li>
+                                    <li><a href="#">Women</a></li>
+                                    <li><a href="#">Home & Kitchen</a></li>
+                                </ul>
+                            </li>
+                            <li><a class="active" href="#">Mobile</a></li>
+                            <li><a href="#">International</a></li>
+                            <li><a href="#">Data Card</a></li>
+                            <li><a href="#">Shopping Cards</a></li>
+                        </ul>
+                        <div class="pull-right search-form-wrap">
+                            <input type="text" class="search-form" placeholder="Search Store">
+                        </div>
+                    </div>
+                </div>
+                <div class="responsive-nav-wrapper-parent">
+                    <div class="responsive-nav-wrapper">
+                        <div class="menu-title"></div>
+                        <div class="mobile-user-wrap">
+                            <a href="#" class="user-icon"></a>
+                            <ul class="user-account-dropdown mobile-dropdown">
+                                <li><a href="#"><i class="icon-logIn"></i> Log In</a></li>
+                                <li><a href="#"><i class="icon-wishlist"></i> Wishlist</a></li>
+                            </ul>
+                        </div>
+                        <div class="mobile-search-wrap">
+                            <a href="#" class="search-icon"></a>
+                            <div class="search-form-wrap mobile-dropdown">
+                                <input type="text" class="search-form" placeholder="Search Store">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <div id="main">
+                <div class="container">
+                    <div class="content">
+                      @RenderBody()
+                    </div>
+                </div>
+            </div>
+            <footer>
+                <div class="top-foot">
+                    <div class="container">
+                        <div class="newsletter">
+                            <div class="title">Sign up for our newsletter</div>
+                            <div class="newsletter-subscribe">
+                                <div class="newsletter-email">
+                                    <input class="newsletter-subscribe-text" placeholder="Enter your email here..." type="text" value="">
+                                    <input type="button" value="Send" class="send-btn">
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="social-sharing">
+                            <li class="twitter">
+                                <a target="_blank" href="https://twitter.com/2easy2pay"></a>
+                            </li>
+                            <li class="facebook">
+                                <a target="_blank" href="http://www.facebook.com/2easy2pay"></a>
+                            </li>
+                            <li class="instagram">
+                                <a target="_blank" href="https://www.instagram.com/twoeasytwopay"></a>
+                            </li>
+                            <li class="youtube">
+                                <a target="_blank" href="https://www.youtube.com/c/2easy2pay"></a>
+                            </li>
+                            <li class="google">
+                                <a target="_blank" href="https://google.com/+2easy2pay"></a>
+                            </li>
+                            <li class="rss">
+                                <a target="_blank" href="/en/news/rss/1"></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-middle">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm-3 footer-block">
+                                <div class="title">Information</div>
+                                <ul class="list">
+                                    <li><a href="#">About us</a></li>
+                                    <li><a href="#">Privacy</a></li>
+                                    <li><a href="#">Terms of Use</a></li>
+                                    <li><a href="#">Blog</a></li>
+                                    <li><a href="#">News</a></li>
+                                </ul>
+                            </div>
+                            <div class="col-sm-3 footer-block">
+                                <div class="title">CUSTOMER SERVICE</div>
+                                <ul class="list">
+                                    <li><a href="#">FAQ</a></li>
+                                    <li><a href="#">Apply for vendor account</a></li>
+                                    <li><a href="#">Contact Us</a></li>
+                                </ul>
+                            </div>
+                            <div class="col-sm-3 footer-block">
+                                <div class="title">My account</div>
+                                <ul class="list">
+                                    <li><a href="#">Customer info</a></li>
+                                    <li><a href="#">Addresses</a></li>
+                                    <li><a href="#">Orders</a></li>
+                                    <li><a href="#">Shopping cart</a></li>
+                                    <li><a href="#">Wishlist</a></li>
+                                </ul>
+                            </div>
+                            <div class="col-sm-3 footer-block quick-contact">
+                                <div class="title">Contact Us</div>
+                                <ul class="list">
+                                    <li class="address"><span><i class="icon-location"></i> Hawalli - Tunis St. Al-Mutawa'a Bldg</span></li>
+                                    <li class="email"><span><i class="icon-msg"></i> shop@2easy2pay.com</span></li>
+                                    <li class="phone"><span><i class="icon-phone"></i> +965-65985785, 22663305, 22663307</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="footer-lower">
+                            <div class="footer-disclaimer clearfix">
+                                <div class="payment-mothod-wrap">
+                                    <div class="lable">Payment Method</div>
+                                    <div class="payment-mothod"></div>
+                                </div>
+                                <div class="credit-note">
+                                    Copyright © 2016 2easy2pay. All rights reserved.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            <div class="mobile-header-menu">
+                <div class="close-menu"></div>
+                <ul class="side-menu">
+                    <li>
+                        <a href="#" class="sub-menu">Products</a>
+                        <div class="sub-menu-ul">
+                            <div class="close-menu-inner"></div>
+                            <ul>
+                                <li>
+                                    <a href="#">US Imported</a>
+                                </li>
+                                <li>
+                                    <a href="#">Computers</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <a href="#">Recharge</a>
+                    </li>
+                    <li>
+                        <a href="#">International</a>
+                    </li>
+                    <li>
+                        <a href="#">Datacard</a>
+                    </li>
+                    <li>
+                        <a href="#">Shopping Cards</a>
+                    </li>
+                    <li>
+                        <a href="#">Manufactures</a>
+                    </li>
+                    <li>
+                        <a href="#">Vendors</a>
+                    </li>
+                    <li>
+                        <a href="#">Contact Us</a>
+                    </li>
+                    <li>
+                        <a href="#">Blog</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="overlay"></div>
+        </div>
+
+
+        @Scripts.Render("~/bundles/angular")
+        @Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/bootstrap")
+        <script type="text/javascript">
+            window.MyApp = {};
+            $(document).ready(function () {
+                Metronic.init();
+            });
+        </script>
+        <script src="~/App/Validator.js"></script>
+        <script src="~/App/App.js"></script>
+        @RenderSection("scripts", required: false)
+        <script type="text/javascript">
+            MyApp.rootPath = '@Url.Content("~")';
+            @RenderSection("jsCode", required: false)
+        </script>
+    </body>
+</html>
