@@ -1,0 +1,82 @@
+﻿
+<div class="row gutter24">
+    <div class="col-md-4">
+        <div class="recharge-block-wrap" ng-controller="SeviceProviderController">
+            <div class="recharge-block">
+                <h3 translate="RechargeCaption"> </h3>
+                <div class="radio">
+                    <input id="Prepaid" type="radio" name="gender" value="Prepaid" ng-model="rechargeType" >
+                    <label for="Prepaid" translate="Prepaid"></label>
+                    <input id="Postpaid" type="radio" name="gender" value="Postpaid" ng-model="rechargeType">
+                    <label for="Postpaid" translate="Postpaid"></label>
+                    <input id="Vochers" type="radio" name="gender" value="Vochers" ng-model="rechargeType">
+                    <label for="Vochers" translate="Vochers"></label>
+                </div>
+               
+                <div class="form-group">
+                    <label translate="MobileNumber"></label>
+                    <input type="text" international-phone-number only-countries="kw" default-country="kw"  ng-model="mobileNumber">
+                </div>
+                <div class="form-group">
+                    <label translate="Operator"></label>
+                    <select class="form-control" ng-model="ddlOperator" ng-options="s.Code as s.Name for s in serviceProviders track by s.Id" 
+                         ng-change="GetValue()"  >
+                        <option value="" translate="ServiceProviderDefaultLabel"></option>  
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="#" translate="RechargeAmount"></label>
+                    <div class="input-grp">
+                        <input type="text" ng-model="amount" class="form-control" placeholder="{{ 'AmountPlaceHolder' | translate }}">
+                        <a href="#" class="browse-plan" translate="BrowsePlan"></a>
+                    </div>
+                </div>
+                <div class="padding-top-4">
+                    <input type="submit" class="btn" value="{{ 'ProceedToRechargeButton' | translate }}" ng-click="redirect()">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="offer-list-blk">
+            <div class="bigContaner-plans">
+                <div class="topbar">
+                    <ul>
+                        <li class="active"><a href="#">Offers</a></li>
+                        <li><a href="#">Top Up</a></li>
+                        <li><a href="#">Data Card</a></li>
+                    </ul>
+                </div>
+                <div class="offeres-table">
+                    <table class="table">
+                        <thead>
+                        <th width="150">TalkTime</th>
+                        <th width="120">Validity</th>
+                        <th>Description</th>
+                        <th width="120">Price</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>15-TT + 450 MB 3G/4G Data</td>
+                                <td>14 Days</td>
+                                <td>U Medium : 300 MB Data + 150 MB Night Data ( 12 am to 6 am) ; Call 3 local Vodafone buddies 20p/min; Talktime Rs.15; Unlimited music downloads for 60 days Option of 60MB data loan. T&C Apply</td>
+                                <td>
+                                    <a class="price-btn" href="#">2 kd</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>15-TT + 450 MB 3G/4G Data</td>
+                                <td>28 Days</td>
+                                <td>U Medium : 300 MB Data + 150 MB Night Data ( 12 am to 6 am) ; Call 3 local Vodafone buddies 20p/min; Talktime Rs.15; Unlimited music downloads for 60 days Option of 60MB data loan. T&C Apply</td>
+                                <td>
+                                    <a class="price-btn" href="#">5 kd</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

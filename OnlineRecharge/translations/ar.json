@@ -1,0 +1,19 @@
+﻿{
+  "RechargeCaption": "إعادة شحن أو فاتورة الأجور",
+  "Prepaid": "مسبقة الدفع",
+  "Postpaid": "الدفع الآجل",
+  "Vochers": "Vochers",
+  "EnglishLanguageExtension": "ENG",
+  "ArabicLanguageExtension": "AR",
+  "Mobile": "التليفون المحمول",
+  "International": "دولي",
+  "DataCards": "بطاقات البيانات",
+  "ShoppingCards": "بطاقات التسوق",
+  "Operator": "Operator",
+  "MobileNumber": "Mobile Number",
+  "ServiceProviderDefaultLabel": "Select Service",
+  "RechargeAmount": "Recharge Amount",
+  "AmountPlaceHolder": "Enter Amount!",
+  "BrowsePlan": "Browse Plan",
+  "ProceedToRechargeButton": "Proceed To Recharge"
+}

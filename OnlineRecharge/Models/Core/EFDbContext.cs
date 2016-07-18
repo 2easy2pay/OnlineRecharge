@@ -1,6 +1,8 @@
-﻿using System;
+﻿using OnlineRecharge.Models.Core.Data;
+using System;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration;
+using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 using System.Reflection;
 
@@ -14,8 +16,12 @@ namespace OnlineRecharge.Models.Core
 
         }
 
+        public virtual DbSet<ServiceProviders> ServiceProiders
+        { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+                modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
             var typesToRegister = Assembly.GetExecutingAssembly().GetTypes()
            .Where(type => !String.IsNullOrEmpty(type.Namespace))
            .Where(type => type.BaseType != null && type.BaseType.IsGenericType

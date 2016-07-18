@@ -145,16 +145,28 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App\App.js" />
+    <Content Include="App\app.js" />
+    <Content Include="App\app.min.js" />
+    <Content Include="App\Popup.js" />
     <Content Include="App\Validator.js" />
-    <Content Include="Content\css\app.css" />
-    <Content Include="Content\css\bootstrap.css" />
+    <Content Include="Content\css\app-rtl.css" />
+    <Content Include="Content\css\app-ltr.css" />
+    <Content Include="Content\css\bootstrap-rtl.css" />
+    <Content Include="Content\css\bootstrap-ltr.css" />
+    <Content Include="Content\css\intlTelInput.css" />
+    <Content Include="Content\css\ngDialog-theme-default.css" />
+    <Content Include="Content\css\ngDialog-theme-plain.css" />
+    <Content Include="Content\css\ngDialog.css" />
     <Content Include="Content\img\close.png" />
     <Content Include="Content\img\favicon.png" />
+    <Content Include="Content\img\flags%402x.png" />
+    <Content Include="Content\img\flags.png" />
     <Content Include="Content\img\flags\kw.png" />
     <Content Include="Content\img\flags\us.png" />
     <Content Include="Content\img\logo.jpg" />
     <Content Include="Content\img\payment-Method.png" />
+    <Content Include="Content\img\payment\knet.jpg" />
+    <Content Include="Content\img\payment\visA.png" />
     <Content Include="Content\img\social-sprite-1.png" />
     <Content Include="Content\img\sprite.png" />
     <Content Include="Content\img\subscribe-button.png" />
@@ -933,15 +945,20 @@
     <Content Include="scripts\i18n\angular-locale_zh.js" />
     <Content Include="scripts\i18n\angular-locale_zu-za.js" />
     <Content Include="scripts\i18n\angular-locale_zu.js" />
+    <Content Include="scripts\international-phone-number.js" />
+    <Content Include="scripts\intlTelInput.js" />
     <Content Include="scripts\jquery.js" />
     <Content Include="scripts\main.js" />
     <Content Include="scripts\modernizr-2.6.2.min.js" />
+    <Content Include="scripts\ngDialog.js" />
     <Content Include="scripts\respond.js" />
+    <Content Include="scripts\utils.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -958,16 +975,32 @@
     <Compile Include="Migrations\201606230656010_delete test column.Designer.cs">
       <DependentUpon>201606230656010_delete test column.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201607131239572_ServiceProviderTable.cs" />
+    <Compile Include="Migrations\201607131239572_ServiceProviderTable.Designer.cs">
+      <DependentUpon>201607131239572_ServiceProviderTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201607131259476_ServiceProviderTableAdded.cs" />
+    <Compile Include="Migrations\201607131259476_ServiceProviderTableAdded.Designer.cs">
+      <DependentUpon>201607131259476_ServiceProviderTableAdded.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201607131303245_ServiceProviderTableUpdated.cs" />
+    <Compile Include="Migrations\201607131303245_ServiceProviderTableUpdated.Designer.cs">
+      <DependentUpon>201607131303245_ServiceProviderTableUpdated.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Core\BaseEntity.cs" />
     <Compile Include="Models\Core\Data\LanguageDirections.cs" />
     <Compile Include="Models\Core\Data\LanguageFlagNames.cs" />
     <Compile Include="Models\Core\Data\Languages.cs" />
+    <Compile Include="Models\Core\Data\ServiceProviders.cs" />
     <Compile Include="Models\Core\EFDbContext.cs" />
     <Compile Include="Models\Core\Mapping\LanguageDirectionMap.cs" />
     <Compile Include="Models\Core\Mapping\LanguageFlagMap.cs" />
     <Compile Include="Models\Core\Mapping\LanguageMap.cs" />
+    <Compile Include="Models\Core\Mapping\ServiceProviderMap.cs" />
     <Compile Include="Models\Helpers\DataContracts.cs" />
+    <Compile Include="Models\Helpers\KnetPaymentInitialResponse.cs" />
+    <Compile Include="Models\Helpers\KnetPaymentInitiate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -996,6 +1029,11 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="translations\ar.json" />
+    <Content Include="translations\en.json" />
+    <Content Include="Views\Home\_Mobile.cshtml" />
+    <Content Include="Views\Shared\Index.cshtml" />
+    <Content Include="Views\Home\_PaymentOptions.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1018,6 +1056,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201606230656010_delete test column.resx">
       <DependentUpon>201606230656010_delete test column.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607131239572_ServiceProviderTable.resx">
+      <DependentUpon>201607131239572_ServiceProviderTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607131259476_ServiceProviderTableAdded.resx">
+      <DependentUpon>201607131259476_ServiceProviderTableAdded.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607131303245_ServiceProviderTableUpdated.resx">
+      <DependentUpon>201607131303245_ServiceProviderTableUpdated.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

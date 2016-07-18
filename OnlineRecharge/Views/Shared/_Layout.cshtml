@@ -1,258 +1,330 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>@ViewBag.Title - ASP.NET MVC with Angular JS</title>
-        @Styles.Render("~/Content/css")
-        @Scripts.Render("~/bundles/modernizr")
-    </head>
-    <body data-ng-app="main">
-        <div class="view">
-            <header>
-                <div class="top-menu">
-                    <div class="container">
-                        <div class="pull-right">
-                            <div class="lang-dropdown">
-                                <a href="#"><img src="/Content/img/flags/us.png" alt=""> Eng</a>
-                                <ul>
-                                    <li>
-                                        <a href="#"><img src="/Content/img/flags/us.png" alt=""> Eng</a>
-                                    </li>
-                                    <li>
-                                        <a href="#"><img src="/Content/img/flags/kw.png" alt=""> Ar</a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <ul>
-                                <li><a href="#">Manufractures</a></li>
-                                <li><a href="#">Vendors</a></li>
-                                <li><a href="#">Contact Us</a></li>
-                                <li><a href="#">Blog</a></li>
-                                <li><a href="#">News</a></li>
-                            </ul>
+﻿<!DOCTYPE html>
+<html lang="{{ lang }}" ng-app="Multilingual">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800,600italic,400italic' rel='stylesheet' type='text/css'>
+    <link ng-href="~/Content/css/bootstrap-{{ default_direction }}.css" rel="stylesheet">
+    <link ng-href="~/Content/css/app-{{ default_direction }}.css" rel="stylesheet">
+    <link ng-href="~/Content/css/intlTelInput.css" rel="stylesheet" />
+    <link href="~/Content/css/intlTelInput.css" rel="stylesheet" />
+    <link href="~/Content/css/ngDialog.css" rel="stylesheet" />
+    <link href="~/Content/css/ngDialog-theme-default.css" rel="stylesheet" />
+    <link href="~/Content/css/ngDialog-theme-plain.css" rel="stylesheet" />
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div class="view">
+        <header>
+            <div class="top-menu">
+                <div class="container">
+                    <div class="pull-right">
+                        <div class="lang-dropdown" ng-controller="LanguageSwitchController">
+                            <button ng-show="lang == 'en'" ng-click="changeLanguage('ar')" translate="ArabicLanguageExtension"></button>
+                            <button ng-show="lang == 'ar'" ng-click="changeLanguage('en')" translate="EnglishLanguageExtension"></button>
                         </div>
+                        <ul>
+                            <li><a href="#">Manufractures</a></li>
+                            <li><a href="#">Vendors</a></li>
+                            <li><a href="#">Contact Us</a></li>
+                            <li><a href="#">Blog</a></li>
+                            <li><a href="#">News</a></li>
+                        </ul>
                     </div>
                 </div>
-                <div class="middle-blk">
-                    <div class="container">
-                        <div class="logo pull-left">
-                            <a href="http://www.2easy2pay.com/"><img src="~/Content/img/logo.jpg" alt="2easy2pay"></a>
-                        </div>
-                        <div class="my-account-blk pull-right mobile-hide">
-                            <ul>
-                                <li class="dropdown-myaccount">
-                                    <a href="#" class="my-account"><i></i><span>My Account</span></a>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="#"><i class="icon-logIn"></i> Log In</a></li>
-                                        <li><a href="#"><i class="icon-wishlist"></i> Wishlist</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
+            </div>
+            <div class="middle-blk">
+                <div class="container">
+                    <div class="logo pull-left">
+                        <a href="http://www.2easy2pay.com/"><img src="~/Content/img/logo.jpg" alt="2easy2pay"></a>
                     </div>
-                </div>
-                <div class="menu-blk mobile-hide">
-                    <div class="container">
-                        <ul class="nav-menu">
-                            <li class="main-menu-wrap">
-                                <a class="toggle-menu" href="#"><i></i></a>
-                                <ul class="main-menu">
-                                    <li><a href="#">Us Imported</a></li>
-                                    <li><a href="#">Computer</a></li>
-                                    <li><a href="#">Mobile & Tablets</a></li>
-                                    <li><a href="#">Gaming</a></li>
-                                    <li><a href="#">Men</a></li>
-                                    <li><a href="#">Women</a></li>
-                                    <li><a href="#">Home & Kitchen</a></li>
+                    <div class="my-account-blk pull-right mobile-hide" ng-controller="PopUpCtrl">
+                        <ul>
+                            <li class="dropdown-myaccount">
+                                <a href="#" class="my-account"><i></i><span>My Account</span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a ng-click="clickToOpen()"><i class="icon-logIn"></i> Log In</a></li>
+                                    <li><a href="#"><i class="icon-wishlist"></i> Wishlist</a></li>
                                 </ul>
                             </li>
-                            <li><a class="active" href="#">Mobile</a></li>
-                            <li><a href="#">International</a></li>
-                            <li><a href="#">Data Card</a></li>
-                            <li><a href="#">Shopping Cards</a></li>
                         </ul>
-                        <div class="pull-right search-form-wrap">
+                        <script type="text/ng-template" id="login.html">
+                            <div class="login-inside-header">
+                                <ul>
+                                    <li ng-repeat="tab in tabs" ng-class="{active:isActiveTab(tab.url)}"><a ng-click="loginTabClick(tab)" translate="{{tab.title}}"></a></li>
+                                </ul>
+                            </div>
+                            <div id="mainView">
+                                <div ng-include="currentTab"></div>
+                            </div>
+                        </script>
+                        <script type="text/ng-template" id="innerLogin.html">
+                            <div class="login-inside-form active" id="login-from">
+                                <div class="form-grp">
+                                    <label for="MobileNo">Mobile Number</label>
+                                    <input type="text" class="form-control" placeholder="Enter your mobile number">
+                                </div>
+                                <div class="form-grp">
+                                    <label for="Password">Password</label>
+                                    <input type="password" class="form-control" placeholder="Enter your mobile Password">
+                                </div>
+                                <div class="check-wrap">
+                                    <div class="checkbox">
+                                        <input id="check1" type="checkbox" name="check" value="check1" checked>
+                                        <label for="check1"> Remember Me</label>
+                                    </div>
+                                    <div class="forgot-password">
+                                        <a href="#">Forgot Password?</a>
+                                    </div>
+                                </div>
+                                <div class="form-grp">
+                                    <button id="btnLogin" tabindex="4" class="btn login-button" type="submit" name="btnLogin">Log in</button>
+                                </div>
+                            </div>
+                        </script>
+                        <script type="text/ng-template" id="register.html">
+                            <div class="login-inside-form signUp-form" id="signUp-form">
+                                <div class="form-grp">
+                                    <label>Mobile Number</label>
+                                    <input type="text" class="form-control" placeholder="Enter Your Mobile Number">
+                                </div>
+                                <div class="form-grp">
+                                    <label>Full Name</label>
+                                    <input type="text" class="form-control" placeholder="Enter Your Full Name">
+                                </div>
+                                <div class="form-grp">
+                                    <label>Password</label>
+                                    <input type="text" class="form-control" placeholder="Enter your password">
+                                </div>
+                                <div class="form-grp">
+                                    <button type="submit" id="btnRegister" class="btn register-button">Register</button>
+                                    <span class="termscaptions">I agree with the terms of service and I adhere to them unconditionally <a href="#" class="read">(read)</a></span>
+                                </div>
+                            </div>
+                        </script>
+                        <div class="login-inside-form tab-pan" id="forgot-form">
+                            <h3>Forgot Password?</h3>
+                            <span class="forgot-pass-caption">We will send you an one Time Password (OTP) on your mobile to reset your password.</span>
+                            <div class="form-grp">
+                                <label>Enter your mobile number</label>
+                                <input type="text" class="form-control" placeholder="Enter your mobile number">
+                            </div>
+                            <div class="form-grp text-right">
+                                <a href="#" id="btnCancelForgotOtP" class="btn forgot-btn cancel-forgot-btn">Cancel</a>
+                                <a href="#" id="btnForgotOtP" class="btn forgot-btn">Reset Password</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="menu-blk mobile-hide">
+                <div class="container">
+                    <ul class="nav-menu">
+                        <li class="main-menu-wrap">
+                            <a class="toggle-menu" href="#"><i></i></a>
+                            <ul class="main-menu">
+                                <li><a href="#">Us Imported</a></li>
+                                <li><a href="#">Computer</a></li>
+                                <li><a href="#">Mobile & Tablets</a></li>
+                                <li><a href="#">Gaming</a></li>
+                                <li><a href="#">Men</a></li>
+                                <li><a href="#">Women</a></li>
+                                <li><a href="#">Home & Kitchen</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a class="active" href="/#/mobile" translate="Mobile"></a>
+                        </li>
+                        <li><a href="#/mobile" translate="International"></a><label></label></li>
+                        <li><a href="#" translate="DataCards"></a></li>
+                        <li><a href="#" translate="ShoppingCards"></a></li>
+                    </ul>
+                    <div class="pull-right search-form-wrap">
+                        <input type="text" class="search-form" placeholder="Search Store">
+                    </div>
+                </div>
+            </div>
+            <div class="responsive-nav-wrapper-parent">
+                <div class="responsive-nav-wrapper">
+                    <div class="menu-title"></div>
+                    <div class="mobile-user-wrap">
+                        <a href="#" class="user-icon"></a>
+                        <ul class="user-account-dropdown mobile-dropdown">
+                            <li><a href="#"><i class="icon-logIn"></i> Log In</a></li>
+                            <li><a href="#"><i class="icon-wishlist"></i> Wishlist</a></li>
+                        </ul>
+                    </div>
+                    <div class="mobile-search-wrap">
+                        <a href="#" class="search-icon"></a>
+                        <div class="search-form-wrap mobile-dropdown">
                             <input type="text" class="search-form" placeholder="Search Store">
                         </div>
                     </div>
                 </div>
-                <div class="responsive-nav-wrapper-parent">
-                    <div class="responsive-nav-wrapper">
-                        <div class="menu-title"></div>
-                        <div class="mobile-user-wrap">
-                            <a href="#" class="user-icon"></a>
-                            <ul class="user-account-dropdown mobile-dropdown">
-                                <li><a href="#"><i class="icon-logIn"></i> Log In</a></li>
-                                <li><a href="#"><i class="icon-wishlist"></i> Wishlist</a></li>
-                            </ul>
-                        </div>
-                        <div class="mobile-search-wrap">
-                            <a href="#" class="search-icon"></a>
-                            <div class="search-form-wrap mobile-dropdown">
-                                <input type="text" class="search-form" placeholder="Search Store">
+            </div>
+        </header>
+        <div id="main">
+            <div class="container">
+                <div class="content">
+                    @RenderBody();
+                </div>
+            </div>
+        </div>
+        <footer>
+            <div class="top-foot">
+                <div class="container">
+                    <div class="newsletter">
+                        <div class="title">Sign up for our newsletter</div>
+                        <div class="newsletter-subscribe">
+                            <div class="newsletter-email">
+                                <input class="newsletter-subscribe-text" placeholder="Enter your email here..." type="text" value="">
+                                <input type="button" value="Send" class="send-btn">
                             </div>
                         </div>
                     </div>
+                    <ul class="social-sharing">
+                        <li class="twitter">
+                            <a target="_blank" href="https://twitter.com/2easy2pay"></a>
+                        </li>
+                        <li class="facebook">
+                            <a target="_blank" href="http://www.facebook.com/2easy2pay"></a>
+                        </li>
+                        <li class="instagram">
+                            <a target="_blank" href="https://www.instagram.com/twoeasytwopay"></a>
+                        </li>
+                        <li class="youtube">
+                            <a target="_blank" href="https://www.youtube.com/c/2easy2pay"></a>
+                        </li>
+                        <li class="google">
+                            <a target="_blank" href="https://google.com/+2easy2pay"></a>
+                        </li>
+                        <li class="rss">
+                            <a target="_blank" href="/en/news/rss/1"></a>
+                        </li>
+                    </ul>
                 </div>
-            </header>
-            <div id="main">
+            </div>
+            <div class="footer-middle">
                 <div class="container">
-                    <div class="content">
-                      @RenderBody()
+                    <div class="row">
+                        <div class="col-sm-3 footer-block">
+                            <div class="title">Information</div>
+                            <ul class="list">
+                                <li><a href="#">About us</a></li>
+                                <li><a href="#">Privacy</a></li>
+                                <li><a href="#">Terms of Use</a></li>
+                                <li><a href="#">Blog</a></li>
+                                <li><a href="#">News</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-3 footer-block">
+                            <div class="title">CUSTOMER SERVICE</div>
+                            <ul class="list">
+                                <li><a href="#">FAQ</a></li>
+                                <li><a href="#">Apply for vendor account</a></li>
+                                <li><a href="#">Contact Us</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-3 footer-block">
+                            <div class="title">My account</div>
+                            <ul class="list">
+                                <li><a href="#">Customer info</a></li>
+                                <li><a href="#">Addresses</a></li>
+                                <li><a href="#">Orders</a></li>
+                                <li><a href="#">Shopping cart</a></li>
+                                <li><a href="#">Wishlist</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-3 footer-block quick-contact">
+                            <div class="title">Contact Us</div>
+                            <ul class="list">
+                                <li class="address"><span><i class="icon-location"></i> Hawalli - Tunis St. Al-Mutawa'a Bldg</span></li>
+                                <li class="email"><span><i class="icon-msg"></i> shop@2easy2pay.com</span></li>
+                                <li class="phone"><span><i class="icon-phone"></i> +965-65985785, 22663305, 22663307</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="footer-lower">
+                        <div class="footer-disclaimer clearfix">
+                            <div class="payment-mothod-wrap">
+                                <div class="lable">Payment Method</div>
+                                <div class="payment-mothod"></div>
+                            </div>
+                            <div class="credit-note">
+                                Copyright © 2016 2easy2pay. All rights reserved.
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <footer>
-                <div class="top-foot">
-                    <div class="container">
-                        <div class="newsletter">
-                            <div class="title">Sign up for our newsletter</div>
-                            <div class="newsletter-subscribe">
-                                <div class="newsletter-email">
-                                    <input class="newsletter-subscribe-text" placeholder="Enter your email here..." type="text" value="">
-                                    <input type="button" value="Send" class="send-btn">
-                                </div>
-                            </div>
-                        </div>
-                        <ul class="social-sharing">
-                            <li class="twitter">
-                                <a target="_blank" href="https://twitter.com/2easy2pay"></a>
+        </footer>
+        <div class="mobile-header-menu">
+            <div class="close-menu"></div>
+            <ul class="side-menu">
+                <li>
+                    <a href="#" class="sub-menu">Products</a>
+                    <div class="sub-menu-ul">
+                        <div class="close-menu-inner"></div>
+                        <ul>
+                            <li>
+                                <a href="#">US Imported</a>
                             </li>
-                            <li class="facebook">
-                                <a target="_blank" href="http://www.facebook.com/2easy2pay"></a>
-                            </li>
-                            <li class="instagram">
-                                <a target="_blank" href="https://www.instagram.com/twoeasytwopay"></a>
-                            </li>
-                            <li class="youtube">
-                                <a target="_blank" href="https://www.youtube.com/c/2easy2pay"></a>
-                            </li>
-                            <li class="google">
-                                <a target="_blank" href="https://google.com/+2easy2pay"></a>
-                            </li>
-                            <li class="rss">
-                                <a target="_blank" href="/en/news/rss/1"></a>
+                            <li>
+                                <a href="#">Computers</a>
                             </li>
                         </ul>
                     </div>
-                </div>
-                <div class="footer-middle">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-sm-3 footer-block">
-                                <div class="title">Information</div>
-                                <ul class="list">
-                                    <li><a href="#">About us</a></li>
-                                    <li><a href="#">Privacy</a></li>
-                                    <li><a href="#">Terms of Use</a></li>
-                                    <li><a href="#">Blog</a></li>
-                                    <li><a href="#">News</a></li>
-                                </ul>
-                            </div>
-                            <div class="col-sm-3 footer-block">
-                                <div class="title">CUSTOMER SERVICE</div>
-                                <ul class="list">
-                                    <li><a href="#">FAQ</a></li>
-                                    <li><a href="#">Apply for vendor account</a></li>
-                                    <li><a href="#">Contact Us</a></li>
-                                </ul>
-                            </div>
-                            <div class="col-sm-3 footer-block">
-                                <div class="title">My account</div>
-                                <ul class="list">
-                                    <li><a href="#">Customer info</a></li>
-                                    <li><a href="#">Addresses</a></li>
-                                    <li><a href="#">Orders</a></li>
-                                    <li><a href="#">Shopping cart</a></li>
-                                    <li><a href="#">Wishlist</a></li>
-                                </ul>
-                            </div>
-                            <div class="col-sm-3 footer-block quick-contact">
-                                <div class="title">Contact Us</div>
-                                <ul class="list">
-                                    <li class="address"><span><i class="icon-location"></i> Hawalli - Tunis St. Al-Mutawa'a Bldg</span></li>
-                                    <li class="email"><span><i class="icon-msg"></i> shop@2easy2pay.com</span></li>
-                                    <li class="phone"><span><i class="icon-phone"></i> +965-65985785, 22663305, 22663307</span></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="footer-lower">
-                            <div class="footer-disclaimer clearfix">
-                                <div class="payment-mothod-wrap">
-                                    <div class="lable">Payment Method</div>
-                                    <div class="payment-mothod"></div>
-                                </div>
-                                <div class="credit-note">
-                                    Copyright © 2016 2easy2pay. All rights reserved.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </footer>
-            <div class="mobile-header-menu">
-                <div class="close-menu"></div>
-                <ul class="side-menu">
-                    <li>
-                        <a href="#" class="sub-menu">Products</a>
-                        <div class="sub-menu-ul">
-                            <div class="close-menu-inner"></div>
-                            <ul>
-                                <li>
-                                    <a href="#">US Imported</a>
-                                </li>
-                                <li>
-                                    <a href="#">Computers</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li>
-                        <a href="#">Recharge</a>
-                    </li>
-                    <li>
-                        <a href="#">International</a>
-                    </li>
-                    <li>
-                        <a href="#">Datacard</a>
-                    </li>
-                    <li>
-                        <a href="#">Shopping Cards</a>
-                    </li>
-                    <li>
-                        <a href="#">Manufactures</a>
-                    </li>
-                    <li>
-                        <a href="#">Vendors</a>
-                    </li>
-                    <li>
-                        <a href="#">Contact Us</a>
-                    </li>
-                    <li>
-                        <a href="#">Blog</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="overlay"></div>
+                </li>
+                <li>
+                    <a href="#">Recharge</a>
+                </li>
+                <li>
+                    <a href="#">International</a>
+                </li>
+                <li>
+                    <a href="#">Datacard</a>
+                </li>
+                <li>
+                    <a href="#">Shopping Cards</a>
+                </li>
+                <li>
+                    <a href="#">Manufactures</a>
+                </li>
+                <li>
+                    <a href="#">Vendors</a>
+                </li>
+                <li>
+                    <a href="#">Contact Us</a>
+                </li>
+                <li>
+                    <a href="#">Blog</a>
+                </li>
+            </ul>
         </div>
+        <div class="overlay"></div>
+    </div>
 
 
-        @Scripts.Render("~/bundles/angular")
-        @Scripts.Render("~/bundles/jquery")
-        @Scripts.Render("~/bundles/bootstrap")
-        <script type="text/javascript">
-            window.MyApp = {};
-            $(document).ready(function () {
-                Metronic.init();
-            });
-        </script>
-        <script src="~/App/Validator.js"></script>
-        <script src="~/App/App.js"></script>
-        @RenderSection("scripts", required: false)
-        <script type="text/javascript">
-            MyApp.rootPath = '@Url.Content("~")';
-            @RenderSection("jsCode", required: false)
-        </script>
-    </body>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script src="~/scripts/intlTelInput.js"></script>
+    @Scripts.Render("~/bundles/angular")
+    <script src="~/scripts/utils.js"></script>
+    <script src="~/scripts/international-phone-number.js"></script>
+    <script src="~/scripts/ngDialog.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            Metronic.init();
+        });
+    </script>
+    <script src="~/App/Validator.js"></script>
+    <script src="~/App/app.min.js"></script>
+
+    @RenderSection("scripts", required: false)
+    <script type="text/javascript">
+        @RenderSection("jsCode", required: false)
+    </script>
+</body>
 </html>

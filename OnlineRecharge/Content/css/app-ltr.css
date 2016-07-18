@@ -47,6 +47,11 @@ body {
     display: block !important;
 }
 
+a {
+    outline-style: none;
+    cursor: pointer;
+}
+
 
 /*custome */
 
@@ -817,6 +822,549 @@ ul.nav-menu > li > a.toggle-menu:before {
     background-position: 0 0;
 }
 
+.topbar .caption {
+    font-size: 14px;
+    font-weight: 600;
+    color: #2150a5;
+}
+
+.oprator-logo {
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 10px;
+    top: -6px;
+}
+
+.login-dialog {
+    width: 340px;
+}
+
+.login-popUp {
+    border-radius: 0 !important;
+}
+
+.login-popUp .modal-body {
+    padding: 0;
+}
+
+.login-inside-header {
+    background: #22b8eb;
+    padding: 20px;
+}
+
+.login-popUp .close {
+    background: url(../img/cancel.png) no-repeat 0 0;
+    margin: 0;
+    width: 16px;
+    height: 16px;
+    right: 20px;
+    top: 31px;
+    position: absolute;
+    cursor: pointer;
+}
+
+.login-inside-header ul,
+.login-inside-header ul li {
+    display: inline-block;
+    vertical-align: top;
+    margin: 0;
+    padding: 0;
+}
+
+.login-inside-header ul li {
+    margin-right: 20px;
+}
+
+.login-inside-header ul li.active a {
+    border-bottom: 4px solid #ffe033;
+    opacity: 1;
+}
+
+.login-inside-header ul a {
+    display: block;
+    line-height: 36px;
+    border-bottom: 4px solid #22b8eb;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    opacity: .5;
+    text-decoration: none !important;
+    cursor: pointer;
+}
+
+.tab-pan {
+    display: none;
+}
+
+.tab-pan.active {
+    display: block;
+}
+
+.login-inside-form {
+    padding: 20px;
+}
+
+.login-inside-form .form-grp {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.login-inside-form .form-grp label {
+    display: block;
+    font-size: 13px;
+    color: #6c6c6c;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.login-inside-form .form-grp .form-control {
+    border: 1px solid #dbdbdb;
+    line-height: 20px;
+    padding: 10px 15px;
+    font-size: 13px;
+    display: block;
+    width: 100%;
+    height: 40px;
+    margin-bottom: 0;
+    outline: none;
+}
+
+.check-wrap .checkbox {
+    display: inline-block;
+}
+
+.check-wrap label {
+    display: inline-block;
+    cursor: pointer;
+    position: relative;
+    padding-left: 25px;
+    margin-right: 15px;
+    font-size: 13px;
+}
+
+.check-wrap input[type=checkbox] {
+    display: none;
+}
+
+.check-wrap label:before {
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-right: 10px;
+    position: absolute;
+    left: 0;
+    bottom: 1px;
+    background-color: #aaa;
+    box-shadow: inset 0px 2px 3px 0px rgba(0, 0, 0, .3), 0px 1px 0px 0px rgba(255, 255, 255, .8);
+}
+
+.check-wrap .checkbox label {
+    margin-bottom: 10px;
+}
+
+.check-wrap .checkbox label:before {
+    border-radius: 3px;
+}
+
+.check-wrap input[type=checkbox]:checked + label:before {
+    content: "\2713";
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
+    font-size: 15px;
+    color: #f3f3f3;
+    text-align: center;
+    line-height: 15px;
+}
+
+.check-wrap .forgot-password {
+    float: right;
+    font-size: 13px;
+    color: #22B8EB;
+}
+
+.login-inside-form .btn:hover {
+    background: #079ACC;
+}
+
+.login-inside-form .btn {
+    height: 46px;
+    line-height: 26px;
+    padding: 10px 0;
+    background: #22b8eb;
+    color: #fff;
+    text-align: center;
+    display: block;
+    font-size: 14px;
+    margin: 15px 0 0;
+    width: 100%;
+    border: none;
+    outline: inherit;
+}
+
+.login-inside-form .btn:before {
+    position: relative;
+    width: 15px;
+    height: 16px;
+    background: url(../img/open-lock2.png) no-repeat 0 0;
+    content: '';
+    display: inline-block;
+    vertical-align: middle;
+    top: -2px;
+    margin-right: 5px;
+}
+
+.termscaptions {
+    color: #999;
+    font-size: 11px;
+    line-height: 16px;
+    display: block;
+    margin-top: 5px;
+}
+
+.forgot-pass-caption {
+    font-size: 13px;
+    color: #bbb;
+    margin-bottom: 15px;
+    display: block;
+    margin-top: 6px;
+}
+
+.login-inside-form h3 {
+    margin: 0;
+}
+
+.login-inside-form .btn.forgot-btn {
+    display: inline-block;
+    width: inherit;
+    padding: 0 12px;
+    margin: 0;
+    line-height: 46px;
+    text-decoration: none !important;
+}
+
+.forgot-btn.cancel-forgot-btn {
+    vertical-align: top;
+    line-height: 46px;
+    background: #fff;
+    color: #444;
+}
+
+.forgot-btn:before {
+    display: none !important;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.login-inside-form .btn.cancel-forgot-btn:hover {
+    background: #fff;
+    color: #22b8eb;
+}
+
+.intl-tel-input {
+    width: 100%;
+}
+
+.intl-tel-input input {
+    display: block;
+    width: 100%;
+    padding: 8px 15px 8px 75px !important;
+    line-height: 20px;
+    color: #747474;
+    border: 1px solid #e0e0e0;
+    outline: none !important;
+}
+
+.selected-flag {
+    display: block;
+    position: absolute !important;
+    padding: 11px 14px !important;
+    width: auto !important;
+    border-right: 1px solid #e0e0e0;
+    outline: none !important;
+    cursor: pointer;
+}
+
+.intl-tel-input .selected-flag .iti-flag {
+    margin: 0 !important;
+    position: relative !important;
+    box-shadow: none !important;
+    display: inline-block;
+}
+
+.intl-tel-input .iti-arrow {
+    position: relative;
+    display: inline-block;
+    border-top: 4px solid #9e9e9e;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    vertical-align: middle;
+    top: -3px;
+    margin-left: 6px;
+}
+
+.intl-tel-input .country-list {
+    top: 39px !important;
+    width: 99.75% !important;
+    left: 1px !important;
+}
+
+.intl-tel-input .country-list .flag-box {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 9px;
+}
+
+#error-msg {
+    display: block;
+    color: #f00;
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+#valid-msg {
+    display: block;
+    color: #1dce0a;
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+.sub-note {
+    color: #aaa;
+    font-weight: 600;
+    font-size: 11px;
+    margin-bottom: 15px;
+    line-height: 17px;
+}
+
+.payment-blk {
+    background: #fff;
+    border: 1px solid #d3d3d3;
+    border-width: 0 1px 1px;
+}
+
+.payment-blk .title {
+    background: #22b8eb;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 41px;
+    padding: 0 15px;
+}
+
+.payment-tab {
+    background: #fbfbfb;
+}
+
+.payment-tab > ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    float: left;
+    width: 200px;
+    background: #fbfbfb;
+    border-right: 1px solid #d3d3d3;
+}
+
+.payment-tab > ul li {
+    display: block;
+}
+
+.payment-tab > ul li a {
+    display: block;
+    text-decoration: none;
+    padding: 12px 15px;
+    font-weight: 600;
+    color: rgba(0, 0, 0, .6);
+    border-bottom: 1px solid #d3d3d3;
+}
+
+.payment-tab > ul li.active a {
+    background: #fff;
+    color: #22b8eb;
+    margin-right: -1px;
+}
+
+.payment-tab .tab-content {
+    background: #fff;
+    min-height: 300px;
+    margin-left: 199px;
+    border-left: 1px solid #d9d9d9;
+    padding: 20px;
+}
+
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+.payment-tab .tab-content h3 {
+    margin: 0;
+    font-weight: 700;
+    font-style: italic;
+    font-size: 15px;
+}
+
+.knet-blk {
+    margin-top: 20px;
+}
+
+.knet-offer {
+    margin-left: 80px;
+    font-weight: 600;
+    margin-top: 4px;
+    opacity: .6;
+}
+
+.some-note {
+    background: url(../img/alert-icon.jpg) no-repeat 24px 23px #f8f8f8;
+    border: 1px solid #dfe3e7;
+    padding: 20px 20px 20px 80px;
+    color: rgba(0, 0, 0, .6);
+    font-size: 12px;
+    line-height: 20px;
+    margin-bottom: 30px;
+    margin-top: 20px;
+}
+
+.make-payment {
+    text-transform: uppercase;
+    background: #22b8eb;
+    color: #fff;
+    display: inline-block;
+    line-height: 21px;
+    padding: 10px 15px;
+    font-weight: 700;
+    font-size: 14px;
+    border-radius: 3px;
+}
+
+.make-payment:hover {
+    color: #fff;
+    background: #1ea8d7;
+    text-decoration: none;
+}
+
+.payment-selection {
+    border: 1px solid #d3d3d3;
+    background: #fff;
+}
+
+.order-summery {
+    padding: 20px;
+}
+
+.order-summery h3 {
+    margin: 0;
+    padding: 0;
+    font-weight: 700;
+    font-style: italic;
+    font-size: 15px;
+    color: #22b8eb;
+}
+
+.offerSelctionDetails {
+    margin: 0;
+}
+
+.offerSelctionDetails h4 {
+    font-size: 13px;
+    font-weight: 600;
+    margin: 10px 0 0;
+    padding: 0;
+}
+
+.offerSelctionDetails > span {
+    font-size: 12px;
+    line-height: 20px;
+}
+
+.devider {
+    display: block;
+    border-top: 1px dashed #d9d9d9;
+    margin: 0 0 20px;
+    position: relative;
+}
+
+.devider:before,
+.devider:after {
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    left: 0;
+    top: 0;
+    content: '';
+    margin-top: -13px;
+    margin-left: -13px;
+    background: #f6f6f6;
+    border: 1px solid #d3d3d3;
+    border-radius: 50%;
+}
+
+.devider:after {
+    left: auto;
+    right: 0;
+    margin-left: inherit;
+    margin-right: -13px;
+}
+
+.transition-id {
+    padding: 0 20px 20px;
+}
+
+.transition-id > span {
+    font-weight: 700;
+}
+
+.amount-pay {
+    background: #fffcdc;
+    padding: 14px 20px;
+}
+
+.hidden {
+    overflow: hidden;
+}
+
+.amount-pay > span {
+    line-height: 24px;
+    color: #666;
+}
+
+.amount-pay .amt {
+    font-size: 18px;
+    font-weight: 700;
+    color: #222;
+}
+
+.ngdialog.ngdialog-theme-default.login-popup {
+    padding-top: 50px;
+    padding-bottom: 0;
+}
+
+.ngdialog.ngdialog-theme-default.login-popup .ngdialog-content {
+    padding: 0;
+    max-width: 340px;
+    border-radius: 0;
+    -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    font-family: 'Open Sans';
+}
+
+.ngdialog.ngdialog-theme-default.login-popup .login-inside-form {
+    background: #fff;
+}
+
+.ngdialog.ngdialog-theme-default.login-popup .ngdialog-close:before {
+    color: #fff;
+    right: 10px;
+    top: 26px;
+}
+
 @media (max-width: 767px) {
     .mobile-header-menu {
         display: block;
@@ -1096,5 +1644,14 @@ ul.nav-menu > li > a.toggle-menu:before {
         border-bottom: 1px solid #ececec;
         color: #444;
         text-decoration: none;
+    }
+    #error-msg {
+        color: red;
+    }
+    #valid-msg {
+        color: #00C900;
+    }
+    input.error {
+        border: 1px solid #FF7C7C;
     }
 }

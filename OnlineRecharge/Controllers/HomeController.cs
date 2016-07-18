@@ -11,6 +11,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using OnlineRecharge.Models.Helpers;
+using Newtonsoft.Json;
 
 namespace OnlineRecharge.Controllers
 {
@@ -19,11 +20,15 @@ namespace OnlineRecharge.Controllers
         public const string BASEADDRESS = "https://grcweb.grckiosk.com:8443/";
         public const string USERNAME = "101";
         public const string PASSWORD = "000";
+        #region Fields
+        EFDbContext context = new EFDbContext();
+        #endregion
+
+        #region Action Methods
         public ActionResult Index()
         {
             try
             {
-                //TestWebApiAllServices();
             }
             catch (Exception ex)
             {
@@ -33,7 +38,234 @@ namespace OnlineRecharge.Controllers
             return View();
         }
 
-        #region Test Api Service
+        public ActionResult Mobile()
+        {
+            try
+            {
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            return View("_Mobile");
+        }
+
+        public ActionResult PaymentOptions()
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            return View("_PaymentOptions");
+        }
+
+
+        #endregion
+
+        #region Helping Methods
+        public JsonResult GetServiceProviders()
+        {
+            List<ServiceProviders> model = new List<ServiceProviders>();
+            try
+            {
+                model = context.ServiceProiders.ToList();
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            return this.Json(model, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public async Task GetService()
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+
+                    #region login and get token
+                    var logindata = string.Format("grant_type=password&username={0}&password={1}", USERNAME, PASSWORD);//LOGIN DATA
+
+                    var url = BASEADDRESS + "token";
+
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
+                    request.Content = new StringContent(logindata, Encoding.UTF8, "application/x-www-form-urlencoded");
+
+                    var resp =await client.PostAsync(url, request.Content);
+                    Token token = new Token();
+                    if (resp.IsSuccessStatusCode)
+                    {
+                        token =await resp.Content.ReadAsAsync<Token>();
+                    }
+                    #endregion login and get token
+
+                    using (var httpClient = new HttpClient())
+                    {
+                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token.token_type, token.access_token);
+                        httpClient.BaseAddress = new Uri(BASEADDRESS);
+
+                        // New code:
+                        HttpResponseMessage response = await httpClient.GetAsync("api/Services/GetServiceList");
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var result = await response.Content.ReadAsAsync<List<Service>>();
+                        }
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            
+        }
+
+        [HttpPost]
+        public async Task<TopupValidation> TopupValidation()
+        {
+            try
+            {
+                string rechargeType = Request.Form["rechargeType"];
+                string operatorCode = Request.Form["operatorCode"];
+                string mobileNumber = Request.Form["mobileNumber"];
+                string amount = Request.Form["amount"];
+                string result=string.Empty;
+                using (var client = new HttpClient())
+                {
+
+                    #region login and get token
+                    var logindata = string.Format("grant_type=password&username={0}&password={1}", USERNAME, PASSWORD);//LOGIN DATA
+
+                    var url = BASEADDRESS + "token";
+
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
+                    request.Content = new StringContent(logindata, Encoding.UTF8, "application/x-www-form-urlencoded");
+
+                    var resp = await client.PostAsync(url, request.Content);
+                    Token token = new Token();
+                    if (resp.IsSuccessStatusCode)
+                    {
+                        token = await resp.Content.ReadAsAsync<Token>();
+                    }
+                    #endregion login and get token
+
+                    using (var httpClient = new HttpClient())
+                    {
+                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token.token_type, token.access_token);
+                        httpClient.BaseAddress = new Uri(BASEADDRESS);
+                       var data = string.Format("?OperatorName={0}&Amount={1}&MobileNumber={2}", operatorCode, amount, mobileNumber);
+                        HttpResponseMessage response = await httpClient.GetAsync("api/Services/TopupValidation" + data);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            result = await response.Content.ReadAsStringAsync(); //response.Content.ReadAsAsync<TopupValidation>();
+                        }
+                        else
+                        {
+
+                        }
+
+                    }
+                }
+                var test= JsonConvert.DeserializeObject<TopupValidation>(result) as TopupValidation;
+                return test;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        public async Task ValidateTopup()
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    #region login and get token
+                    var logindata = string.Format("grant_type=password&username={0}&password={1}", USERNAME, PASSWORD);//LOGIN DATA
+
+                    var url = BASEADDRESS + "token";
+
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
+                    request.Content = new StringContent(logindata, Encoding.UTF8, "application/x-www-form-urlencoded");
+
+                    var resp = await client.PostAsync(url, request.Content);
+                    Token token = new Token();
+                    if (resp.IsSuccessStatusCode)
+                    {
+                        token = await resp.Content.ReadAsAsync<Token>();
+                    }
+                    #endregion login and get token
+                    using (var httpClient = new HttpClient())
+                    {
+                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token.token_type, token.access_token);
+                        httpClient.BaseAddress = new Uri(BASEADDRESS);
+                        string data = string.Format("?OperatorName={0}&Amount={1}&MobileNumber={2}", "VV", "1.000", "55155445");
+                        HttpResponseMessage response = await httpClient.GetAsync("api/Services/TopupValidation" + data);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var result = await response.Content.ReadAsAsync<TopupValidation>();
+                        }
+                        else
+                        {
+                        }
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        [HttpPost]
+        public JsonResult ProcessKnetPayment()
+        {
+            KnetPaymentInitiate request = new KnetPaymentInitiate();
+            request.Amt = Request.Form["amount"];
+            request.ContactNumber = Request.Form["contactNumber"];
+            request.Email = Request.Form["email"];
+            request.PaymentType = Request.Form["paymentType"];
+            request.returnUrl = Request.Form["returnUrl"];
+            request.errorUrl = Request.Form["errorUrl"];
+            request.Udf1 = Request.Form["Udf1"];
+            KnetPaymentInitialResponse response = new KnetPaymentInitialResponse();
+            var httpClient = new HttpClient();
+            var url = "https://api.2easy2pay.com/test/Gateway";
+            var result = httpClient.PostAsJsonAsync(url, request).Result;
+            if (result.IsSuccessStatusCode)
+            {
+                response = result.Content.ReadAsAsync<KnetPaymentInitialResponse>().Result;
+            }
+            return this.Json(response, JsonRequestBehavior.AllowGet);
+        }
+        #endregion
+
+            #region Test Api Service
         private static async Task TestWebApiAllServices()
         {
 
