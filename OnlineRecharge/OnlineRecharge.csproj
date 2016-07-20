@@ -998,9 +998,11 @@
     <Compile Include="Models\Core\Mapping\LanguageFlagMap.cs" />
     <Compile Include="Models\Core\Mapping\LanguageMap.cs" />
     <Compile Include="Models\Core\Mapping\ServiceProviderMap.cs" />
+    <Compile Include="Models\Helpers\APIProvider.cs" />
     <Compile Include="Models\Helpers\DataContracts.cs" />
     <Compile Include="Models\Helpers\KnetPaymentInitialResponse.cs" />
     <Compile Include="Models\Helpers\KnetPaymentInitiate.cs" />
+    <Compile Include="Models\Helpers\KNetReponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -1034,6 +1036,7 @@
     <Content Include="Views\Home\_Mobile.cshtml" />
     <Content Include="Views\Shared\Index.cshtml" />
     <Content Include="Views\Home\_PaymentOptions.cshtml" />
+    <Content Include="Views\Home\_Result.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

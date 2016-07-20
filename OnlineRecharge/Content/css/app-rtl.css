@@ -1339,6 +1339,110 @@ ul.nav-menu > li > a.toggle-menu:before {
     color: #22b8eb;
 }
 
+
+/*payment-success strat*/
+
+.line {
+    height: 1px;
+    display: block;
+    background: #d9d9d9;
+    margin: 10px 0px 15px;
+}
+
+.pay-summery-list {
+    display: block;
+    margin-top: 10px;
+}
+
+.pay-summery-list > span {
+    font-weight: 700;
+}
+
+.status {
+    background: #ddd;
+    display: inline-block;
+    margin-top: 12px;
+    padding: 3px 10px;
+    border-radius: 3px;
+    color: #fff;
+    font-size: 12px;
+}
+
+.status.success {
+    background: #0bb297;
+}
+
+.status.pending {
+    background: #f5cf0a;
+}
+
+.status.failed {
+    background: #ff5757;
+}
+
+.pay-details {
+    border: 1px solid #d3d3d3;
+    background: #fff;
+}
+
+.pay-details .headr {
+    background: #fafafa;
+    border-bottom: #d6d6d6 1px solid;
+    padding: 12px 20px;
+    -webkit-box-shadow: 0 2px 0 0 #f6f6f6, inset 0 -1px 0 0 #ffffff;
+    box-shadow: 0 2px 0 0 #f6f6f6, inset 0 -1px 0 0 #ffffff;
+    position: relative;
+}
+
+.img-notify {
+    width: 41px;
+    height: 41px;
+    position: relative;
+    display: inline-block;
+    background: url(../img/sprite.png) no-repeat 0 -35px;
+}
+
+.pay-details .headr-content {
+    margin-right: 55px;
+    font-size: 12px;
+    margin-top: 4px;
+    font-weight: 600;
+}
+
+.payContent {
+    background: #fff;
+    padding: 25px 20px;
+}
+
+.payContent .title {
+    margin: 0;
+    padding: 0;
+    font-weight: 700;
+    font-style: italic;
+    font-size: 15px;
+    color: #22b8eb;
+    border-bottom: 1px solid #d9d9d9;
+    padding-bottom: 7px;
+}
+
+.operator-img {
+    padding: 5px 10px;
+    border: 1px solid #d9d9d9;
+    display: inline-block;
+}
+
+.payTable td:first-child {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.pay-describe {
+    font-size: 11px;
+}
+
+
+/*payment-success end*/
+
 @media (max-width: 767px) {
     .mobile-header-menu {
         display: block;
@@ -1651,5 +1755,8 @@ ul.nav-menu > li > a.toggle-menu:before {
     }
     .table-head thead {
         display: none;
+    }
+    .payment-selection {
+        margin-top: 15px;
     }
 }

@@ -19,8 +19,8 @@
                 </div>
                 <div class="form-group">
                     <label translate="Operator"></label>
-                    <select class="form-control" ng-model="ddlOperator" ng-options="s.Code as s.Name for s in serviceProviders track by s.Id" 
-                         ng-change="GetValue()"  >
+                    <select class="form-control" ng-model="operatorCode" ng-options="s.Code as s.Name for s in serviceProviders track by s.Id" 
+                         ng-change="GetValue()" ng-click="GetServices()"  >
                         <option value="" translate="ServiceProviderDefaultLabel"></option>  
                     </select>
                 </div>

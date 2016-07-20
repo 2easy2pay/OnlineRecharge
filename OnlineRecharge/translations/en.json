@@ -24,5 +24,11 @@
   "VisaMasterCard": "Visa/Master Card",
   "Wallet": "Wallet",
   "Login": "Login",
-  "Register": "Register"
+  "Register": "Register",
+  "OrderSummary": "OrderSummary",
+  "AmountPayable": "Amount Payable",
+  "PaymentSummary": "Payment Summary",
+  "PaymentSummary_PaymentID": "PaymentID :",
+  "PaymentSummary_TransactionID": "TransactionID :",
+  "PaymentSummary_TrackID": "TrackID :"
 }

@@ -119,9 +119,9 @@
                 </div>
             </div>
             <div class="menu-blk mobile-hide">
-                <div class="container">
+                <div class="container" ng-controller="navCtrl">
                     <ul class="nav-menu">
-                        <li class="main-menu-wrap">
+                        @*<li class="main-menu-wrap">
                             <a class="toggle-menu" href="#"><i></i></a>
                             <ul class="main-menu">
                                 <li><a href="#">Us Imported</a></li>
@@ -132,13 +132,8 @@
                                 <li><a href="#">Women</a></li>
                                 <li><a href="#">Home & Kitchen</a></li>
                             </ul>
-                        </li>
-                        <li>
-                            <a class="active" href="/#/mobile" translate="Mobile"></a>
-                        </li>
-                        <li><a href="#/mobile" translate="International"></a><label></label></li>
-                        <li><a href="#" translate="DataCards"></a></li>
-                        <li><a href="#" translate="ShoppingCards"></a></li>
+                        </li>*@
+                        <li ng-repeat="navLink in navLinks" ng-class="navClass('{{navLink.Title}}')"> <a href='#/{{navLink.Title}}' translate="{{navLink.LinkText}}"></a></li>
                     </ul>
                     <div class="pull-right search-form-wrap">
                         <input type="text" class="search-form" placeholder="Search Store">
@@ -167,7 +162,7 @@
         <div id="main">
             <div class="container">
                 <div class="content">
-                    @RenderBody();
+                    @RenderBody()
                 </div>
             </div>
         </div>

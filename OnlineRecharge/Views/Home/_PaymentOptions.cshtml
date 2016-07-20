@@ -54,21 +54,21 @@
         </div>
         <div class="col-md-4">
             <div class="hidden">
-                <div class="payment-selection">
+                <div class="payment-selection" ng-controller="paymentPageController">
                     <div class="order-summery">
-                        <h3>Order Summer</h3>
+                        <h3 translate="OrderSummary"</h3>
                         <div class="offerSelctionDetails">
-                            <h4>15-TT + 450 MB 3G/4G Data</h4>
-                            <span>U Medium : 300 MB Data + 150 MB Night Data ( 12 am to 6 am) ; Call 3 local Vodafone buddies 20p/min; Talktime Rs.15; Unlimited music downloads for 60 days Option of 60MB data loan. T&C Apply</span>
+                            <h4>{{RechargeParameter.mobileNumber}}({{RechargeParameter.operatorCode}})</h4>
+                            <span></span>
                         </div>
                     </div>
                     <div class="devider"></div>
-                    <div class="transition-id">
+                    @*<div class="transition-id">
                         <span>Transation ID :</span> 859456812356
-                    </div>
+                    </div>*@
                     <div class="amount-pay clearfix">
-                        <span class="pull-left">Amount Payable</span>
-                        <span class="amt pull-right">5.000 KD</span>
+                        <span class="pull-left" translate="AmountPayable"></span>
+                        <span class="amt pull-right">{{RechargeParameter.amount}} KD</span>
                     </div>
                 </div>
             </div>

@@ -1,18 +1,26 @@
 ﻿var app = angular.module('Multilingual', ['pascalprecht.translate',
   'ngCookies', 'ngRoute', 'internationalPhoneNumber', 'ngDialog']);
-
-app.config(['$routeProvider',
-       function ($routeProvider) {
+//Configuration Section
+app.config(['$routeProvider','$locationProvider',
+function ($routeProvider,$locationProvider) {
            $routeProvider.
            when('/mobile', {
                templateUrl: 'home/mobile'
            })
            .when('/home', {
-               templateUrl:'home/index'
+               templateUrl: 'home/mobile'
            })
            .when('/paymentOptions', {
                templateUrl: 'home/paymentoptions'
            })
+           .when('/result', {
+               controller: "rechargeResultController",
+               templateUrl: 'home/result'
+           })
+           .when('/', {
+               redirectTo: '/mobile'
+           })
+   
        }]);
 app.config(['$translateProvider', function ($translateProvider) {
 
@@ -37,11 +45,56 @@ app.run(['$rootScope', function ($rootScope) {
         console.log('Route error', rejection);
     });
 }]);
+//Service
+
+//app.factory('rechargeParameterService', function () {
+//    var savedData = {}
+//    var set = function (data) {
+//        savedData = data;
+//    }
+//    var get = function () {
+//        return savedData;
+//    }
+
+//    return {
+//        set: set,
+//        get: get
+//    }
+
+//});
 
 //Controller  
-app.controller('SeviceProviderController', ['$scope', '$http','$translate',
+app.controller('SeviceProviderController', ['$scope', '$http', '$translate',
     function ($scope, $http) {
-        //$http service for Getting the Country  
+        $scope.redirect = function () {
+            // use $.param jQuery function to serialize data from JSON 
+            var data = $.param({
+                rechargeType: $scope.rechargeType,
+                operatorCode: $scope.operatorCode,
+                mobileNumber: $scope.mobileNumber,
+                amount: $scope.amount
+            });
+           
+            var config = {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+                }
+            }
+
+            $http.post('/Home/TopupValidation', data, config)
+            .success(function (data, status, headers, config) {
+                $scope.PostDataResponse = data;
+                window.location = "#/paymentOptions";
+            })
+            .error(function (data, status, header, config) {
+                $scope.ResponseDetails = "Data: " + data +
+                    "<hr />status: " + status +
+                    "<hr />headers: " + header +
+                    "<hr />config: " + config;
+            });
+
+        }
+        //$http service for Getting the ServiceProviders  
         $http({
             method: 'GET',
             url: '/Home/GetServiceProviders'
@@ -51,15 +104,13 @@ app.controller('SeviceProviderController', ['$scope', '$http','$translate',
         });
 
         $scope.GetValue = function (operator) {
-            var operatorCode = $scope.ddlOperator;
+            var operatorCode = $scope.operatorCode;
             var OperatorName = $.grep($scope.serviceProviders, function (operator) {
                 return operator.Code == operatorCode;
             })[0].Name;
-            $window.alert("Selected Value: " + fruitId + "\nSelected Text: " + fruitName);
+           
         }
-        $scope.redirect = function () {
-            window.location = "#/paymentOptions";
-        }
+       
         //$scope.SendData = function () {
         //    // use $.param jQuery function to serialize data from JSON 
         //    var data = $.param({
@@ -86,16 +137,16 @@ app.controller('SeviceProviderController', ['$scope', '$http','$translate',
         //            "<hr />config: " + config;
         //    });
         //};
-        //$scope.GetServices = function () {
+        $scope.GetServices = function () {
 
-        //    $http({
-        //        method: 'POST',
-        //        url: '/Home/GetService/'
-        //    }).
-        //    success(function (data) {
-        //        $scope.services = data;
-        //    });
-        //}
+            $http({
+                method: 'POST',
+                url: '/Home/GetService/'
+            }).
+            success(function (data) {
+                $scope.services = data;
+            });
+        }
     }]);
 app.controller('TabsCtrl', ['$scope', '$http', '$location', function ($scope, $http, $location) {
     $scope.tabs = [{
@@ -132,8 +183,8 @@ app.controller('TabsCtrl', ['$scope', '$http', '$location', function ($scope, $h
             contactNumber: '+96594950708',
             email: 'vineeth@2easy2pay.com',
             paymentType: 'knet',
-            returnUrl: 'https://api.2easy2pay.com/WEB/knetResponse/shopKnetWebResponse',
-            errorUrl: 'https://api.2easy2pay.com/WEB/knetResponse/shopKnetWebResponse',
+            returnUrl: 'https://api.2easy2pay.com/web/knetresponse/rechargeWebResponse',
+            errorUrl: 'https://api.2easy2pay.com/web/knetresponse/rechargeWebResponse',
             Udf1:10
         });
 
@@ -218,3 +269,45 @@ app.controller('PopUpCtrl', ['$scope','ngDialog',function ($scope, ngDialog) {
    
 
 }]);
+app.controller('rechargeResultController', ['$scope', '$location', function ($scope, $location) {
+    $scope.jobOffers = [];
+
+    function init() {
+        var search= $location.search();
+        $scope.paymentID = search.PaymentID;
+        $scope.result = search.Result;
+        $scope.trackID = search.TrackID;
+        $scope.tranID = search.TranID;
+        $scope.ref = search.Ref;
+    }
+
+    init();
+}]);
+app.controller('navCtrl', ['$scope', '$location', function ($scope, $location) {
+
+    $scope.navLinks = [{
+        Title: 'mobile',
+        LinkText: 'Mobile',
+    }, {
+        Title: 'international',
+        LinkText: 'International'
+    }, {
+        Title: 'datacards',
+        LinkText: 'DataCards'
+    }, {
+        Title: 'shoppingcards',
+        LinkText: 'ShoppingCards'
+    }
+    ];
+
+    $scope.navClass = function (page) {
+        var currentRoute = $location.path().substring(1) || 'home';
+        return page === currentRoute ? 'active' : '';
+    };
+
+
+}]);
+app.controller('paymentPageController', ['$scope',  function ($scope) {
+    
+}]);
+
