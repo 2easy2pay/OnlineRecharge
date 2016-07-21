@@ -306,16 +306,27 @@
     @Scripts.Render("~/bundles/bootstrap")
     <script src="~/scripts/intlTelInput.js"></script>
     @Scripts.Render("~/bundles/angular")
+    <script src="~/scripts/angular-animate.min.js"></script>
+    <script src="~/scripts/angular-touch.min.js"></script>
     <script src="~/scripts/utils.js"></script>
     <script src="~/scripts/international-phone-number.js"></script>
     <script src="~/scripts/ngDialog.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.10.3/TweenMax.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             Metronic.init();
         });
     </script>
+    <script src="~/scripts/Slider/slider.js"></script>
     <script src="~/App/Validator.js"></script>
-    <script src="~/App/app.min.js"></script>
+    <script src="~/scripts/Utilities/angular-translate.js"></script>
+    <script src="~/scripts/angular-cookies.js"></script>
+    <script src="~/scripts/Utilities/angular-translate-storage-local.js"></script>
+    <script src="~/scripts/Utilities/angular-translate-storage-cookie.js"></script>
+    <script src="~/scripts/Utilities/angular-translate-handler-log.js"></script>
+    <script src="~/scripts/Utilities/angular-translate-loader-static-files.js"></script>
+    <script src="~/App/app.js"></script>
+    <script src="~/scripts/Utilities/DataService.js"></script>
 
     @RenderSection("scripts", required: false)
     <script type="text/javascript">

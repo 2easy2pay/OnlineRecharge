@@ -157,6 +157,8 @@
     <Content Include="Content\css\ngDialog-theme-default.css" />
     <Content Include="Content\css\ngDialog-theme-plain.css" />
     <Content Include="Content\css\ngDialog.css" />
+    <Content Include="Content\img\Banner\Img1.jpg" />
+    <Content Include="Content\img\Banner\Img2.png" />
     <Content Include="Content\img\close.png" />
     <Content Include="Content\img\favicon.png" />
     <Content Include="Content\img\flags%402x.png" />
@@ -164,6 +166,8 @@
     <Content Include="Content\img\flags\kw.png" />
     <Content Include="Content\img\flags\us.png" />
     <Content Include="Content\img\logo.jpg" />
+    <Content Include="Content\img\Operators\ooreedo.png" />
+    <Content Include="Content\img\Operators\viva.png" />
     <Content Include="Content\img\payment-Method.png" />
     <Content Include="Content\img\payment\knet.jpg" />
     <Content Include="Content\img\payment\visA.png" />
@@ -952,6 +956,12 @@
     <Content Include="scripts\modernizr-2.6.2.min.js" />
     <Content Include="scripts\ngDialog.js" />
     <Content Include="scripts\respond.js" />
+    <Content Include="scripts\Slider\slider.js" />
+    <Content Include="scripts\Utilities\angular-translate-handler-log.js" />
+    <Content Include="scripts\Utilities\angular-translate-loader-static-files.js" />
+    <Content Include="scripts\Utilities\angular-translate-storage-cookie.js" />
+    <Content Include="scripts\Utilities\angular-translate-storage-local.js" />
+    <Content Include="scripts\Utilities\angular-translate.js" />
     <Content Include="scripts\utils.js" />
     <Content Include="Web.config" />
   </ItemGroup>

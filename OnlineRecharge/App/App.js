@@ -1,5 +1,6 @@
 ﻿var app = angular.module('Multilingual', ['pascalprecht.translate',
-  'ngCookies', 'ngRoute', 'internationalPhoneNumber', 'ngDialog']);
+   'ngCookies','ngRoute', 'internationalPhoneNumber', 'ngDialog', 'slider']);
+
 //Configuration Section
 app.config(['$routeProvider','$locationProvider',
 function ($routeProvider,$locationProvider) {
@@ -21,7 +22,7 @@ function ($routeProvider,$locationProvider) {
                redirectTo: '/mobile'
            })
    
-       }]);
+}]);
 app.config(['$translateProvider', function ($translateProvider) {
 
     $translateProvider
@@ -33,6 +34,7 @@ app.config(['$translateProvider', function ($translateProvider) {
   .useLocalStorage()
   .useMissingTranslationHandlerLog();
 }]);
+
 app.run(['$rootScope', function ($rootScope) {
     $rootScope.lang = 'en';
 
@@ -45,27 +47,30 @@ app.run(['$rootScope', function ($rootScope) {
         console.log('Route error', rejection);
     });
 }]);
+
 //Service
-
-//app.factory('rechargeParameterService', function () {
-//    var savedData = {}
-//    var set = function (data) {
-//        savedData = data;
-//    }
-//    var get = function () {
-//        return savedData;
-//    }
-
-//    return {
-//        set: set,
-//        get: get
-//    }
-
-//});
+app.factory('rechargeParameterService', [function () {
+    var rechargeParams = {};
+    return {
+        getData: function () {
+            rechargeParams ={
+                rechargeType: 'tt',
+                operatorCode: 'tt',
+                mobileNumber: 'tt',
+                amount: 'tt'
+            };
+            return returnrechargeParams;
+        }
+        //,
+        //setData: function (data) {
+        //    rechargeParams = data;
+        //}
+    }
+}]);
 
 //Controller  
-app.controller('SeviceProviderController', ['$scope', '$http', '$translate',
-    function ($scope, $http) {
+app.controller('SeviceProviderController', ['$scope', '$http', 'rechargeParameterService',
+    function ($scope, $http, rechargeParameterService) {
         $scope.redirect = function () {
             // use $.param jQuery function to serialize data from JSON 
             var data = $.param({
@@ -74,14 +79,14 @@ app.controller('SeviceProviderController', ['$scope', '$http', '$translate',
                 mobileNumber: $scope.mobileNumber,
                 amount: $scope.amount
             });
-           
+            //rechargeParameterService.setData(data);
             var config = {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
                 }
             }
 
-            $http.post('/Home/TopupValidation', data, config)
+            $http.post('/Home/TopupTransfer', data, config)
             .success(function (data, status, headers, config) {
                 $scope.PostDataResponse = data;
                 window.location = "#/paymentOptions";
@@ -108,7 +113,7 @@ app.controller('SeviceProviderController', ['$scope', '$http', '$translate',
             var OperatorName = $.grep($scope.serviceProviders, function (operator) {
                 return operator.Code == operatorCode;
             })[0].Name;
-           
+            
         }
        
         //$scope.SendData = function () {
@@ -137,14 +142,28 @@ app.controller('SeviceProviderController', ['$scope', '$http', '$translate',
         //            "<hr />config: " + config;
         //    });
         //};
+       
         $scope.GetServices = function () {
+            var data = $.param({
+                rechargeType: $scope.rechargeType,
+                operatorCode: $scope.operatorCode,
 
-            $http({
-                method: 'POST',
-                url: '/Home/GetService/'
-            }).
-            success(function (data) {
+            });
+            var config = {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+                }
+            }
+
+            $http.post('/Home/GetService/', data, config)
+            .success(function (data, status, headers, config) {
                 $scope.services = data;
+            })
+            .error(function (data, status, header, config) {
+                $scope.ResponseDetails = "Data: " + data +
+                    "<hr />status: " + status +
+                    "<hr />headers: " + header +
+                    "<hr />config: " + config;
             });
         }
     }]);
@@ -207,6 +226,7 @@ app.controller('TabsCtrl', ['$scope', '$http', '$location', function ($scope, $h
             });
     };
 }]);
+
 app.controller('LanguageSwitchController', ['$scope', '$rootScope', '$translate',
   function ($scope, $rootScope, $translate) {
       $scope.changeLanguage = function (langKey) {
@@ -307,7 +327,8 @@ app.controller('navCtrl', ['$scope', '$location', function ($scope, $location) {
 
 
 }]);
-app.controller('paymentPageController', ['$scope',  function ($scope) {
-    
+app.controller('paymentPageController', ['$scope', 'rechargeParameterService', function ($scope, rechargeParameterService) {
+    debugger;
+    $scope.RechargeParameter = rechargeParameterService.getData();
 }]);
 

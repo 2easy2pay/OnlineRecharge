@@ -11,7 +11,10 @@ namespace OnlineRecharge.Models.Helpers
 {
     public class APIProvider
     {
-        public async Task<TopupTransfer> TopupTransfer(string USERNAME, string PASSWORD, string BASEADDRESS)
+        public const string BASEADDRESS = "https://grcweb.grckiosk.com:8443/";
+        public const string USERNAME = "101";
+        public const string PASSWORD = "000";
+        public async Task<TopupTransfer> TopupTransfer()
         {
             try
             {
@@ -28,15 +31,17 @@ namespace OnlineRecharge.Models.Helpers
                     HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
                     request.Content = new StringContent(logindata, Encoding.UTF8, "application/x-www-form-urlencoded");
 
-                    var resp = await client.PostAsync(url, request.Content);
+                    var resp =  client.PostAsync(url, request.Content);
                     Token token = new Token();
-                    if (resp.IsSuccessStatusCode)
+                    if (resp.Result.IsSuccessStatusCode)
                     {
-                        token = await resp.Content.ReadAsAsync<Token>();
+                        token = await resp.Result.Content.ReadAsAsync<Token>();
                     }
                     #endregion login and get token
                     using (var httpClient = new HttpClient())
                     {
+                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token.token_type, token.access_token);
+                        httpClient.BaseAddress = new Uri(BASEADDRESS);
                         string data = string.Format("?OperatorName={0}&AmtSelected={1}&MobileNumber={2}&PaymentType={3}",
                              "VV", "1.000", "55155445", "CASH");
                         HttpResponseMessage response = await httpClient.GetAsync("api/Services/TopupTransfer" + data);

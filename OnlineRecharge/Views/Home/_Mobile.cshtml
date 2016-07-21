@@ -1,10 +1,10 @@
 ﻿
-<div class="row gutter24">
+<div class="row gutter24" ng-controller="SeviceProviderController">
     <div class="col-md-4">
-        <div class="recharge-block-wrap" ng-controller="SeviceProviderController">
+        <div class="recharge-block-wrap" >
             <div class="recharge-block">
                 <h3 translate="RechargeCaption"> </h3>
-                <div class="radio">
+                <div class="radio" ng-init="rechargeType='Prepaid'">
                     <input id="Prepaid" type="radio" name="gender" value="Prepaid" ng-model="rechargeType" >
                     <label for="Prepaid" translate="Prepaid"></label>
                     <input id="Postpaid" type="radio" name="gender" value="Postpaid" ng-model="rechargeType">
@@ -20,7 +20,7 @@
                 <div class="form-group">
                     <label translate="Operator"></label>
                     <select class="form-control" ng-model="operatorCode" ng-options="s.Code as s.Name for s in serviceProviders track by s.Id" 
-                         ng-change="GetValue()" ng-click="GetServices()"  >
+                         ng-change="GetValue();GetServices();">
                         <option value="" translate="ServiceProviderDefaultLabel"></option>  
                     </select>
                 </div>
@@ -37,46 +37,53 @@
             </div>
         </div>
     </div>
-    <div class="col-md-8">
+    <div class="col-md-8"  ng-show="rechargeType == 'Vochers'">
         <div class="offer-list-blk">
             <div class="bigContaner-plans">
-                <div class="topbar">
-                    <ul>
-                        <li class="active"><a href="#">Offers</a></li>
-                        <li><a href="#">Top Up</a></li>
-                        <li><a href="#">Data Card</a></li>
-                    </ul>
-                </div>
                 <div class="offeres-table">
-                    <table class="table">
+                    <table class="table table-head">
                         <thead>
-                        <th width="150">TalkTime</th>
-                        <th width="120">Validity</th>
+                        <th width="140">Provider Name</th>
                         <th>Description</th>
-                        <th width="120">Price</th>
+                        <th width="140">offer</th>
+                        <th width="120">Amount</th>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>15-TT + 450 MB 3G/4G Data</td>
-                                <td>14 Days</td>
-                                <td>U Medium : 300 MB Data + 150 MB Night Data ( 12 am to 6 am) ; Call 3 local Vodafone buddies 20p/min; Talktime Rs.15; Unlimited music downloads for 60 days Option of 60MB data loan. T&C Apply</td>
-                                <td>
-                                    <a class="price-btn" href="#">2 kd</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>15-TT + 450 MB 3G/4G Data</td>
-                                <td>28 Days</td>
-                                <td>U Medium : 300 MB Data + 150 MB Night Data ( 12 am to 6 am) ; Call 3 local Vodafone buddies 20p/min; Talktime Rs.15; Unlimited music downloads for 60 days Option of 60MB data loan. T&C Apply</td>
-                                <td>
-                                    <a class="price-btn" href="#">5 kd</a>
-                                </td>
-                            </tr>
-                        </tbody>
                     </table>
+                    <div class="scroll-table">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td width="140"><img src="~/Content/img/Operators/viva.png" alt="viva" class="oprator-logo"></td>
+                                    <td>Medium : 300 MB Data + 150 MB Night Data ( 12 am to 6 am) ; Call 3 local Vodafone.</td>
+                                    <td width="140">15-TT + 450 MB 3G/4G Data</td>
+                                    <td width="120">
+                                        <a class="price-btn" href="#">2 kd</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="140"><img src="~/Content/img/Operators/ooreedo.png" alt="viva" class="oprator-logo"></td>
+                                    <td>Medium : 300 MB Data + 150 MB Night Data ( 12 am to 6 am) ; Call 3 local Vodafone.</td>
+                                    <td width="140">15-TT + 450 MB 3G/4G Data</td>
+                                    <td width="120">
+                                        <a class="price-btn" href="#">5 kd</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    <div class="col-md-8" ng-show="rechargeType == 'Prepaid' || rechargeType == 'Postpaid'">
+        <div class="offer-list-blk">
+            <div class="slider" ng-init="sliderAuto()" ng-controller="sliderCtrl">
+                <img ng-repeat="slide in slides" class="slide slide-animation nonDraggableImage"
+                     ng-swipe-right="nextSlide()" ng-swipe-left="prevSlide()"
+                     ng-hide="!isCurrentSlideIndex($index)" ng-src="{{slide.image}}">
+                <a class="arrow prev" href="javascript:void(0)" ng-click="nextSlide()"></a>
+                <a class="arrow next" href="javascript:void(0)" ng-click="prevSlide()"></a>
+            </div>
+        </div>
+    </div>
 </div>
-
