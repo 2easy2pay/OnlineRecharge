@@ -12,6 +12,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using OnlineRecharge.Models.Helpers;
 using Newtonsoft.Json;
+using System.Net;
 
 namespace OnlineRecharge.Controllers
 {
@@ -38,117 +39,85 @@ namespace OnlineRecharge.Controllers
             return View();
         }
 
-        public ActionResult Mobile()
+        [HttpPost]
+        public async Task<JsonResult> GetAllVouchers()
         {
-            try
-            {
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
-            return View("_Mobile");
+            var resp = await this.GetAllOperatorVouchers();
+            return this.Json(resp, JsonRequestBehavior.AllowGet);
         }
-
-        public ActionResult PaymentOptions()
-        {
-            try
-            {
-
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
-            return View("_PaymentOptions");
-        }
-
-        public ActionResult Result()
-        {
-            try
-            {
-
-                //APIProvider provider = new APIProvider();
-                //var model = provider.TopupTransfer();
-                var result=this.TopupTransfer();
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
-            return View("_Result");
-        }
-
         #endregion
 
-        #region Helping Methods
-        public JsonResult GetServiceProviders()
-        {
-            List<ServiceProviders> model = new List<ServiceProviders>();
-            try
-            {
-                model = context.ServiceProiders.ToList();
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
-            return this.Json(model, JsonRequestBehavior.AllowGet);
-        }
+        #region Recharge API Service Methods
 
         [HttpPost]
-        public async Task GetService()
+        public async Task<List<VoucherDetailsModel>> GetAllOperatorVouchers()
         {
             try
             {
-                string rechargeType = Request.Form["rechargeType"];
-                string operatorCode = Request.Form["operatorCode"];
-                if(rechargeType== "Vochers")
+                List<VoucherDetailsModel> vouchers = new List<VoucherDetailsModel>();
+                using (var client = new HttpClient())
                 {
-                    using (var client = new HttpClient())
+
+                    #region login and get token
+                    var logindata = string.Format("grant_type=password&username={0}&password={1}", USERNAME, PASSWORD);//LOGIN DATA
+
+                    var url = BASEADDRESS + "token";
+
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
+                    request.Content = new StringContent(logindata, Encoding.UTF8, "application/x-www-form-urlencoded");
+
+                    var resp = await client.PostAsync(url, request.Content);
+                    Token token = new Token();
+                    if (resp.IsSuccessStatusCode)
                     {
+                        token = await resp.Content.ReadAsAsync<Token>();
+                    }
+                    #endregion login and get token
 
-                        #region login and get token
-                        var logindata = string.Format("grant_type=password&username={0}&password={1}", USERNAME, PASSWORD);//LOGIN DATA
+                    using (var httpClient = new HttpClient())
+                    {
+                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token.token_type, token.access_token);
+                        httpClient.BaseAddress = new Uri(BASEADDRESS);
 
-                        var url = BASEADDRESS + "token";
-
-                        client.DefaultRequestHeaders.Accept.Clear();
-                        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
-                        request.Content = new StringContent(logindata, Encoding.UTF8, "application/x-www-form-urlencoded");
-
-                        var resp = await client.PostAsync(url, request.Content);
-                        Token token = new Token();
-                        if (resp.IsSuccessStatusCode)
+                        // New code:
+                        HttpResponseMessage response = await httpClient.GetAsync("api/Services/GetServiceList");
+                        if (response.IsSuccessStatusCode)
                         {
-                            token = await resp.Content.ReadAsAsync<Token>();
-                        }
-                        #endregion login and get token
+                            var result = await response.Content.ReadAsAsync<List<Service>>();
 
-                        using (var httpClient = new HttpClient())
-                        {
-                            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token.token_type, token.access_token);
-                            httpClient.BaseAddress = new Uri(BASEADDRESS);
+                            List<Service> operators = result.Where(x => x.OperatorType == "EZ" || x.OperatorType == "VV" || x.OperatorType == "XP").ToList();
 
-                            // New code:
-                            HttpResponseMessage response = await httpClient.GetAsync("api/Services/GetServiceList");
-                            if (response.IsSuccessStatusCode)
+                            foreach (var item in operators)
                             {
-                                var result = await response.Content.ReadAsAsync<List<Service>>();
-
-                                var services = result.Where(x => x.OperatorType.Equals(operatorCode, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+                                foreach (var card in item.DenomCollection)
+                                {
+                                    VoucherDetailsModel model = new VoucherDetailsModel();
+                                    if (item.OperatorType == "EZ")
+                                    {
+                                        model.ImageURL = "/Content/img/Operators/zain.png";
+                                    }
+                                    else if (item.OperatorType == "VV")
+                                    {
+                                        model.ImageURL = "/Content/img/Operators/viva.png";
+                                    }
+                                    else if (item.OperatorType == "XP")
+                                    {
+                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                    }
+                                    model.Amount = card.Denom;
+                                    model.OperatorCode = item.OperatorType;
+                                    vouchers.Add(model);
+                                }
                             }
 
                         }
+
                     }
                 }
-               
+                return vouchers;
             }
             catch (Exception ex)
             {
@@ -158,6 +127,8 @@ namespace OnlineRecharge.Controllers
 
             
         }
+
+
         [HttpPost]
         public async Task<bool> TopupTransfer()
         {
@@ -201,7 +172,7 @@ namespace OnlineRecharge.Controllers
                         //{
                         //    //MessageBox.Show(response.ReasonPhrase);
                         //}
-                       // return (await response.Content.ReadAsAsync<TopupTransfer>());
+                        // return (await response.Content.ReadAsAsync<TopupTransfer>());
 
                     }
                 }
@@ -213,6 +184,30 @@ namespace OnlineRecharge.Controllers
                 throw ex;
             }
         }
+        #endregion
+
+        #region DataAccess Methods
+        public JsonResult GetServiceProviders()
+        {
+            List<ServiceProviders> model = new List<ServiceProviders>();
+            try
+            {
+                model = context.ServiceProiders.ToList();
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            return this.Json(model, JsonRequestBehavior.AllowGet);
+        }
+        #endregion
+
+        #region Helping Methods
+
+
+       
+      
 
         [HttpPost]
         public async Task<TopupValidation> TopupValidation()
@@ -393,7 +388,7 @@ namespace OnlineRecharge.Controllers
         }
         #endregion
 
-            #region Test Api Service
+        #region Test Api Service
         private static async Task TestWebApiAllServices()
         {
 
@@ -673,7 +668,6 @@ namespace OnlineRecharge.Controllers
 
         }
         #endregion
-
 
     }
 }

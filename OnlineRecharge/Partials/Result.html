@@ -1,0 +1,54 @@
+﻿<div class="row" ng-controller="rechargeResultController">
+    <div class="col-md-8">
+        <div class="pay-details">
+            <div class="headr clearfix">
+                <div class="pull-left">
+                    <div class="img-notify success"></div>
+                </div>
+                <div class="headr-content">
+                    Payment of 5 kd Received bt 2easy2pay <br>Your Transaction is successful!
+                </div>
+            </div>
+            <div class="payContent">
+                <div class="title">Payment Details</div>
+                <table class="table payTable">
+                    <tbody>
+                        <tr>
+                            <td width="10%">
+                                <div class="operator-img"><img src="assets/img/Operators/viva.png" alt=""></div>
+                            </td>
+                            <td>
+                                <div class="pay-describe">
+                                    Talktime Recharge of viva mobile <br>By : Viva
+                                </div>
+                            </td>
+                            <td width="10%" class="text-right"><b>4 KD</b></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="hidden">
+            <div class="payment-selection">
+                <div class="order-summery">
+                    <h3 translate="PaymentSummary"></h3>
+                    <div class="line"></div>
+                    <div class="pay-summery-list">
+                        <span translate="PaymentSummary_PaymentID"></span> {{paymentID}}
+                    </div>
+                    <div class="pay-summery-list">
+                        <span translate="PaymentSummary_TransactionID"></span> {{tranID}}
+                    </div>
+                    <div class="pay-summery-list">
+                        <span translate="PaymentSummary_TrackID"></span> {{trackID}}
+                    </div>
+                    <span class="status success">
+                        {{result}}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

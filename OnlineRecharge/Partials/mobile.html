@@ -1,27 +1,27 @@
 ﻿
 <div class="row gutter24">
     <div class="col-md-4">
-        <div class="recharge-block-wrap" >
+        <div class="recharge-block-wrap">
             <div class="recharge-block">
                 <h3 translate="RechargeCaption"> </h3>
                 <div class="radio" ng-init="rechargeType='Prepaid'">
-                    <input id="Prepaid" type="radio" name="gender" value="Prepaid" ng-model="rechargeType" >
+                    <input id="Prepaid" type="radio" name="gender" value="Prepaid" ng-model="rechargeType">
                     <label for="Prepaid" translate="Prepaid"></label>
                     <input id="Postpaid" type="radio" name="gender" value="Postpaid" ng-model="rechargeType">
                     <label for="Postpaid" translate="Postpaid"></label>
                     <input id="Vochers" type="radio" name="gender" value="Vochers" ng-model="rechargeType">
                     <label for="Vochers" translate="Vochers"></label>
                 </div>
-               
+
                 <div class="form-group">
                     <label translate="MobileNumber"></label>
-                    <input type="text" international-phone-number only-countries="kw" default-country="kw"  ng-model="mobileNumber">
+                    <input type="text" international-phone-number only-countries="kw" default-country="kw" ng-model="mobileNumber">
                 </div>
                 <div class="form-group">
                     <label translate="Operator"></label>
-                    <select class="form-control" ng-model="operatorCode" ng-options="s.Code as s.Name for s in serviceProviders track by s.Id" 
-                         ng-change="GetValue();GetServices();">
-                        <option value="" translate="ServiceProviderDefaultLabel"></option>  
+                    <select class="form-control" ng-model="operatorCode" ng-options="s.Code as s.Name for s in serviceProviders track by s.Id"
+                            ng-change="GetValue();">
+                       
                     </select>
                 </div>
                 <div class="form-group">
@@ -37,35 +37,29 @@
             </div>
         </div>
     </div>
-    <div class="col-md-8"  ng-show="rechargeType == 'Vochers'">
+    <div class="col-md-8" ng-show="rechargeType == 'Vochers'">
         <div class="offer-list-blk">
             <div class="bigContaner-plans">
                 <div class="offeres-table">
                     <table class="table table-head">
                         <thead>
-                        <th width="140">Provider Name</th>
-                        <th>Description</th>
-                        <th width="140">offer</th>
-                        <th width="120">Amount</th>
+                        <th width="140" translate="VoucherDetails_TableHeading_Operator"></th>
+                         <th translate="VoucherDetails_TableHeading_ServiceType">
+                         </th>
+                        <th translate="VoucherDetails_TableHeading_Offer"></th>
+                        <th width="120" translate="VoucherDetails_TableHeading_Amount"></th>
                         </thead>
                     </table>
                     <div class="scroll-table">
                         <table class="table">
                             <tbody>
-                                <tr>
-                                    <td width="140"><img src="~/Content/img/Operators/viva.png" alt="viva" class="oprator-logo"></td>
-                                    <td>Medium : 300 MB Data + 150 MB Night Data ( 12 am to 6 am) ; Call 3 local Vodafone.</td>
-                                    <td width="140">15-TT + 450 MB 3G/4G Data</td>
+                                <tr ng-repeat="voucher in AllVouchers| filter: operatorCode">
+                                    <td width="140">
+                                        <img ng-src="{{voucher.ImageURL}}" class="oprator-logo" /></td>
+                                   <td translate="VoucherDetails_TableStaticContent_ServiceType"></td>
+                                    <td translate="VoucherDetails_TableStaticContent_Offer"></td>
                                     <td width="120">
-                                        <a class="price-btn" href="#">2 kd</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="140"><img src="~/Content/img/Operators/ooreedo.png" alt="viva" class="oprator-logo"></td>
-                                    <td>Medium : 300 MB Data + 150 MB Night Data ( 12 am to 6 am) ; Call 3 local Vodafone.</td>
-                                    <td width="140">15-TT + 450 MB 3G/4G Data</td>
-                                    <td width="120">
-                                        <a class="price-btn" href="#">5 kd</a>
+                                        <a class="price-btn" href="#">{{voucher.Amount}} KD</a>
                                     </td>
                                 </tr>
                             </tbody>

@@ -30,5 +30,11 @@
   "PaymentSummary": "Payment Summary",
   "PaymentSummary_PaymentID": "PaymentID :",
   "PaymentSummary_TransactionID": "TransactionID :",
-  "PaymentSummary_TrackID": "TrackID :"
+  "PaymentSummary_TrackID": "TrackID :",
+  "VoucherDetails_TableHeading_Operator": "Operator",
+  "VoucherDetails_TableHeading_Amount": "Amount",
+  "VoucherDetails_TableHeading_ServiceType": "ServiceType",
+  "VoucherDetails_TableHeading_Offer": "Offer",
+  "VoucherDetails_TableStaticContent_ServiceType": "Voucher",
+  "VoucherDetails_TableStaticContent_Offer": "N/A"
 }

@@ -44,7 +44,8 @@
                             <li class="dropdown-myaccount">
                                 <a href="#" class="my-account"><i></i><span>My Account</span></a>
                                 <ul class="dropdown-menu">
-                                    <li><a ng-click="clickToOpen()"><i class="icon-logIn"></i> Log In</a></li>
+                                    <li ng-hide="isLoggedIn"><a ng-click="clickToOpen()"><i class="icon-logIn"></i> Log In</a></li>
+                                    <li ng-hide="!isLoggedIn"><a ng-click="Logout()"><i class="icon-logIn"></i> Log Out</a></li>
                                     <li><a href="#"><i class="icon-wishlist"></i> Wishlist</a></li>
                                 </ul>
                             </li>
@@ -63,11 +64,11 @@
                             <div class="login-inside-form active" id="login-from">
                                 <div class="form-grp">
                                     <label for="MobileNo">Mobile Number</label>
-                                    <input type="text" class="form-control" placeholder="Enter your mobile number">
+                                    <input type="text" ng-model="username" class="form-control" placeholder="Enter your mobile number">
                                 </div>
                                 <div class="form-grp">
                                     <label for="Password">Password</label>
-                                    <input type="password" class="form-control" placeholder="Enter your mobile Password">
+                                    <input type="password" ng-model="password" class="form-control" placeholder="Enter your mobile Password">
                                 </div>
                                 <div class="check-wrap">
                                     <div class="checkbox">
@@ -79,7 +80,8 @@
                                     </div>
                                 </div>
                                 <div class="form-grp">
-                                    <button id="btnLogin" tabindex="4" class="btn login-button" type="submit" name="btnLogin">Log in</button>
+                                    @*<button id="btnLogin" ng-click="CallLogin();" tabindex="4" class="btn login-button" type="submit" name="btnLogin">Log in</button>*@
+                                    <button id="btnLogin" tabindex="4" class="btn login-button" type="submit" name="btnLogin" ng-click="CallLogin();">Log in <img style="position: absolute;right: 82px;top: 10px;" width="26px" ng-show="loadingLogin" src="/Content/img/spinner.gif" /> </button>
                                 </div>
                             </div>
                         </script>
@@ -325,8 +327,11 @@
     <script src="~/scripts/Utilities/angular-translate-storage-cookie.js"></script>
     <script src="~/scripts/Utilities/angular-translate-handler-log.js"></script>
     <script src="~/scripts/Utilities/angular-translate-loader-static-files.js"></script>
+    <script src="~/scripts/Utilities/angular-local-storage.js"></script>
     <script src="~/App/app.js"></script>
-    <script src="~/scripts/Utilities/DataService.js"></script>
+
+    <script src="~/App/Common/factory.js"></script>
+    @*<script src="~/App/Controllers/LoginCtrl.js"></script>*@
 
     @RenderSection("scripts", required: false)
     <script type="text/javascript">

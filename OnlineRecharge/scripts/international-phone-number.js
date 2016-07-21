@@ -104,7 +104,6 @@
           ctrl.$validators.internationalPhoneNumber = function (value) {
               var errorMsg = $("#error-msg"),
                validMsg = $("#valid-msg");
-
               var selectedCountry;
               selectedCountry = element.intlTelInput('getSelectedCountryData');
               if (!value || (selectedCountry && selectedCountry.dialCode === value)) {
