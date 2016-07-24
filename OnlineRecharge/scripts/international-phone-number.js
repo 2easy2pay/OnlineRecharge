@@ -33,8 +33,15 @@
               }, 0);
             }
           }
-          read = function() {
-            return ctrl.$setViewValue(element.val());
+          read = function () {
+              var value = element.val();
+              var intlNumber = element.intlTelInput("getNumber",intlTelInputUtils.numberFormat.NATIONAL);
+              if (intlNumber) {
+                  var countryData=element.intlTelInput("getSelectedCountryData");
+                  value =countryData.dialCode+ intlNumber;
+              }
+              debugger;
+              return ctrl.$setViewValue(value);
           };
           handleWhatsSupposedToBeAnArray = function(value) {
             if (value instanceof Array) {
@@ -60,7 +67,7 @@
               return options[key] = option;
             }
           });
-          watchOnce = scope.$watch('ngModel', function(newValue) {
+          watchOnce = scope.$watch('ngModel', function (newValue) {
             return scope.$$postDigest(function() {
               if (newValue !== null && newValue !== void 0 && newValue.length > 0) {
                 if (newValue[0] !== '+') {
@@ -75,10 +82,16 @@
               return watchOnce();
             });
           });
-          scope.$watch('country', function(newValue) {
+          scope.$watch('country', function (newValue) {
+              debugger;
             if (newValue !== null && newValue !== void 0 && newValue !== '') {
               return element.intlTelInput("selectCountry", newValue);
             }
+          });
+          scope.$watch('sn_number', function (v) {
+              debugger;
+              alert(v);
+              $scope.id = v;
           });
           ctrl.$formatters.push(function(value) {
             if (!value) {
@@ -122,8 +135,11 @@
                   return false;
               }
           };
-          element.on('blur keyup change', function(event) {
+          element.on('blur keyup change', function (event) {
             return scope.$apply(read);
+          });
+          element.on("countrychange", function (e, countryData) {
+              debugger;
           });
           return element.on('$destroy', function() {
             element.intlTelInput('destroy');

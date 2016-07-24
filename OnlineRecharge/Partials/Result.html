@@ -2,27 +2,27 @@
     <div class="col-md-8">
         <div class="pay-details">
             <div class="headr clearfix">
-                <div class="pull-left">
+                <div ng-show="ResponseDetails.Response=='S'" class="pull-left">
                     <div class="img-notify success"></div>
                 </div>
                 <div class="headr-content">
-                    Payment of 5 kd Received bt 2easy2pay <br>Your Transaction is successful!
+                    {{ 'Result_RechargeSuccess_Caption1' | translate }} {{ResponseDetails.Amount}} {{ 'Result_RechargeSuccess_Caption2' | translate }}<br>{{ 'Result_RechargeSuccess_Caption3' | translate }}
                 </div>
             </div>
             <div class="payContent">
-                <div class="title">Payment Details</div>
+                <div class="title" translate="Result_RechargeSuccess_Details_Heading"></div>
                 <table class="table payTable">
                     <tbody>
                         <tr>
                             <td width="10%">
-                                <div class="operator-img"><img src="assets/img/Operators/viva.png" alt=""></div>
+                                <div class="operator-img"><img ng-src="{{ResponseDetails.ImageURL}}" alt=""></div>
                             </td>
                             <td>
                                 <div class="pay-describe">
-                                    Talktime Recharge of viva mobile <br>By : Viva
+                                    <br>{{'Result_RechargeSuccess_Details_By_Label' | translate}}: {{ResponseDetails.OperatorName}}
                                 </div>
                             </td>
-                            <td width="10%" class="text-right"><b>4 KD</b></td>
+                            <td width="10%" class="text-right"><b>{{ResponseDetails.Amount}} {{'GeneralLabels_KD' | translate}}</b></td>
                         </tr>
                     </tbody>
                 </table>

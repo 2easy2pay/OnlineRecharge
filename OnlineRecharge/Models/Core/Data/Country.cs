@@ -5,16 +5,14 @@ using System.Web;
 
 namespace OnlineRecharge.Models.Core.Data
 {
-    public class ServiceProviders : BaseEntity
+    public class Country : BaseEntity
     {
-        public ServiceProviders()
+        public Country()
         {
 
         }
-
+      
         public string Name { get; set; }
-        public string Code { get; set; }
-
-        public NationalRecharges NationalRecharge { get; set; }
     }
+    
 }

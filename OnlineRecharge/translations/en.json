@@ -36,5 +36,14 @@
   "VoucherDetails_TableHeading_ServiceType": "ServiceType",
   "VoucherDetails_TableHeading_Offer": "Offer",
   "VoucherDetails_TableStaticContent_ServiceType": "Voucher",
-  "VoucherDetails_TableStaticContent_Offer": "N/A"
+  "VoucherDetails_TableStaticContent_Offer": "N/A",
+  "Validation_LocalRechargeForm_MobileNumber_Required": "Please enter mobilenumber!",
+  "Result_RechargeSuccess_Caption1": "Payment of ",
+  "Result_RechargeSuccess_Caption2": " KD Received bt 2easy2pay.",
+  "Result_RechargeSuccess_Caption3": "Your Transaction is successful!",
+  "Result_RechargeSuccess_Details_Heading": "Recharge Details",
+  "Result_RechargeSuccess_Details_By_Label": "By ",
+
+   "GeneralLabels_KD": "KD"
+
 }

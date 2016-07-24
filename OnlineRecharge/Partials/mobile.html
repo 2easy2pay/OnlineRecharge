@@ -2,39 +2,41 @@
 <div class="row gutter24">
     <div class="col-md-4">
         <div class="recharge-block-wrap">
-            <div class="recharge-block">
-                <h3 translate="RechargeCaption"> </h3>
-                <div class="radio" ng-init="rechargeType='Prepaid'">
-                    <input id="Prepaid" type="radio" name="gender" value="Prepaid" ng-model="rechargeType">
-                    <label for="Prepaid" translate="Prepaid"></label>
-                    <input id="Postpaid" type="radio" name="gender" value="Postpaid" ng-model="rechargeType">
-                    <label for="Postpaid" translate="Postpaid"></label>
-                    <input id="Vochers" type="radio" name="gender" value="Vochers" ng-model="rechargeType">
-                    <label for="Vochers" translate="Vochers"></label>
-                </div>
+                <div class="recharge-block">
+                    <h3 translate="RechargeCaption"> </h3>
+                    <div class="radio" ng-init="rechargeType='Prepaid'">
+                        <input id="Prepaid" type="radio" name="gender" value="Prepaid" ng-model="rechargeType">
+                        <label for="Prepaid" translate="Prepaid"></label>
+                        <input id="Postpaid" type="radio" name="gender" value="Postpaid" ng-model="rechargeType">
+                        <label for="Postpaid" translate="Postpaid"></label>
+                        <input id="Vochers" type="radio" name="gender" value="Vochers" ng-model="rechargeType">
+                        <label for="Vochers" translate="Vochers"></label>
+                    </div>
 
-                <div class="form-group">
-                    <label translate="MobileNumber"></label>
-                    <input type="text" international-phone-number only-countries="kw" default-country="kw" ng-model="mobileNumber">
-                </div>
-                <div class="form-group">
-                    <label translate="Operator"></label>
-                    <select class="form-control" ng-model="operatorCode" ng-options="s.Code as s.Name for s in serviceProviders track by s.Id"
-                            ng-change="GetValue();">
+                    <div class="form-group">
+                        <label translate="MobileNumber"></label>
+                        <input id="MobileNumber" name="MobileNumber" type="text" international-phone-number only-countries="kw" default-country="kw" ng-model="mobileNumber">
+                        <!--<p ng-show="rechargeForm.mobileNumber.$error.required" translate="Validation_LocalRechargeForm_MobileNumber_Required"> </p>-->
+
+                    </div>
+                    <div class="form-group">
+                        <label translate="Operator"></label>
+                        <select class="form-control" ng-model="operatorCode"
+                                ng-options="s.Code as s.Name for s in serviceProviders"></select>
                        
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="#" translate="RechargeAmount"></label>
-                    <div class="input-grp">
-                        <input type="text" ng-model="amount" class="form-control" placeholder="{{ 'AmountPlaceHolder' | translate }}">
-                        <a href="#" class="browse-plan" translate="BrowsePlan"></a>
+                    </div>
+                    <div class="form-group">
+                        <label for="#" translate="RechargeAmount"></label>
+                        <div class="input-grp">
+                            <input type="text" ng-disabled="rechargeType == 'Vochers'" ng-model="amount" class="form-control" placeholder="{{ 'AmountPlaceHolder' | translate }}">
+                            <!--<a href="#" class="browse-plan" translate="BrowsePlan"></a>-->
+                        </div>
+                    </div>
+                    <div class="padding-top-4">
+                        <input type="submit" class="btn" value="{{ 'ProceedToRechargeButton' | translate }}" ng-click="redirect()">
                     </div>
                 </div>
-                <div class="padding-top-4">
-                    <input type="submit" class="btn" value="{{ 'ProceedToRechargeButton' | translate }}" ng-click="redirect()">
-                </div>
-            </div>
+            </form>
         </div>
     </div>
     <div class="col-md-8" ng-show="rechargeType == 'Vochers'">

@@ -21,8 +21,12 @@
                 <div class="container">
                     <div class="pull-right">
                         <div class="lang-dropdown" ng-controller="LanguageSwitchController">
-                            <button ng-show="lang == 'en'" ng-click="changeLanguage('ar')" translate="ArabicLanguageExtension"></button>
-                            <button ng-show="lang == 'ar'" ng-click="changeLanguage('en')" translate="EnglishLanguageExtension"></button>
+                            <a ng-show="lang == 'en'" ng-click="changeLanguage('ar')" >
+<img src="~/Content/img/flags/kw.png" />{{ 'ArabicLanguageExtension' | translate }}</a>
+                            <a ng-show="lang == 'ar'" ng-click="changeLanguage('en')" >
+                                <img src="~/Content/img/flags/kw.png" />{{ 'EnglishLanguageExtension' | translate }}
+                            </a>
+                            @*<button ng-show="lang == 'ar'" ng-click="changeLanguage('en')" translate="EnglishLanguageExtension"></button>*@
                         </div>
                         <ul>
                             <li><a href="#">Manufractures</a></li>
@@ -60,8 +64,8 @@
                                 <div ng-include="currentTab"></div>
                             </div>
                         </script>
-                        <script type="text/ng-template" id="innerLogin.html">
-                            <div class="login-inside-form active" id="login-from">
+                        <script type="text/ng-template" id="innerLogin.html" >
+                            <div class="login-inside-form active" id="login-from" controller="PopUpCtrl">
                                 <div class="form-grp">
                                     <label for="MobileNo">Mobile Number</label>
                                     <input type="text" ng-model="username" class="form-control" placeholder="Enter your mobile number">

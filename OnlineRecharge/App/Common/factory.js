@@ -41,7 +41,7 @@
                     $scope.CallLogin = function () {
                         debugger;
                         $scope.loadingLogin = true;
-                        $.post("http://localhost:50750/api/loginctrl/login", { username: '94950708', password: 'test@16!' }, function (result) {
+                        $.post("http://localhost:50750/api/loginctrl/login", { username: "97219597", password:"rashid@16!" }, function (result) {
                             $scope.authenticated = result.token;
                             $scope.success = result.success;
                             $window.sessionStorage.token = result.token;

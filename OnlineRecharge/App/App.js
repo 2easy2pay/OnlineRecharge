@@ -3,27 +3,27 @@ var app = angular.module('Multilingual', ['pascalprecht.translate',
    'ngCookies', 'ngRoute', 'internationalPhoneNumber', 'ngDialog', 'slider', 'LocalStorageModule']);
 
 //Configuration Section
-app.config(['$routeProvider','$locationProvider',
-function ($routeProvider,$locationProvider) {
-           $routeProvider.
-           when('/mobile', {
-               templateUrl: '/Partials/Mobile.html',
-               controller: 'localRechargeController'
-           })
-           //.when('/home', {
-           //    templateUrl: '/Partials/Mobile.html',
-           //    controller: 'localRechargeController'
-           //})
-           .when('/paymentOptions', {
-               templateUrl: 'Partials/PaymentOptions.html',
-               controller: 'paymentPageController'
-           })
-           .when('/result', {
-               controller: "rechargeResultController",
-               templateUrl: 'Partials/Result.html'
-           })
-          .otherwise({ redirectTo: '/mobile' });
-   
+app.config(['$routeProvider', '$locationProvider',
+function ($routeProvider, $locationProvider) {
+    $routeProvider.
+    when('/mobile', {
+        templateUrl: '/Partials/Mobile.html',
+        controller: 'localRechargeController'
+    })
+    .when('/paymentOptions', {
+        templateUrl: 'Partials/PaymentOptions.html',
+        controller: 'paymentPageController'
+    })
+    .when('/result', {
+        controller: "rechargeResultController",
+        templateUrl: 'Partials/Result.html'
+    })
+    .when('/international', {
+       templateUrl: '/Partials/International.html',
+       controller: 'InternationalRechargeController'
+    })
+   .otherwise({ redirectTo: '/mobile' });
+
 }]);
 app.config(function (localStorageServiceProvider) {
     localStorageServiceProvider
@@ -116,50 +116,7 @@ function ($scope, $rootScope, $translate,authCheck) {
       });
   }]);
 
-//app.controller('PopUpCtrl', ['$scope','ngDialog',function ($scope, ngDialog) {
-//    $scope.clickToOpen = function () {
-//        ngDialog.open({
-//            template: 'login.html',
-//            className: 'ngdialog-theme-default login-popup',
-//            controller: ['$scope',  function ($scope) {
-//                // controller logic
-//                $scope.tabs = [{
-//                    title: 'Login',
-//                    url: 'innerLogin.html'
-//                }, {
-//                    title: 'Register',
-//                    url: 'register.html'
-//                }];
 
-//                $scope.currentTab = 'innerLogin.html';
-
-//                $scope.loginTabClick = function (tab) {
-//                    $scope.currentTab = tab.url;
-//                }
-
-//                $scope.isActiveTab = function (tabUrl) {
-//                    return tabUrl == $scope.currentTab;
-//                }
-
-//                $scope.signin = function (user) {
-//                    $http.post('api/accounts/signin', user)
-//                        .success(function (data, status, headers, config) {
-//                            user.authenticated = true;
-//                            $rootScope.user = user;
-//                            $location.path('/');
-//                        })
-//                        .error(function (data, status, headers, config) {
-//                            user.authenticated = false;
-//                            $rootScope.user = {};
-//                        });
-//                };
-//            }]
-//        });
-//    };
-
-   
-
-//}]);'$scope', 'ngDialog', '$window', '$rootScope', 'authCheck'
 app.controller('PopUpCtrl', ['$scope', 'ngDialog', '$rootScope', 'authCheck', '$window', function ($scope, ngDialog, $rootScope, authCheck, $window) {
     //alert($scope.username);
     $scope.clickToOpen = function () {
@@ -176,6 +133,7 @@ app.controller('PopUpCtrl', ['$scope', 'ngDialog', '$rootScope', 'authCheck', '$
 app.controller('localRechargeController', ['$scope', '$http', 'localStorageService',
     function ($scope, $http, localStorageService) {
         $scope.redirect = function () {
+
             // use $.param jQuery function to serialize data from JSON 
             var data = $.param({
                 rechargeType: $scope.rechargeType,
@@ -183,14 +141,16 @@ app.controller('localRechargeController', ['$scope', '$http', 'localStorageServi
                 mobileNumber: $scope.mobileNumber,
                 amount: $scope.amount
             });
+            debugger;
             var paramObj = {
+                serviceType:'national',
                 rechargeType: $scope.rechargeType,
                 operatorCode: $scope.operatorCode,
                 mobileNumber: $scope.mobileNumber,
                 amount: $scope.amount
             };
             debugger;
-            localStorageService.set('rechargeParams', paramObj);
+            localStorageService.set('nationalRechargeParams', paramObj);
             window.location = "#/paymentOptions";
             //var config = {
             //    headers: {
@@ -227,15 +187,6 @@ app.controller('localRechargeController', ['$scope', '$http', 'localStorageServi
        success(function (data) {
            $scope.AllVouchers = data;
        });
-
-
-        $scope.GetValue = function (operator) {
-            var operatorCode = $scope.operatorCode;
-            var OperatorName = $.grep($scope.serviceProviders, function (operator) {
-                return operator.Code == operatorCode;
-            })[0].Name;
-
-        }
 
         //$scope.SendData = function () {
         //    // use $.param jQuery function to serialize data from JSON 
@@ -289,11 +240,7 @@ app.controller('localRechargeController', ['$scope', '$http', 'localStorageServi
         }
     }]);
 app.controller('paymentPageController', ['$scope', '$http', '$location', 'localStorageService', 'authCheck', '$rootScope', function ($scope, $http, $location, localStorageService, authCheck, $rootScope) {
-    debugger;
-    if ($rootScope.isLoggedIn == false) {
-        authCheck.isUserLoggedIn();
-        return;
-    }
+  
     $scope.tabs = [{
         title: 'KNet',
         url: 'knet.html'
@@ -304,7 +251,7 @@ app.controller('paymentPageController', ['$scope', '$http', '$location', 'localS
         title: 'Wallet',
         url: 'wallet.html'
     }];
-    
+    $scope.RechargeParameter = localStorageService.get('nationalRechargeParams');
     $scope.currentTab = 'knet.html';
 
     $scope.onClickTab = function (tab) {
@@ -324,13 +271,13 @@ app.controller('paymentPageController', ['$scope', '$http', '$location', 'localS
     $scope.ProcessKnetPayment = function () {
         // use $.param jQuery function to serialize data from JSON 
         var data = $.param({
-            amount: 10,
-            contactNumber: '+96594950708',
-            email: 'vineeth@2easy2pay.com',
+            amount: $scope.RechargeParameter.amount,
+            contactNumber: "+" + $scope.RechargeParameter.mobileNumber,
+            email: 'info@2easy2pay.com',
             paymentType: 'knet',
             returnUrl: 'https://api.2easy2pay.com/web/knetresponse/rechargeWebResponse',
             errorUrl: 'https://api.2easy2pay.com/web/knetresponse/rechargeWebResponse',
-            Udf1: 10
+            Udf1: $scope.RechargeParameter.amount
         });
 
         var config = {
@@ -351,11 +298,11 @@ app.controller('paymentPageController', ['$scope', '$http', '$location', 'localS
             form.remove();
         });
     };
-    $scope.RechargeParameter = localStorageService.get('rechargeParams');
+    
 }]);
-app.controller('rechargeResultController', ['$scope', '$location', function ($scope, $location) {
+app.controller('rechargeResultController', ['$scope', '$location', 'localStorageService', '$http', function ($scope, $location, localStorageService, $http) {
     $scope.jobOffers = [];
-
+    var rechargeParams = localStorageService.get('nationalRechargeParams');
     function init() {
         var search= $location.search();
         $scope.paymentID = search.PaymentID;
@@ -363,17 +310,170 @@ app.controller('rechargeResultController', ['$scope', '$location', function ($sc
         $scope.trackID = search.TrackID;
         $scope.tranID = search.TranID;
         $scope.ref = search.Ref;
+        if (rechargeParams.serviceType == 'national' && rechargeParams.rechargeType == 'Prepaid') {
+            var data = $.param({
+                rechargeType:rechargeParams.rechargeType,
+                operatorCode: rechargeParams.operatorCode,
+                mobileNumber: rechargeParams.mobileNumber,
+                amount: rechargeParams.amount,
+                paymentID : $scope.paymentID,
+                result : $scope.result,
+                trackID : $scope.trackID,
+                tranID : $scope.tranID,
+                ref : $scope.ref
+            });
 
-        $http({
-            method: 'POST',
-            url: '/Home/GetAllVouchers'
-        }).
+            var config = {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+                }
+            }
+
+            $http.post('/Home/TranferNationalTopup', data, config)
+            .success(function (data, status, headers, config) {
+                $scope.APIResponse = data;
+            })
+            .error(function (data, status, header, config) {
+                $scope.ResponseDetails = "Data: " + data +
+                    "<hr />status: " + status +
+                    "<hr />headers: " + header +
+                    "<hr />config: " + config;
+            });
+            $http({
+                method: 'POST',
+                url: '/Home/TranferNationalTopup'
+            }).
       success(function (data) {
-          $scope.AllVouchers = data;
+          $scope.topupResponse = data;
       });
+        }
+        
     }
 
     init();
 }]);
 
+//International Recharge Controller
+app.controller('InternationalRechargeController', ['$scope', '$http', 'localStorageService',
+    function ($scope, $http, localStorageService) {
+        $scope.redirect = function () {
+            //Set the recharge parameter set from international recharge page.
+            var paramObj = {
+                rechargeScope: 'International',
+                rechargeType: $scope.rechargeType,
+                operatorCode: $scope.operatorCode,
+                mobileNumber: $scope.mobileNumber,
+                amount: $scope.amount,
+                country:$scope.country
+            };
+            debugger;
+            localStorageService.set('rechargeParams', paramObj);
+            window.location = "#/paymentOptions";
 
+        }
+       
+        //$http service for Getting the GetInternationalServiceProviders  
+        $scope.setOperater = function () {
+            debugger
+            alert($scope.selected);
+            if ($scope.selected != 'undefined' || $scope.selected != null) {
+
+                $http({
+                    method: 'GET',
+                    url: '/Home/GetInternationalServiceProviders',
+                    data: { Code: $scope.selected }
+                }).
+            success(function (data) {
+                $scope.serviceProviders = data;
+            });
+            }
+        }
+
+
+        $http({
+            method: 'POST',
+            url: '/Home/GetAllVouchers'
+        }).
+       success(function (data) {
+           $scope.AllVouchers = data;
+       });
+
+
+        $scope.GetValue = function (operator) {
+            var operatorCode = $scope.operatorCode;
+            var OperatorName = $.grep($scope.serviceProviders, function (operator) {
+                return operator.Code == operatorCode;
+            })[0].Name;
+
+        }
+
+        $scope.GetServices = function () {
+            var data = $.param({
+                rechargeType: $scope.rechargeType,
+                operatorCode: $scope.operatorCode,
+
+            });
+            var config = {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+                }
+            }
+
+            $http.post('/Home/GetService/', data, config)
+            .success(function (data, status, headers, config) {
+                $scope.services = data;
+            })
+            .error(function (data, status, header, config) {
+                $scope.ResponseDetails = "Data: " + data +
+                    "<hr />status: " + status +
+                    "<hr />headers: " + header +
+                    "<hr />config: " + config;
+            });
+        }
+    }]);
+
+
+//app.controller('PopUpCtrl', ['$scope','ngDialog',function ($scope, ngDialog) {
+//    $scope.clickToOpen = function () {
+//        ngDialog.open({
+//            template: 'login.html',
+//            className: 'ngdialog-theme-default login-popup',
+//            controller: ['$scope',  function ($scope) {
+//                // controller logic
+//                $scope.tabs = [{
+//                    title: 'Login',
+//                    url: 'innerLogin.html'
+//                }, {
+//                    title: 'Register',
+//                    url: 'register.html'
+//                }];
+
+//                $scope.currentTab = 'innerLogin.html';
+
+//                $scope.loginTabClick = function (tab) {
+//                    $scope.currentTab = tab.url;
+//                }
+
+//                $scope.isActiveTab = function (tabUrl) {
+//                    return tabUrl == $scope.currentTab;
+//                }
+
+//                $scope.signin = function (user) {
+//                    $http.post('api/accounts/signin', user)
+//                        .success(function (data, status, headers, config) {
+//                            user.authenticated = true;
+//                            $rootScope.user = user;
+//                            $location.path('/');
+//                        })
+//                        .error(function (data, status, headers, config) {
+//                            user.authenticated = false;
+//                            $rootScope.user = {};
+//                        });
+//                };
+//            }]
+//        });
+//    };
+
+
+
+//}]);'$scope', 'ngDialog', '$window', '$rootScope', 'authCheck'

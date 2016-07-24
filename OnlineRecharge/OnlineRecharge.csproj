@@ -180,6 +180,7 @@
     <Content Include="Content\img\sprite.png" />
     <Content Include="Content\img\subscribe-button.png" />
     <Content Include="Global.asax" />
+    <Content Include="Partials\International.html" />
     <Content Include="Partials\Mobile.html" />
     <Content Include="Partials\PaymentOptions.html" />
     <Content Include="Partials\Result.html" />
@@ -1008,14 +1009,44 @@
     <Compile Include="Migrations\201607131303245_ServiceProviderTableUpdated.Designer.cs">
       <DependentUpon>201607131303245_ServiceProviderTableUpdated.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201607220612092_CountryTableAdded.cs" />
+    <Compile Include="Migrations\201607220612092_CountryTableAdded.Designer.cs">
+      <DependentUpon>201607220612092_CountryTableAdded.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201607220615279_CountryCodeDropped.cs" />
+    <Compile Include="Migrations\201607220615279_CountryCodeDropped.Designer.cs">
+      <DependentUpon>201607220615279_CountryCodeDropped.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201607240832279_NationalRechargeTables.cs" />
+    <Compile Include="Migrations\201607240832279_NationalRechargeTables.Designer.cs">
+      <DependentUpon>201607240832279_NationalRechargeTables.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201607240922140_NationalRechargeTablesUpdatedWithCustomerID.cs" />
+    <Compile Include="Migrations\201607240922140_NationalRechargeTablesUpdatedWithCustomerID.Designer.cs">
+      <DependentUpon>201607240922140_NationalRechargeTablesUpdatedWithCustomerID.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201607240940501_childTableBaseFieldsDropped.cs" />
+    <Compile Include="Migrations\201607240940501_childTableBaseFieldsDropped.Designer.cs">
+      <DependentUpon>201607240940501_childTableBaseFieldsDropped.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Core\BaseEntity.cs" />
+    <Compile Include="Models\Core\Data\Country.cs" />
     <Compile Include="Models\Core\Data\LanguageDirections.cs" />
     <Compile Include="Models\Core\Data\LanguageFlagNames.cs" />
     <Compile Include="Models\Core\Data\Languages.cs" />
+    <Compile Include="Models\Core\Data\NationalRechargeAPIResponseDetails.cs" />
+    <Compile Include="Models\Core\Data\NationalRechargePaymentDetails.cs" />
+    <Compile Include="Models\Core\Data\NationalRecharges.cs" />
+    <Compile Include="Models\Core\Data\NationalRechargeTypes.cs" />
     <Compile Include="Models\Core\Data\ServiceProviders.cs" />
     <Compile Include="Models\Core\EFDbContext.cs" />
+    <Compile Include="Models\Core\Mapping\CountryMap.cs" />
     <Compile Include="Models\Core\Mapping\LanguageDirectionMap.cs" />
+    <Compile Include="Models\Core\Mapping\NationalRechargeAPIResponseDetailMap.cs" />
+    <Compile Include="Models\Core\Mapping\NationalRechargePaymentDetailMap.cs" />
+    <Compile Include="Models\Core\Mapping\NationalRechargeMap.cs" />
+    <Compile Include="Models\Core\Mapping\NationalRechargeTypeMap.cs" />
     <Compile Include="Models\Core\Mapping\LanguageFlagMap.cs" />
     <Compile Include="Models\Core\Mapping\LanguageMap.cs" />
     <Compile Include="Models\Core\Mapping\ServiceProviderMap.cs" />
@@ -1036,8 +1067,6 @@
     <Content Include="Service References\Application Insights\ConnectedService.json" />
     <Content Include="Content\img\Thumbs.db" />
     <Content Include="Views\Home\_Mobile.cshtml" />
-    <Content Include="Partials\_PaymentOptions.cshtml" />
-    <Content Include="Partials\_Result.cshtml" />
     <None Include="Properties\PublishProfiles\OnlineRecharge.pubxml" />
     <Content Include="scripts\version.json" />
     <Content Include="scripts\errors.json" />
@@ -1092,6 +1121,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201607131303245_ServiceProviderTableUpdated.resx">
       <DependentUpon>201607131303245_ServiceProviderTableUpdated.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607220612092_CountryTableAdded.resx">
+      <DependentUpon>201607220612092_CountryTableAdded.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607220615279_CountryCodeDropped.resx">
+      <DependentUpon>201607220615279_CountryCodeDropped.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607240832279_NationalRechargeTables.resx">
+      <DependentUpon>201607240832279_NationalRechargeTables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607240922140_NationalRechargeTablesUpdatedWithCustomerID.resx">
+      <DependentUpon>201607240922140_NationalRechargeTablesUpdatedWithCustomerID.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607240940501_childTableBaseFieldsDropped.resx">
+      <DependentUpon>201607240940501_childTableBaseFieldsDropped.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

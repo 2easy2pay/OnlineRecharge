@@ -18,6 +18,14 @@ namespace OnlineRecharge.Models.Core
 
         public virtual DbSet<ServiceProviders> ServiceProiders
         { get; set; }
+        public virtual DbSet<NationalRechargeTypes> NationalRechargeTypes
+        { get; set; }
+        public virtual DbSet<NationalRecharges> NationalRecharges
+        { get; set; }
+        public virtual DbSet<NationalRechargePaymentDetails> NationalRechargePaymentDetails
+        { get; set; }
+        public virtual DbSet<NationalRechargeAPIResponseDetails> NationalRechargeAPIResponseDetails
+        { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

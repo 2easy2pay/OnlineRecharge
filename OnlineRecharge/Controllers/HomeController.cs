@@ -45,6 +45,35 @@ namespace OnlineRecharge.Controllers
             var resp = await this.GetAllOperatorVouchers();
             return this.Json(resp, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
+        public JsonResult ProcessKnetPayment()
+        {
+            KnetPaymentInitiate request = new KnetPaymentInitiate();
+            request.Amt = Request.Form["amount"];
+            request.ContactNumber = Request.Form["contactNumber"];
+            request.Email = Request.Form["email"];
+            request.PaymentType = Request.Form["paymentType"];
+            request.returnUrl = Request.Form["returnUrl"];
+            request.errorUrl = Request.Form["errorUrl"];
+            request.Udf1 = Request.Form["Udf1"];
+            KnetPaymentInitialResponse response = new KnetPaymentInitialResponse();
+            var httpClient = new HttpClient();
+            var url = "https://api.2easy2pay.com/test/Gateway";
+            var result = httpClient.PostAsJsonAsync(url, request).Result;
+            if (result.IsSuccessStatusCode)
+            {
+                response = result.Content.ReadAsAsync<KnetPaymentInitialResponse>().Result;
+            }
+            return this.Json(response, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> TranferNationalTopup()
+        {
+            var resp = await this.TopupTransfer();
+            return this.Json(resp, JsonRequestBehavior.AllowGet);
+        }
         #endregion
 
         #region Recharge API Service Methods
@@ -130,11 +159,20 @@ namespace OnlineRecharge.Controllers
 
 
         [HttpPost]
-        public async Task<bool> TopupTransfer()
+        public async Task<TopupTransferResponseDetailsModel> TopupTransfer()
         {
             try
             {
-                bool res = false;
+                TopupTransferResponseDetailsModel model = new TopupTransferResponseDetailsModel();
+                string rechargeType = Request.Form["rechargeType"];
+                string operatorName = Request.Form["operatorCode"];
+                string mobileNumber = Request.Form["mobileNumber"];
+                string amount = Request.Form["amount"];
+                string paymentID = Request.Form["paymentID"];
+                string status = Request.Form["result"];
+                string trackID = Request.Form["trackID"];
+                string tranID = Request.Form["tranID"];
+                string reference = Request.Form["ref"];
                 using (var client = new HttpClient())
                 {
                     #region login and get token
@@ -160,23 +198,39 @@ namespace OnlineRecharge.Controllers
                         httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token.token_type, token.access_token);
                         httpClient.BaseAddress = new Uri(BASEADDRESS);
                         string data = string.Format("?OperatorName={0}&AmtSelected={1}&MobileNumber={2}&PaymentType={3}",
-                             "VV", "1.000", "55155445", "CASH");
+                             operatorName, amount, mobileNumber, "CASH");
                         HttpResponseMessage response = await httpClient.GetAsync("api/Services/TopupTransfer" + data);
 
                         if (response.IsSuccessStatusCode)
                         {
                             var result = await response.Content.ReadAsAsync<TopupTransfer>();
-                            res = true;
+                            model.Amount = amount;
+                            model.Date = result.Date;
+                            if (operatorName == "EZ")
+                            {
+                                model.ImageURL = "/Content/img/Operators/zain.png";
+                            }
+                            else if (operatorName == "VV")
+                            {
+                                model.ImageURL = "/Content/img/Operators/viva.png";
+                            }
+                            else if (operatorName == "XP")
+                            {
+                                model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                            }
+
+                            model.OperatorName = GetOperatorNameByOperatorCode(operatorName);
+                            model.PaymentID = result.PaymentID;
+                            model.PaymentRef = result.PaymentRef;
+                            model.Response = result.Response;
+                            model.ResponseDescription = result.ResponseDescription;
+                           int id= UpdateRechargeDetailsToDB(mobileNumber,Convert.ToDecimal(amount), rechargeType, operatorName,paymentID, status, trackID, tranID, reference,result);
                         }
-                        //else
-                        //{
-                        //    //MessageBox.Show(response.ReasonPhrase);
-                        //}
-                        // return (await response.Content.ReadAsAsync<TopupTransfer>());
+                       
 
                     }
                 }
-                return res;
+                return model;
             }
             catch (Exception ex)
             {
@@ -200,6 +254,66 @@ namespace OnlineRecharge.Controllers
                 throw ex;
             }
             return this.Json(model, JsonRequestBehavior.AllowGet);
+        }
+
+        public string GetOperatorNameByOperatorCode(string operatorCode)
+        {
+            string operatorName = string.Empty;
+            try
+            {
+                operatorName = context.ServiceProiders.Where(x => x.Code == operatorCode).Select(v => v.Name).FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return operatorName;
+        }
+
+        public int UpdateRechargeDetailsToDB(string mobileNumber,decimal amount,string rechargeType,string operatorCode,string paymentID,string status,string trackID,string tranID,string reference, TopupTransfer result)
+        {
+            var model = context.NationalRecharges.Create();
+            try
+            {
+                
+                model.MobileNumber = mobileNumber;
+                model.amount = amount;
+                model.ServiceProvider = context.ServiceProiders.Where(x => x.Code == operatorCode).FirstOrDefault();
+                model.RechargeType = context.NationalRechargeTypes.Where(x => x.Name.Equals(rechargeType, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+                model.IsActive = true;
+                model.IsDeleted = false;
+                model.CreatedBy = 1;
+                model.CreatedDate = DateTime.Now;
+                model.CustomerID = 1;
+                context.NationalRecharges.Add(model);
+                context.SaveChanges();
+
+                var paymentDetail = context.NationalRechargePaymentDetails.Create();
+                paymentDetail.PaymentID = paymentID;
+                paymentDetail.Result = status;
+                paymentDetail.TrackID = trackID;
+                paymentDetail.TransID = tranID;
+                paymentDetail.Ref = reference;
+                paymentDetail.NationalRecharge = model;
+                context.NationalRechargePaymentDetails.Add(paymentDetail);
+
+                var apiResponseDetail = context.NationalRechargeAPIResponseDetails.Create();
+                apiResponseDetail.NationalRecharge = model;
+                apiResponseDetail.PaymentID = result.PaymentID;
+                apiResponseDetail.PaymentRef = result.PaymentRef;
+                apiResponseDetail.Response = result.Response;
+                apiResponseDetail.ResponseDescription = result.ResponseDescription;
+                apiResponseDetail.Date = result.Date;
+                context.NationalRechargeAPIResponseDetails.Add(apiResponseDetail);
+                context.SaveChanges();
+                
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            return model.ID;
         }
         #endregion
 
@@ -365,27 +479,7 @@ namespace OnlineRecharge.Controllers
             }
         }
 
-        [HttpPost]
-        public JsonResult ProcessKnetPayment()
-        {
-            KnetPaymentInitiate request = new KnetPaymentInitiate();
-            request.Amt = Request.Form["amount"];
-            request.ContactNumber = Request.Form["contactNumber"];
-            request.Email = Request.Form["email"];
-            request.PaymentType = Request.Form["paymentType"];
-            request.returnUrl = Request.Form["returnUrl"];
-            request.errorUrl = Request.Form["errorUrl"];
-            request.Udf1 = Request.Form["Udf1"];
-            KnetPaymentInitialResponse response = new KnetPaymentInitialResponse();
-            var httpClient = new HttpClient();
-            var url = "https://api.2easy2pay.com/test/Gateway";
-            var result = httpClient.PostAsJsonAsync(url, request).Result;
-            if (result.IsSuccessStatusCode)
-            {
-                response = result.Content.ReadAsAsync<KnetPaymentInitialResponse>().Result;
-            }
-            return this.Json(response, JsonRequestBehavior.AllowGet);
-        }
+        
         #endregion
 
         #region Test Api Service
