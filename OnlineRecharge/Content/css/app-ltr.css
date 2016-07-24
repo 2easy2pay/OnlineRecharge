@@ -580,14 +580,18 @@ ul.nav-menu > li > a.toggle-menu:before {
 
 .lang-dropdown > a {
     display: block;
-    padding: 7px 0;
     color: #444;
     text-decoration: none;
+    border: 1px solid #d9d9d9;
+    padding: 3px 10px;
+    margin-top: 3px;
+    background: #fff;
 }
 
 .lang-dropdown > a img {
     position: relative;
     top: -1px;
+    margin-right: 4px;
 }
 
 .recharge-block {
@@ -1364,6 +1368,11 @@ ul.nav-menu > li > a.toggle-menu:before {
     color: #fff;
     right: 10px;
     top: 26px;
+}
+
+.scroll-table {
+    overflow-y: scroll;
+    max-height: 382px;
 }
 
 

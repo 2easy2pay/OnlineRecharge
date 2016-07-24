@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
@@ -15,11 +16,13 @@ namespace OnlineRecharge.Models.Core.Data
         public string MobileNumber { get; set; }
         public decimal amount { get; set; }
 
-        public NationalRechargePaymentDetails NationalRechargePaymentDetail { get; set; }
+        public int RechargeTypeID { get; set; }
+        [ForeignKey("RechargeTypeID")]
+        public NationalRechargeTypes RechargeType { get; set; }
 
-        public NationalRechargeAPIResponseDetails NationalRechargeAPIResponseDetail { get; set; }
+        public int ServiceProviderID { get; set; }
+        [ForeignKey("ServiceProviderID")]
+        public ServiceProviders ServiceProvider { get; set; }
 
-        public virtual NationalRechargeTypes RechargeType { get; set; }
-        public virtual ServiceProviders ServiceProvider { get; set; }
     }
 }

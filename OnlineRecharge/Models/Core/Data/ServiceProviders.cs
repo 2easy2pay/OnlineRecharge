@@ -15,6 +15,6 @@ namespace OnlineRecharge.Models.Core.Data
         public string Name { get; set; }
         public string Code { get; set; }
 
-        public NationalRecharges NationalRecharge { get; set; }
+        //public NationalRecharges NationalRecharge { get; set; }
     }
 }

@@ -133,25 +133,20 @@ app.controller('PopUpCtrl', ['$scope', 'ngDialog', '$rootScope', 'authCheck', '$
 app.controller('localRechargeController', ['$scope', '$http', 'localStorageService',
     function ($scope, $http, localStorageService) {
         $scope.redirect = function () {
+            if ($scope.rechargeForm.$valid) {
+                var paramObj = {
+                    serviceType: 'national',
+                    rechargeType: $scope.rechargeType,
+                    operatorCode: $scope.operatorCode,
+                    mobileNumber: $scope.mobileNumber,
+                    amount: $scope.amount
+                };
+                localStorageService.set('nationalRechargeParams', paramObj);
+                window.location = "#/paymentOptions";
+            }
+           
 
-            // use $.param jQuery function to serialize data from JSON 
-            var data = $.param({
-                rechargeType: $scope.rechargeType,
-                operatorCode: $scope.operatorCode,
-                mobileNumber: $scope.mobileNumber,
-                amount: $scope.amount
-            });
-            debugger;
-            var paramObj = {
-                serviceType:'national',
-                rechargeType: $scope.rechargeType,
-                operatorCode: $scope.operatorCode,
-                mobileNumber: $scope.mobileNumber,
-                amount: $scope.amount
-            };
-            debugger;
-            localStorageService.set('nationalRechargeParams', paramObj);
-            window.location = "#/paymentOptions";
+          
             //var config = {
             //    headers: {
             //        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
@@ -303,54 +298,49 @@ app.controller('paymentPageController', ['$scope', '$http', '$location', 'localS
 app.controller('rechargeResultController', ['$scope', '$location', 'localStorageService', '$http', function ($scope, $location, localStorageService, $http) {
     $scope.jobOffers = [];
     var rechargeParams = localStorageService.get('nationalRechargeParams');
-    function init() {
-        var search= $location.search();
-        $scope.paymentID = search.PaymentID;
-        $scope.result = search.Result;
-        $scope.trackID = search.TrackID;
-        $scope.tranID = search.TranID;
-        $scope.ref = search.Ref;
-        if (rechargeParams.serviceType == 'national' && rechargeParams.rechargeType == 'Prepaid') {
-            var data = $.param({
-                rechargeType:rechargeParams.rechargeType,
-                operatorCode: rechargeParams.operatorCode,
-                mobileNumber: rechargeParams.mobileNumber,
-                amount: rechargeParams.amount,
-                paymentID : $scope.paymentID,
-                result : $scope.result,
-                trackID : $scope.trackID,
-                tranID : $scope.tranID,
-                ref : $scope.ref
-            });
+    var search = $location.search();
+    $scope.paymentID = search.PaymentID;
+    $scope.result = search.Result;
+    $scope.trackID = search.TrackID;
+    $scope.tranID = search.TranID;
+    $scope.ref = search.Ref;
+    if (rechargeParams.serviceType == 'national' && rechargeParams.rechargeType == 'Prepaid') {
+        var data = $.param({
+            rechargeType: rechargeParams.rechargeType,
+            operatorCode: rechargeParams.operatorCode,
+            mobileNumber: rechargeParams.mobileNumber,
+            amount: rechargeParams.amount,
+            paymentID: $scope.paymentID,
+            result: $scope.result,
+            trackID: $scope.trackID,
+            tranID: $scope.tranID,
+            ref: $scope.ref
+        });
 
-            var config = {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
-                }
+        var config = {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
             }
-
-            $http.post('/Home/TranferNationalTopup', data, config)
-            .success(function (data, status, headers, config) {
-                $scope.APIResponse = data;
-            })
-            .error(function (data, status, header, config) {
-                $scope.ResponseDetails = "Data: " + data +
-                    "<hr />status: " + status +
-                    "<hr />headers: " + header +
-                    "<hr />config: " + config;
-            });
-            $http({
-                method: 'POST',
-                url: '/Home/TranferNationalTopup'
-            }).
-      success(function (data) {
-          $scope.topupResponse = data;
-      });
         }
-        
-    }
 
-    init();
+        $http.post('/Home/TranferNationalTopup', data, config)
+        .success(function (data, status, headers, config) {
+            $scope.APIResponse = data;
+        })
+        .error(function (data, status, header, config) {
+            $scope.ResponseDetails = "Data: " + data +
+                "<hr />status: " + status +
+                "<hr />headers: " + header +
+                "<hr />config: " + config;
+        });
+        $http({
+            method: 'POST',
+            url: '/Home/TranferNationalTopup'
+        }).
+  success(function (data) {
+      $scope.topupResponse = data;
+  });
+    }
 }]);
 
 //International Recharge Controller
@@ -366,7 +356,6 @@ app.controller('InternationalRechargeController', ['$scope', '$http', 'localStor
                 amount: $scope.amount,
                 country:$scope.country
             };
-            debugger;
             localStorageService.set('rechargeParams', paramObj);
             window.location = "#/paymentOptions";
 
@@ -374,7 +363,6 @@ app.controller('InternationalRechargeController', ['$scope', '$http', 'localStor
        
         //$http service for Getting the GetInternationalServiceProviders  
         $scope.setOperater = function () {
-            debugger
             alert($scope.selected);
             if ($scope.selected != 'undefined' || $scope.selected != null) {
 

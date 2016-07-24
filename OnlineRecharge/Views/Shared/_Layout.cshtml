@@ -24,7 +24,7 @@
                             <a ng-show="lang == 'en'" ng-click="changeLanguage('ar')" >
 <img src="~/Content/img/flags/kw.png" />{{ 'ArabicLanguageExtension' | translate }}</a>
                             <a ng-show="lang == 'ar'" ng-click="changeLanguage('en')" >
-                                <img src="~/Content/img/flags/kw.png" />{{ 'EnglishLanguageExtension' | translate }}
+                                <img src="~/Content/img/flags/us.png" />{{ 'EnglishLanguageExtension' | translate }}
                             </a>
                             @*<button ng-show="lang == 'ar'" ng-click="changeLanguage('en')" translate="EnglishLanguageExtension"></button>*@
                         </div>
@@ -332,11 +332,12 @@
     <script src="~/scripts/Utilities/angular-translate-handler-log.js"></script>
     <script src="~/scripts/Utilities/angular-translate-loader-static-files.js"></script>
     <script src="~/scripts/Utilities/angular-local-storage.js"></script>
+
     <script src="~/App/app.js"></script>
 
     <script src="~/App/Common/factory.js"></script>
     @*<script src="~/App/Controllers/LoginCtrl.js"></script>*@
-
+    <script src="~/scripts/angular-messages.min.js"></script>
     @RenderSection("scripts", required: false)
     <script type="text/javascript">
         @RenderSection("jsCode", required: false)

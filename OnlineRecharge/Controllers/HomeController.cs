@@ -278,8 +278,8 @@ namespace OnlineRecharge.Controllers
                 
                 model.MobileNumber = mobileNumber;
                 model.amount = amount;
-                model.ServiceProvider = context.ServiceProiders.Where(x => x.Code == operatorCode).FirstOrDefault();
-                model.RechargeType = context.NationalRechargeTypes.Where(x => x.Name.Equals(rechargeType, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+                //model.ServiceProvider = context.ServiceProiders.Where(x => x.Code == operatorCode).FirstOrDefault();
+                //model.RechargeType = context.NationalRechargeTypes.Where(x => x.Name.Equals(rechargeType, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
                 model.IsActive = true;
                 model.IsDeleted = false;
                 model.CreatedBy = 1;
@@ -294,11 +294,11 @@ namespace OnlineRecharge.Controllers
                 paymentDetail.TrackID = trackID;
                 paymentDetail.TransID = tranID;
                 paymentDetail.Ref = reference;
-                paymentDetail.NationalRecharge = model;
+                //paymentDetail.NationalRecharge = model;
                 context.NationalRechargePaymentDetails.Add(paymentDetail);
 
                 var apiResponseDetail = context.NationalRechargeAPIResponseDetails.Create();
-                apiResponseDetail.NationalRecharge = model;
+                //apiResponseDetail.NationalRecharge = model;
                 apiResponseDetail.PaymentID = result.PaymentID;
                 apiResponseDetail.PaymentRef = result.PaymentRef;
                 apiResponseDetail.Response = result.Response;

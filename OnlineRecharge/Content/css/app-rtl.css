@@ -583,14 +583,18 @@ ul.nav-menu > li > a.toggle-menu:before {
 
 .lang-dropdown > a {
     display: block;
-    padding: 7px 0;
     color: #444;
     text-decoration: none;
+    border: 1px solid #d9d9d9;
+    padding: 3px 10px;
+    margin-top: 3px;
+    background: #fff;
 }
 
 .lang-dropdown > a img {
     position: relative;
     top: -1px;
+    margin-left: 4px;
 }
 
 .recharge-block {
@@ -1150,7 +1154,7 @@ ul.nav-menu > li > a.toggle-menu:before {
 }
 
 .login-inside-header ul li {
-    margin-right: 20px;
+    margin-left: 20px;
 }
 
 .login-inside-header ul li.active a {
@@ -1215,7 +1219,7 @@ ul.nav-menu > li > a.toggle-menu:before {
     cursor: pointer;
     position: relative;
     padding-left: 25px;
-    margin-right: 15px;
+    margin-left: 15px;
     font-size: 13px;
 }
 
@@ -1254,7 +1258,7 @@ ul.nav-menu > li > a.toggle-menu:before {
 }
 
 .check-wrap .forgot-password {
-    float: right;
+    float: left;
     font-size: 13px;
     color: #22B8EB;
 }
@@ -1337,6 +1341,36 @@ ul.nav-menu > li > a.toggle-menu:before {
 .login-inside-form .btn.cancel-forgot-btn:hover {
     background: #fff;
     color: #22b8eb;
+}
+
+.amount-pay .amt {
+    font-size: 18px;
+    font-weight: 700;
+    color: #222;
+}
+
+.ngdialog.ngdialog-theme-default.login-popup {
+    padding-top: 50px;
+    padding-bottom: 0;
+}
+
+.ngdialog.ngdialog-theme-default.login-popup .ngdialog-content {
+    padding: 0;
+    max-width: 340px;
+    border-radius: 0;
+    -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    font-family: 'Open Sans';
+}
+
+.ngdialog.ngdialog-theme-default.login-popup .login-inside-form {
+    background: #fff;
+}
+
+.ngdialog.ngdialog-theme-default.login-popup .ngdialog-close:before {
+    color: #fff;
+    right: 10px;
+    top: 26px;
 }
 
 

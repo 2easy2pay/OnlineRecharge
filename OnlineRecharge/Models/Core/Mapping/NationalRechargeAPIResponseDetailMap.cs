@@ -21,8 +21,7 @@ namespace OnlineRecharge.Models.Core.Mapping
             //table  
             ToTable("NationalRechargeAPIResponseDetails");
 
-            //relationship  
-            HasRequired(t => t.NationalRecharge).WithRequiredDependent(u => u.NationalRechargeAPIResponseDetail);
+
           
         }
     }

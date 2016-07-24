@@ -1029,6 +1029,18 @@
     <Compile Include="Migrations\201607240940501_childTableBaseFieldsDropped.Designer.cs">
       <DependentUpon>201607240940501_childTableBaseFieldsDropped.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201607241342565_removesforiegnkeys.cs" />
+    <Compile Include="Migrations\201607241342565_removesforiegnkeys.Designer.cs">
+      <DependentUpon>201607241342565_removesforiegnkeys.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201607241347050_rechargetypeforiegnkeywithnationalrecharge.cs" />
+    <Compile Include="Migrations\201607241347050_rechargetypeforiegnkeywithnationalrecharge.Designer.cs">
+      <DependentUpon>201607241347050_rechargetypeforiegnkeywithnationalrecharge.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201607241352519_addedforiegnkeys.cs" />
+    <Compile Include="Migrations\201607241352519_addedforiegnkeys.Designer.cs">
+      <DependentUpon>201607241352519_addedforiegnkeys.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Core\BaseEntity.cs" />
     <Compile Include="Models\Core\Data\Country.cs" />
@@ -1136,6 +1148,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201607240940501_childTableBaseFieldsDropped.resx">
       <DependentUpon>201607240940501_childTableBaseFieldsDropped.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607241342565_removesforiegnkeys.resx">
+      <DependentUpon>201607241342565_removesforiegnkeys.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607241347050_rechargetypeforiegnkeywithnationalrecharge.resx">
+      <DependentUpon>201607241347050_rechargetypeforiegnkeywithnationalrecharge.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607241352519_addedforiegnkeys.resx">
+      <DependentUpon>201607241352519_addedforiegnkeys.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

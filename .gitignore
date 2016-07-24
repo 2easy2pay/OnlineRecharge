@@ -244,3 +244,4 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 /OnlineRecharge/Partials/International.html
+/bower_components

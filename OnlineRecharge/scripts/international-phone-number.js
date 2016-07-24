@@ -40,7 +40,6 @@
                   var countryData=element.intlTelInput("getSelectedCountryData");
                   value =countryData.dialCode+ intlNumber;
               }
-              debugger;
               return ctrl.$setViewValue(value);
           };
           handleWhatsSupposedToBeAnArray = function(value) {
@@ -83,16 +82,11 @@
             });
           });
           scope.$watch('country', function (newValue) {
-              debugger;
             if (newValue !== null && newValue !== void 0 && newValue !== '') {
               return element.intlTelInput("selectCountry", newValue);
             }
           });
-          scope.$watch('sn_number', function (v) {
-              debugger;
-              alert(v);
-              $scope.id = v;
-          });
+         
           ctrl.$formatters.push(function(value) {
             if (!value) {
               return value;
@@ -115,23 +109,20 @@
           //  return element.intlTelInput("isValidNumber");
             //};
           ctrl.$validators.internationalPhoneNumber = function (value) {
-              var errorMsg = $("#error-msg"),
-               validMsg = $("#valid-msg");
               var selectedCountry;
               selectedCountry = element.intlTelInput('getSelectedCountryData');
               if (!value || (selectedCountry && selectedCountry.dialCode === value)) {
-                  errorMsg.addClass("hide");
-                  validMsg.addClass("hide");
+                  element.addClass("intlsuccess");
+                  element.removeClass("intlerror");
                   return true;
               }
               if (element.intlTelInput("isValidNumber")) {
-                  validMsg.removeClass("hide");
-                  errorMsg.addClass("hide");
+                  element.addClass("intlsuccess");
+                  element.removeClass("intlerror");
                   return true;
               } else {
-                  element.addClass("error");
-                  validMsg.addClass("hide");
-                  errorMsg.removeClass("hide");
+                  element.addClass("intlerror");
+                  element.removeClass("intlsuccess");
                   return false;
               }
           };
@@ -139,7 +130,6 @@
             return scope.$apply(read);
           });
           element.on("countrychange", function (e, countryData) {
-              debugger;
           });
           return element.on('$destroy', function() {
             element.intlTelInput('destroy');

@@ -28,9 +28,6 @@ namespace OnlineRecharge.Models.Core.Mapping
             //table  
             ToTable("NationalRecharges");
 
-            //relationship  
-            HasRequired(t => t.RechargeType).WithRequiredDependent(u => u.NationalRecharge);
-            HasRequired(t => t.ServiceProvider).WithRequiredDependent(u => u.NationalRecharge);
         }
     }
 }
