@@ -13,6 +13,7 @@ using System.Text;
 using OnlineRecharge.Models.Helpers;
 using Newtonsoft.Json;
 using System.Net;
+using System.Data.Entity.Validation;
 
 namespace OnlineRecharge.Controllers
 {
@@ -182,11 +183,11 @@ namespace OnlineRecharge.Controllers
 
 
         [HttpPost]
-        public async Task<TopupTransferResponseDetailsModel> TopupTransfer()
+        public async Task<TransferResponseDetailsModel> TopupTransfer()
         {
             try
             {
-                TopupTransferResponseDetailsModel model = new TopupTransferResponseDetailsModel();
+                TransferResponseDetailsModel model = new TransferResponseDetailsModel();
                 string rechargeType = Request.Form["rechargeType"];
                 string operatorName = Request.Form["operatorCode"];
                 string mobileNumber = Request.Form["mobileNumber"];
@@ -227,7 +228,7 @@ namespace OnlineRecharge.Controllers
                         if (response.IsSuccessStatusCode)
                         {
                             var result = await response.Content.ReadAsAsync<TopupTransfer>();
-                            model.Amount = amount;
+                            model.Amount =Convert.ToDecimal(amount);
                             model.Date = result.Date;
                             if (operatorName == "EZ")
                             {
@@ -247,10 +248,87 @@ namespace OnlineRecharge.Controllers
                             model.PaymentRef = result.PaymentRef;
                             model.Response = result.Response;
                             model.ResponseDescription = result.ResponseDescription;
-                           int id= UpdateRechargeDetailsToDB(mobileNumber,Convert.ToDecimal(amount), rechargeType, operatorName,paymentID, status, trackID, tranID, reference,result);
+                           int id= UpdateRechargeDetailsToDB(mobileNumber,rechargeType, operatorName,paymentID, status, trackID, tranID, reference,model);
                         }
                        
 
+                    }
+                }
+                return model;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        [HttpPost]
+        public async Task<TransferResponseDetailsModel> BillPayment()
+        {
+            try
+            {
+                TransferResponseDetailsModel model = new TransferResponseDetailsModel();
+                string rechargeType = Request.Form["rechargeType"];
+                string operatorName = Request.Form["operatorCode"];
+                string mobileNumber = Request.Form["mobileNumber"];
+                string amount = Request.Form["amount"];
+                string paymentID = Request.Form["paymentID"];
+                string status = Request.Form["result"];
+                string trackID = Request.Form["trackID"];
+                string tranID = Request.Form["tranID"];
+                string reference = Request.Form["ref"];
+                using (var client = new HttpClient())
+                {
+                    #region login and get token
+                    var logindata = string.Format("grant_type=password&username={0}&password={1}", USERNAME, PASSWORD);//LOGIN DATA
+
+                    var url = BASEADDRESS + "token";
+
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
+                    request.Content = new StringContent(logindata, Encoding.UTF8, "application/x-www-form-urlencoded");
+
+                    var resp = client.PostAsync(url, request.Content);
+                    Token token = new Token();
+                    if (resp.Result.IsSuccessStatusCode)
+                    {
+                        token = await resp.Result.Content.ReadAsAsync<Token>();
+                    }
+                    #endregion login and get token
+                    using (var httpClient = new HttpClient())
+                    {
+                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token.token_type, token.access_token);
+                        httpClient.BaseAddress = new Uri(BASEADDRESS);
+                        string data = string.Format("?OperatorName={0}&AmtSelected={1}&MobileNumber={2}&PaymentType={3}", operatorName, amount, mobileNumber, "CASH");
+                        HttpResponseMessage response = await httpClient.GetAsync("api/Services/BillPaymentTransfer" + data);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var result = await response.Content.ReadAsAsync<BillPaymentTransfer>();
+                            model.Amount =Convert.ToDecimal(amount);
+                            model.Date = result.Date;
+                            if (operatorName == "EZ")
+                            {
+                                model.ImageURL = "/Content/img/Operators/zain.png";
+                            }
+                            else if (operatorName == "VV")
+                            {
+                                model.ImageURL = "/Content/img/Operators/viva.png";
+                            }
+                            else if (operatorName == "XP")
+                            {
+                                model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                            }
+
+                            model.OperatorName = GetOperatorNameByOperatorCode(operatorName);
+                            model.PaymentID = result.PaymentID;
+                            model.PaymentRef = result.PaymentRef;
+                            model.Response = result.Response;
+                            model.ResponseDescription = result.ResponseDescription;
+                            int id = UpdateRechargeDetailsToDB(mobileNumber, rechargeType, operatorName, paymentID, status, trackID, tranID, reference, model);
+                        }
                     }
                 }
                 return model;
@@ -293,16 +371,16 @@ namespace OnlineRecharge.Controllers
             return operatorName;
         }
 
-        public int UpdateRechargeDetailsToDB(string mobileNumber,decimal amount,string rechargeType,string operatorCode,string paymentID,string status,string trackID,string tranID,string reference, TopupTransfer result)
+        public int UpdateRechargeDetailsToDB(string mobileNumber,string rechargeType,string operatorCode,string paymentID,string status,string trackID,string tranID,string reference, TransferResponseDetailsModel result)
         {
             var model = context.NationalRecharges.Create();
             try
             {
                 
                 model.MobileNumber = mobileNumber;
-                model.amount = amount;
-                //model.ServiceProvider = context.ServiceProiders.Where(x => x.Code == operatorCode).FirstOrDefault();
-                //model.RechargeType = context.NationalRechargeTypes.Where(x => x.Name.Equals(rechargeType, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+                model.amount = result.Amount;
+                model.ServiceProvider = context.ServiceProiders.Where(x => x.Code == operatorCode).FirstOrDefault();
+                model.RechargeType = context.NationalRechargeTypes.Where(x => x.Name.Equals(rechargeType, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
                 model.IsActive = true;
                 model.IsDeleted = false;
                 model.CreatedBy = 1;
@@ -317,11 +395,11 @@ namespace OnlineRecharge.Controllers
                 paymentDetail.TrackID = trackID;
                 paymentDetail.TransID = tranID;
                 paymentDetail.Ref = reference;
-                //paymentDetail.NationalRecharge = model;
+                paymentDetail.NationalRecharge = model;
                 context.NationalRechargePaymentDetails.Add(paymentDetail);
 
                 var apiResponseDetail = context.NationalRechargeAPIResponseDetails.Create();
-                //apiResponseDetail.NationalRecharge = model;
+                apiResponseDetail.NationalRecharge = model;
                 apiResponseDetail.PaymentID = result.PaymentID;
                 apiResponseDetail.PaymentRef = result.PaymentRef;
                 apiResponseDetail.Response = result.Response;
@@ -331,178 +409,22 @@ namespace OnlineRecharge.Controllers
                 context.SaveChanges();
                 
             }
-            catch (Exception ex)
+            catch (DbEntityValidationException e)
             {
-
-                throw ex;
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
+                throw;
             }
             return model.ID;
         }
-        #endregion
-
-        #region Helping Methods
-
-
-       
-      
-
-        [HttpPost]
-        public async Task<TopupValidation> TopupValidation()
-        {
-            try
-            {
-                string rechargeType = Request.Form["rechargeType"];
-                string operatorCode = Request.Form["operatorCode"];
-                string mobileNumber = Request.Form["mobileNumber"];
-                string amount = Request.Form["amount"];
-                string result=string.Empty;
-                using (var client = new HttpClient())
-                {
-
-                    #region login and get token
-                    var logindata = string.Format("grant_type=password&username={0}&password={1}", USERNAME, PASSWORD);//LOGIN DATA
-
-                    var url = BASEADDRESS + "token";
-
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
-                    request.Content = new StringContent(logindata, Encoding.UTF8, "application/x-www-form-urlencoded");
-
-                    var resp = await client.PostAsync(url, request.Content);
-                    Token token = new Token();
-                    if (resp.IsSuccessStatusCode)
-                    {
-                        token = await resp.Content.ReadAsAsync<Token>();
-                    }
-                    #endregion login and get token
-
-                    using (var httpClient = new HttpClient())
-                    {
-                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token.token_type, token.access_token);
-                        httpClient.BaseAddress = new Uri(BASEADDRESS);
-                       var data = string.Format("?OperatorName={0}&Amount={1}&MobileNumber={2}", operatorCode, amount, mobileNumber);
-                        HttpResponseMessage response = await httpClient.GetAsync("api/Services/TopupValidation" + data);
-                        if (response.IsSuccessStatusCode)
-                        {
-                            result = await response.Content.ReadAsStringAsync(); //response.Content.ReadAsAsync<TopupValidation>();
-                        }
-                        else
-                        {
-
-                        }
-
-                    }
-                }
-                var test= JsonConvert.DeserializeObject<TopupValidation>(result) as TopupValidation;
-                return test;
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
-        }
-
-        //public async Task TopupTransfer()
-        //{
-        //    try
-        //    {
-        //        using (var client = new HttpClient())
-        //        {
-        //            #region login and get token
-        //            var logindata = string.Format("grant_type=password&username={0}&password={1}", USERNAME, PASSWORD);//LOGIN DATA
-
-        //            var url = BASEADDRESS + "token";
-
-        //            client.DefaultRequestHeaders.Accept.Clear();
-        //            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-        //            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
-        //            request.Content = new StringContent(logindata, Encoding.UTF8, "application/x-www-form-urlencoded");
-
-        //            var resp = await client.PostAsync(url, request.Content);
-        //            Token token = new Token();
-        //            if (resp.IsSuccessStatusCode)
-        //            {
-        //                token = await resp.Content.ReadAsAsync<Token>();
-        //            }
-        //            #endregion login and get token
-        //            using (var httpClient = new HttpClient())
-        //            {
-        //               string data = string.Format("?OperatorName={0}&AmtSelected={1}&MobileNumber={2}&PaymentType={3}",
-        //                    "VV", "1.000", "55155445", "CASH");
-        //                HttpResponseMessage response = await httpClient.GetAsync("api/Services/TopupTransfer" + data);
-
-        //                if (response.IsSuccessStatusCode)
-        //                {
-        //                    var result = await response.Content.ReadAsAsync<TopupTransfer>();
-        //                }
-        //                else
-        //                {
-        //                    //MessageBox.Show(response.ReasonPhrase);
-        //                }
-                     
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //        throw ex;
-        //    }
-        //}
-
-        public async Task ValidateTopup()
-        {
-            try
-            {
-                using (var client = new HttpClient())
-                {
-                    #region login and get token
-                    var logindata = string.Format("grant_type=password&username={0}&password={1}", USERNAME, PASSWORD);//LOGIN DATA
-
-                    var url = BASEADDRESS + "token";
-
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
-                    request.Content = new StringContent(logindata, Encoding.UTF8, "application/x-www-form-urlencoded");
-
-                    var resp = await client.PostAsync(url, request.Content);
-                    Token token = new Token();
-                    if (resp.IsSuccessStatusCode)
-                    {
-                        token = await resp.Content.ReadAsAsync<Token>();
-                    }
-                    #endregion login and get token
-                    using (var httpClient = new HttpClient())
-                    {
-                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token.token_type, token.access_token);
-                        httpClient.BaseAddress = new Uri(BASEADDRESS);
-                        string data = string.Format("?OperatorName={0}&Amount={1}&MobileNumber={2}", "VV", "1.000", "55155445");
-                        HttpResponseMessage response = await httpClient.GetAsync("api/Services/TopupValidation" + data);
-                        if (response.IsSuccessStatusCode)
-                        {
-                            var result = await response.Content.ReadAsAsync<TopupValidation>();
-                        }
-                        else
-                        {
-                        }
-                    }
-                }
-
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
-        }
-
-        
         #endregion
 
         #region Test Api Service
