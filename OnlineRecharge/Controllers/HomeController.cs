@@ -76,11 +76,27 @@ namespace OnlineRecharge.Controllers
             return this.Json(resp, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpPost]
-        public async Task<JsonResult> NationalBillPayment()
+
+
+
+        public JsonResult GetInternationalServiceProviders(string Code)
         {
-            var resp = await this.BillPayment();
-            return this.Json(resp, JsonRequestBehavior.AllowGet);
+            List<InternationalServiceProviders> model = new List<InternationalServiceProviders>();
+            try
+            {
+                model = context.internationalServiceProviders.Where(x => x.Code == Code).Select(
+                    x => new InternationalServiceProviders
+                    {
+                        Code = x.Code,
+                        Name = x.Name
+                    }).ToList();
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            return this.Json(model, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]

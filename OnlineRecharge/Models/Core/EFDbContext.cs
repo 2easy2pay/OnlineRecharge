@@ -27,6 +27,11 @@ namespace OnlineRecharge.Models.Core
         public virtual DbSet<NationalRechargeAPIResponseDetails> NationalRechargeAPIResponseDetails
         { get; set; }
 
+
+
+        public virtual DbSet<InternationalServiceProviders> internationalServiceProviders
+        { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
                 modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
