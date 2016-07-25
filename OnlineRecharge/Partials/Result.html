@@ -1,12 +1,12 @@
-﻿<div class="row" ng-controller="rechargeResultController">
+﻿<div class="row">
     <div class="col-md-8">
         <div class="pay-details">
             <div class="headr clearfix">
-                <div ng-show="ResponseDetails.Response=='S'" class="pull-left">
+                <div ng-show="APIResponse.Response=='S'" class="pull-left">
                     <div class="img-notify success"></div>
                 </div>
                 <div class="headr-content">
-                    {{ 'Result_RechargeSuccess_Caption1' | translate }} {{ResponseDetails.Amount}} {{ 'Result_RechargeSuccess_Caption2' | translate }}<br>{{ 'Result_RechargeSuccess_Caption3' | translate }}
+                    {{ 'Result_RechargeSuccess_Caption1' | translate }} {{APIResponse.Amount}} {{ 'Result_RechargeSuccess_Caption2' | translate }}<br>{{ 'Result_RechargeSuccess_Caption3' | translate }}
                 </div>
             </div>
             <div class="payContent">
@@ -15,14 +15,14 @@
                     <tbody>
                         <tr>
                             <td width="10%">
-                                <div class="operator-img"><img ng-src="{{ResponseDetails.ImageURL}}" alt=""></div>
+                                <div class="operator-img"><img ng-src="{{APIResponse.ImageURL}}" alt=""></div>
                             </td>
                             <td>
                                 <div class="pay-describe">
-                                    <br>{{'Result_RechargeSuccess_Details_By_Label' | translate}}: {{ResponseDetails.OperatorName}}
+                                    <br>{{'Result_RechargeSuccess_Details_By_Label' | translate}}: {{APIResponse.OperatorName}}
                                 </div>
                             </td>
-                            <td width="10%" class="text-right"><b>{{ResponseDetails.Amount}} {{'GeneralLabels_KD' | translate}}</b></td>
+                            <td width="10%" class="text-right"><b>{{APIResponse.Amount}} {{'GeneralLabels_KD' | translate}}</b></td>
                         </tr>
                     </tbody>
                 </table>

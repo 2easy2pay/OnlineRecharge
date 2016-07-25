@@ -13,11 +13,11 @@ namespace OnlineRecharge.Models.Core.Mapping
 
             //fieds  
             Property(t => t.ID).HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
-            Property(t => t.PaymentID).IsRequired().HasMaxLength(20).HasColumnType("nvarchar");
-            Property(t => t.TrackID).IsRequired().HasMaxLength(20).HasColumnType("nvarchar");
-            Property(t => t.TransID).IsRequired().HasMaxLength(20).HasColumnType("nvarchar");
-            Property(t => t.Result).IsRequired().HasMaxLength(20).HasColumnType("nvarchar");
-            Property(t => t.Ref).IsRequired().HasMaxLength(20).HasColumnType("nvarchar");
+            Property(t => t.PaymentID).IsRequired().HasMaxLength(50).HasColumnType("nvarchar");
+            Property(t => t.TrackID).IsRequired().HasMaxLength(50).HasColumnType("nvarchar");
+            Property(t => t.TransID).IsRequired().HasMaxLength(50).HasColumnType("nvarchar");
+            Property(t => t.Result).IsRequired().HasMaxLength(50).HasColumnType("nvarchar");
+            Property(t => t.Ref).IsRequired().HasMaxLength(50).HasColumnType("nvarchar");
             //table  
             ToTable("NationalRechargePaymentDetails");
 

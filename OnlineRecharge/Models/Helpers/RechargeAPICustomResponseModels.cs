@@ -12,7 +12,7 @@ namespace OnlineRecharge.Models.Helpers
         public decimal Amount { get; set; }
     }
 
-    public class TopupTransferResponseDetailsModel
+    public class TransferResponseDetailsModel
     {
         public string Response { get; set; }
 
@@ -27,7 +27,7 @@ namespace OnlineRecharge.Models.Helpers
         public DateTime Date { get; set; }
         public string ImageURL { get; set; }
         public string OperatorName { get; set; }
-        public string  Amount { get; set; }
+        public decimal  Amount { get; set; }
     }
 
    

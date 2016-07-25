@@ -1041,6 +1041,10 @@
     <Compile Include="Migrations\201607241352519_addedforiegnkeys.Designer.cs">
       <DependentUpon>201607241352519_addedforiegnkeys.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201607250450140_IncreasedSizeOfNationalRechargePaymentDetails.cs" />
+    <Compile Include="Migrations\201607250450140_IncreasedSizeOfNationalRechargePaymentDetails.Designer.cs">
+      <DependentUpon>201607250450140_IncreasedSizeOfNationalRechargePaymentDetails.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Core\BaseEntity.cs" />
     <Compile Include="Models\Core\Data\Country.cs" />
@@ -1157,6 +1161,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201607241352519_addedforiegnkeys.resx">
       <DependentUpon>201607241352519_addedforiegnkeys.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607250450140_IncreasedSizeOfNationalRechargePaymentDetails.resx">
+      <DependentUpon>201607250450140_IncreasedSizeOfNationalRechargePaymentDetails.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
