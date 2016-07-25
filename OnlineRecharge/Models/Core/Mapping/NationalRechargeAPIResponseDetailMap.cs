@@ -13,11 +13,16 @@ namespace OnlineRecharge.Models.Core.Mapping
 
             //fieds  
             Property(t => t.ID).HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
-            Property(t => t.PaymentID).IsRequired().HasMaxLength(20).HasColumnType("nvarchar");
+            Property(t => t.PaymentID).IsOptional().HasMaxLength(20).HasColumnType("nvarchar");
             Property(t => t.Response).IsRequired().HasMaxLength(20).HasColumnType("nvarchar");
-            Property(t => t.ResponseDescription).IsRequired().HasMaxLength(1000).HasColumnType("nvarchar");
-            Property(t => t.PaymentRef).IsRequired().HasMaxLength(300).HasColumnType("nvarchar");
-            Property(t => t.Date).IsRequired().HasColumnType("datetime");
+            Property(t => t.ResponseDescription).IsOptional().HasMaxLength(1000).HasColumnType("nvarchar");
+            Property(t => t.PaymentRef).IsOptional().HasMaxLength(300).HasColumnType("nvarchar");
+            Property(t => t.Date).IsOptional().HasColumnType("datetime");
+            Property(t => t.Denomination).IsOptional().HasColumnType("decimal");
+            Property(t => t.OperatorName).IsOptional().HasMaxLength(20).HasColumnType("nvarchar");
+            Property(t => t.Password).IsOptional().HasMaxLength(20).HasColumnType("nvarchar");
+            Property(t => t.RechargeCode).IsOptional().HasMaxLength(50).HasColumnType("nvarchar");
+            Property(t => t.SerialNo).IsOptional().HasMaxLength(50).HasColumnType("nvarchar");
             //table  
             ToTable("NationalRechargeAPIResponseDetails");
 

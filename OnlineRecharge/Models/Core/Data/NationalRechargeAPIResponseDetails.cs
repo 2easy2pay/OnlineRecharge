@@ -19,6 +19,13 @@ namespace OnlineRecharge.Models.Core.Data
         public string PaymentID { get; set; }
         public string PaymentRef { get; set; }
         public DateTime Date { get; set; }
+
+        //Voucher API Response Fields
+        public decimal Denomination  { get; set; }
+        public string OperatorName { get; set; }
+        public string Password { get; set; }
+        public string RechargeCode { get; set; }
+        public string SerialNo { get; set; }
         public int NationalRechargeID { get; set; }
         [ForeignKey("NationalRechargeID")]
         public NationalRecharges NationalRecharge { get; set; }

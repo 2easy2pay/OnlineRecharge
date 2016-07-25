@@ -82,6 +82,13 @@ namespace OnlineRecharge.Controllers
             var resp = await this.BillPayment();
             return this.Json(resp, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
+        public async Task<JsonResult> NationalVoucherTranfer()
+        {
+            var resp = await this.VoucherTranfer();
+            return this.Json(resp, JsonRequestBehavior.AllowGet);
+        }
         #endregion
 
         #region Recharge API Service Methods
@@ -323,6 +330,112 @@ namespace OnlineRecharge.Controllers
                 throw ex;
             }
         }
+
+        [HttpPost]
+        public async Task<TransferResponseDetailsModel> VoucherTranfer()
+        {
+            try
+            {
+                TransferResponseDetailsModel model = new TransferResponseDetailsModel();
+                string rechargeType = Request.Form["rechargeType"];
+                string operatorName = Request.Form["operatorCode"];
+                string mobileNumber = Request.Form["mobileNumber"];
+                string amount = Request.Form["amount"];
+                string paymentID = Request.Form["paymentID"];
+                string status = Request.Form["result"];
+                string trackID = Request.Form["trackID"];
+                string tranID = Request.Form["tranID"];
+                string reference = Request.Form["ref"];
+                using (var client = new HttpClient())
+                {
+                    #region login and get token
+                    var logindata = string.Format("grant_type=password&username={0}&password={1}", USERNAME, PASSWORD);//LOGIN DATA
+
+                    var url = BASEADDRESS + "token";
+
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
+                    request.Content = new StringContent(logindata, Encoding.UTF8, "application/x-www-form-urlencoded");
+
+                    var resp = client.PostAsync(url, request.Content);
+                    Token token = new Token();
+                    if (resp.Result.IsSuccessStatusCode)
+                    {
+                        token = await resp.Result.Content.ReadAsAsync<Token>();
+                    }
+                    #endregion login and get token
+                    using (var httpClient = new HttpClient())
+                    {
+                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token.token_type, token.access_token);
+                        httpClient.BaseAddress = new Uri(BASEADDRESS);
+
+                        string data = string.Format("?OperatorName={0}&Denomination={1}&MobileNo={2}", operatorName, amount, mobileNumber);
+                        HttpResponseMessage response = await httpClient.GetAsync("api/Services/VoucherTransfer" + data);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var result = await response.Content.ReadAsAsync<VoucherTransfer>();
+                            model.Amount = Convert.ToDecimal(amount);
+                            if (operatorName == "EZ")
+                            {
+                                model.ImageURL = "/Content/img/Operators/zain.png";
+                            }
+                            else if (operatorName == "VV")
+                            {
+                                model.ImageURL = "/Content/img/Operators/viva.png";
+                            }
+                            else if (operatorName == "XP")
+                            {
+                                model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                            }
+
+                            model.OperatorName = GetOperatorNameByOperatorCode(operatorName);
+                            model.Response = result.Response;
+                            model.RechargeCode = result.RechargeCode;
+                            model.Denomination = result.Denomination;
+                            model.Password = result.Password;
+                            model.SerialNo = result.SerialNo;
+                            int id = UpdateRechargeDetailsToDB(mobileNumber, rechargeType, operatorName, paymentID, status, trackID, tranID, reference, model);
+                        }
+
+                        //string data = string.Format("?OperatorName={0}&AmtSelected={1}&MobileNumber={2}&PaymentType={3}", operatorName, amount, mobileNumber, "CASH");
+                        //HttpResponseMessage response = await httpClient.GetAsync("api/Services/BillPaymentTransfer" + data);
+                        //if (response.IsSuccessStatusCode)
+                        //{
+                        //    var result = await response.Content.ReadAsAsync<BillPaymentTransfer>();
+                        //    model.Amount = Convert.ToDecimal(amount);
+                        //    model.Date = result.Date;
+                        //    if (operatorName == "EZ")
+                        //    {
+                        //        model.ImageURL = "/Content/img/Operators/zain.png";
+                        //    }
+                        //    else if (operatorName == "VV")
+                        //    {
+                        //        model.ImageURL = "/Content/img/Operators/viva.png";
+                        //    }
+                        //    else if (operatorName == "XP")
+                        //    {
+                        //        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                        //    }
+
+                        //    model.OperatorName = GetOperatorNameByOperatorCode(operatorName);
+                        //    model.PaymentID = result.PaymentID;
+                        //    model.PaymentRef = result.PaymentRef;
+                        //    model.Response = result.Response;
+                        //    model.ResponseDescription = result.ResponseDescription;
+                        //    int id = UpdateRechargeDetailsToDB(mobileNumber, rechargeType, operatorName, paymentID, status, trackID, tranID, reference, model);
+                        //}
+                    }
+                }
+                return model;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
         #endregion
 
         #region DataAccess Methods
@@ -388,8 +501,12 @@ namespace OnlineRecharge.Controllers
                 apiResponseDetail.PaymentRef = result.PaymentRef;
                 apiResponseDetail.Response = result.Response;
                 apiResponseDetail.ResponseDescription = result.ResponseDescription;
-                apiResponseDetail.Date = result.Date;
-                context.NationalRechargeAPIResponseDetails.Add(apiResponseDetail);
+                apiResponseDetail.Date = DateTime.Now;// result.Date;
+                apiResponseDetail.Denomination = result.Denomination;
+                apiResponseDetail.Password = result.Password;
+                apiResponseDetail.RechargeCode = result.RechargeCode;
+                apiResponseDetail.SerialNo = result.SerialNo;
+                    context.NationalRechargeAPIResponseDetails.Add(apiResponseDetail);
                 context.SaveChanges();
                 
             }

@@ -19,7 +19,8 @@
                             </td>
                             <td>
                                 <div class="pay-describe">
-                                    <br>{{'Result_RechargeSuccess_Details_By_Label' | translate}}: {{APIResponse.OperatorName}}
+                                    <br>{{'Result_RechargeSuccess_Details_By_Label' | translate}}: {{APIResponse.OperatorName}},
+                                    {{APIResponse.RechargeCode}}
                                 </div>
                             </td>
                             <td width="10%" class="text-right"><b>{{APIResponse.Amount}} {{'GeneralLabels_KD' | translate}}</b></td>

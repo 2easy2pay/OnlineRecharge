@@ -1045,6 +1045,18 @@
     <Compile Include="Migrations\201607250450140_IncreasedSizeOfNationalRechargePaymentDetails.Designer.cs">
       <DependentUpon>201607250450140_IncreasedSizeOfNationalRechargePaymentDetails.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201607250615415_NationalRechargeAPIResponseDetailsModified.cs" />
+    <Compile Include="Migrations\201607250615415_NationalRechargeAPIResponseDetailsModified.Designer.cs">
+      <DependentUpon>201607250615415_NationalRechargeAPIResponseDetailsModified.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201607250616476_NationalRechargeAPIResponseDetailsModified2.cs" />
+    <Compile Include="Migrations\201607250616476_NationalRechargeAPIResponseDetailsModified2.Designer.cs">
+      <DependentUpon>201607250616476_NationalRechargeAPIResponseDetailsModified2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201607250617537_NationalRechargeAPIResponseDetailsModified3.cs" />
+    <Compile Include="Migrations\201607250617537_NationalRechargeAPIResponseDetailsModified3.Designer.cs">
+      <DependentUpon>201607250617537_NationalRechargeAPIResponseDetailsModified3.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Core\BaseEntity.cs" />
     <Compile Include="Models\Core\Data\Country.cs" />
@@ -1164,6 +1176,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201607250450140_IncreasedSizeOfNationalRechargePaymentDetails.resx">
       <DependentUpon>201607250450140_IncreasedSizeOfNationalRechargePaymentDetails.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607250615415_NationalRechargeAPIResponseDetailsModified.resx">
+      <DependentUpon>201607250615415_NationalRechargeAPIResponseDetailsModified.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607250616476_NationalRechargeAPIResponseDetailsModified2.resx">
+      <DependentUpon>201607250616476_NationalRechargeAPIResponseDetailsModified2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607250617537_NationalRechargeAPIResponseDetailsModified3.resx">
+      <DependentUpon>201607250617537_NationalRechargeAPIResponseDetailsModified3.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

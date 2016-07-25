@@ -28,6 +28,12 @@ namespace OnlineRecharge.Models.Helpers
         public string ImageURL { get; set; }
         public string OperatorName { get; set; }
         public decimal  Amount { get; set; }
+
+        //Voucher Transfer Response
+        public string RechargeCode { get; set; }
+        public decimal Denomination { get; set; }
+        public string Password { get; set; }
+        public string SerialNo { get; set; }
     }
 
    

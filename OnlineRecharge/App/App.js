@@ -163,9 +163,8 @@ app.controller('localRechargeController', ['$scope', '$http', 'localStorageServi
            $scope.AllVouchers = data;
        });
 
-        $scope.SelectVoucherValue = function (amount) {
-            debugger;
-            $scope.amount = amount;
+        $scope.loadAmount = function (voucher) {
+            $scope.amount = voucher.Amount;
         }
     }]);
 app.controller('paymentPageController', ['$scope', '$http', '$location', 'localStorageService', 'authCheck', '$rootScope', function ($scope, $http, $location, localStorageService, authCheck, $rootScope) {
@@ -288,6 +287,36 @@ app.controller('rechargeResultController', ['$scope', '$location', 'localStorage
         }
 
         $http.post('/Home/NationalBillPayment', data, config)
+        .success(function (data, status, headers, config) {
+            $scope.APIResponse = data;
+        })
+        .error(function (data, status, header, config) {
+            $scope.ResponseDetails = "Data: " + data +
+                "<hr />status: " + status +
+                "<hr />headers: " + header +
+                "<hr />config: " + config;
+        });
+    }
+    else if (rechargeParams.serviceType == 'national' && rechargeParams.rechargeType == 'Vochers') {
+        var data = $.param({
+            rechargeType: rechargeParams.rechargeType,
+            operatorCode: rechargeParams.operatorCode,
+            mobileNumber: rechargeParams.mobileNumber,
+            amount: rechargeParams.amount,
+            paymentID: $scope.paymentID,
+            result: $scope.result,
+            trackID: $scope.trackID,
+            tranID: $scope.tranID,
+            ref: $scope.ref
+        });
+
+        var config = {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+            }
+        }
+
+        $http.post('/Home/NationalVoucherTranfer', data, config)
         .success(function (data, status, headers, config) {
             $scope.APIResponse = data;
         })
