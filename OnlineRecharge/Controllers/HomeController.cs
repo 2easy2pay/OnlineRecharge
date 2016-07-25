@@ -74,6 +74,29 @@ namespace OnlineRecharge.Controllers
             var resp = await this.TopupTransfer();
             return this.Json(resp, JsonRequestBehavior.AllowGet);
         }
+
+
+
+
+        public JsonResult GetInternationalServiceProviders(string Code)
+        {
+            List<InternationalServiceProviders> model = new List<InternationalServiceProviders>();
+            try
+            {
+                model = context.internationalServiceProviders.Where(x => x.Code == Code).Select(
+                    x => new InternationalServiceProviders
+                    {
+                        Code = x.Code,
+                        Name = x.Name
+                    }).ToList();
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            return this.Json(model, JsonRequestBehavior.AllowGet);
+        }
         #endregion
 
         #region Recharge API Service Methods

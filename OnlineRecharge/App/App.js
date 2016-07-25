@@ -10,6 +10,11 @@ function ($routeProvider, $locationProvider) {
         templateUrl: '/Partials/Mobile.html',
         controller: 'localRechargeController'
     })
+        .when('/international', {
+
+            templateUrl: '/Partials/International.html',
+            controller: 'InternationalRechargeController'
+        })
     .when('/paymentOptions', {
         templateUrl: 'Partials/PaymentOptions.html',
         controller: 'paymentPageController'
@@ -234,6 +239,89 @@ app.controller('localRechargeController', ['$scope', '$http', 'localStorageServi
             });
         }
     }]);
+
+
+//International Recharge Controller
+app.controller('InternationalRechargeController', ['$scope', '$http', 'localStorageService',
+    function ($scope, $http, localStorageService) {
+        $scope.redirect = function () {
+            //Set the recharge parameter set from international recharge page.
+            var paramObj = {
+                rechargeScope: 'International',
+                rechargeType: $scope.rechargeType,
+                operatorCode: $scope.operatorCode,
+                mobileNumber: $scope.mobileNumber,
+                amount: $scope.amount
+            };
+            debugger;
+            localStorageService.set('rechargeParams', paramObj);
+            window.location = "#/paymentOptions";
+
+        }
+
+        //$http service for Getting the GetInternationalServiceProviders  
+        $scope.setOperater = function () {
+            debugger;
+            alert($scope.selected);
+            if ($scope.selected != 'undefined' || $scope.selected != '') {
+
+                $http({
+                    method: 'GET',
+                    url: '/Home/GetInternationalServiceProviders',
+                    data: { Code: $scope.selected }
+                }).
+            success(function (data) {
+                $scope.InternationalServiceProviders = data;
+            });
+            }
+        }
+
+
+        $http({
+            method: 'POST',
+            url: '/Home/GetAllVouchers'
+        }).
+       success(function (data) {
+           $scope.AllVouchers = data;
+       });
+
+
+        $scope.GetValue = function (operator) {
+            var operatorCode = $scope.operatorCode;
+            var OperatorName = $.grep($scope.serviceProviders, function (operator) {
+                return operator.Code == operatorCode;
+            })[0].Name;
+
+        }
+
+        $scope.GetServices = function () {
+            var data = $.param({
+                rechargeType: $scope.rechargeType,
+                operatorCode: $scope.operatorCode,
+
+            });
+            var config = {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+                }
+            }
+
+            $http.post('/Home/GetService/', data, config)
+            .success(function (data, status, headers, config) {
+                $scope.services = data;
+            })
+            .error(function (data, status, header, config) {
+                $scope.ResponseDetails = "Data: " + data +
+                    "<hr />status: " + status +
+                    "<hr />headers: " + header +
+                    "<hr />config: " + config;
+            });
+        }
+    }]);
+
+//End International Recharge Controller.
+
+
 app.controller('paymentPageController', ['$scope', '$http', '$location', 'localStorageService', 'authCheck', '$rootScope', function ($scope, $http, $location, localStorageService, authCheck, $rootScope) {
   
     $scope.tabs = [{
