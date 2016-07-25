@@ -1474,7 +1474,29 @@ ul.nav-menu > li > a.toggle-menu:before {
     font-size: 11px;
 }
 
+.valid-message {
+    margin: 0;
+    color: #ed2041;
+    font-size: 12px;
+    padding: 4px 0 0;
+    display: block;
+}
 
+.intlerror {
+    border-color: #ed2041 !important;
+    background-position: right 15px center;
+    background-image: url(../img/icon-alert.png);
+    background-repeat: no-repeat;
+}
+
+.intlsuccess {
+    border-color: #3f9440 !important;
+    background-position: right 15px center;
+    background-image: url(../img/icon-success-chk.png);
+    background-repeat: no-repeat;
+}
+
+ 
 /*payment-success end*/
 
 @media (max-width: 767px) {

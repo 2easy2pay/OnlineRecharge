@@ -77,6 +77,12 @@ namespace OnlineRecharge.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<JsonResult> NationalBillPayment()
+        {
+            var resp = await this.BillPayment();
+            return this.Json(resp, JsonRequestBehavior.AllowGet);
+        }
 
 
         public JsonResult GetInternationalServiceProviders(string Code)

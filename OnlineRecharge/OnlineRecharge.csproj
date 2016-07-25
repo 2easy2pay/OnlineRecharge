@@ -1060,10 +1060,13 @@
     <Compile Include="Migrations\201607250617537_NationalRechargeAPIResponseDetailsModified3.Designer.cs">
       <DependentUpon>201607250617537_NationalRechargeAPIResponseDetailsModified3.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201607250701591_KamalChanges.cs" />
+    <Compile Include="Migrations\201607250701591_KamalChanges.Designer.cs">
+      <DependentUpon>201607250701591_KamalChanges.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Core\BaseEntity.cs" />
     <Compile Include="Models\Core\Data\Countries.cs" />
-    <Compile Include="Models\Core\Data\Country.cs" />
     <Compile Include="Models\Core\Data\InternationalServiceProviders.cs" />
     <Compile Include="Models\Core\Data\LanguageDirections.cs" />
     <Compile Include="Models\Core\Data\LanguageFlagNames.cs" />
@@ -1075,7 +1078,6 @@
     <Compile Include="Models\Core\Data\ServiceProviders.cs" />
     <Compile Include="Models\Core\EFDbContext.cs" />
     <Compile Include="Models\Core\Mapping\CountriesMap.cs" />
-    <Compile Include="Models\Core\Mapping\CountryMap.cs" />
     <Compile Include="Models\Core\Mapping\InternationalServiceProvidersMap.cs" />
     <Compile Include="Models\Core\Mapping\LanguageDirectionMap.cs" />
     <Compile Include="Models\Core\Mapping\NationalRechargeAPIResponseDetailMap.cs" />
@@ -1191,6 +1193,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201607250617537_NationalRechargeAPIResponseDetailsModified3.resx">
       <DependentUpon>201607250617537_NationalRechargeAPIResponseDetailsModified3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607250701591_KamalChanges.resx">
+      <DependentUpon>201607250701591_KamalChanges.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
