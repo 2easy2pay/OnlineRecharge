@@ -217,6 +217,7 @@ ul.nav-menu > li > a {
     display: block;
     line-height: 16px;
     position: relative;
+    text-decoration: none !important;
 }
 
 ul.nav-menu > li > a:hover {
@@ -224,7 +225,7 @@ ul.nav-menu > li > a:hover {
 }
 
 ul.nav-menu > li > a:before,
-ul.nav-menu > li > a.active:before {
+ul.nav-menu > li.active > a:before {
     width: 0;
     transition: .3s all ease;
     content: '';
@@ -235,7 +236,7 @@ ul.nav-menu > li > a.active:before {
     bottom: -4px;
 }
 
-ul.nav-menu > li > a.active:before,
+ul.nav-menu > li.active > a:before,
 ul.nav-menu > li > a:hover:before {
     width: 100%;
     left: 0;
@@ -1474,6 +1475,84 @@ ul.nav-menu > li > a.toggle-menu:before {
     font-size: 11px;
 }
 
+
+/*payment-success end*/
+
+
+/*slider start*/
+
+.slider {
+    width: 100%;
+    height: 441px;
+    overflow: hidden;
+    position: relative;
+}
+
+.slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    max-width: 100%;
+    width: 100%;
+}
+
+.arrow {
+    position: absolute;
+    z-index: 1002;
+    display: block;
+    top: 50%;
+    margin-top: -17px;
+    width: 35px;
+    height: 35px;
+    outline: none;
+    cursor: pointer;
+    background: rgba(0, 0, 0, .5);
+    transition: .3s all ease;
+    border-radius: 50%;
+}
+
+.arrow.prev {
+    opacity: 0.45;
+    left: 20px;
+    transition: 0.2s linear all;
+}
+
+.arrow.prev:before {
+    position: absolute;
+    content: '';
+    background: url(../img/sprite.png) no-repeat -46px -17px;
+    display: inline-block;
+    height: 15px;
+    width: 8px;
+    left: 12px;
+    top: 10px;
+    -moz-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+
+.arrow.next {
+    opacity: 0.45;
+    right: 20px;
+    transition: 0.2s linear all;
+}
+
+.arrow.next:before {
+    position: absolute;
+    content: '';
+    background: url(../img/sprite.png) no-repeat -46px -17px;
+    display: inline-block;
+    height: 15px;
+    width: 8px;
+    left: 14px;
+    top: 10px;
+}
+
+
+/*end start*/
+
 .valid-message {
     margin: 0;
     color: #ed2041;
@@ -1495,9 +1574,6 @@ ul.nav-menu > li > a.toggle-menu:before {
     background-image: url(../img/icon-success-chk.png);
     background-repeat: no-repeat;
 }
-
- 
-/*payment-success end*/
 
 @media (max-width: 767px) {
     .mobile-header-menu {
@@ -1814,5 +1890,14 @@ ul.nav-menu > li > a.toggle-menu:before {
     }
     .payment-selection {
         margin-top: 15px;
+    }
+    .radio label {
+        margin-right: 15px;
+    }
+    .slider {
+        height: 216px;
+    }
+    .offer-list-blk {
+        margin-top: 20px;
     }
 }

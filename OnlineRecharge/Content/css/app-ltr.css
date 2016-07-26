@@ -214,6 +214,7 @@ ul.nav-menu > li > a {
     display: block;
     line-height: 16px;
     position: relative;
+    text-decoration: none !important;
 }
 
 ul.nav-menu > li > a:hover {
@@ -221,7 +222,7 @@ ul.nav-menu > li > a:hover {
 }
 
 ul.nav-menu > li > a:before,
-ul.nav-menu > li > a.active:before {
+ul.nav-menu > li.active > a:before {
     width: 0;
     transition: .3s all ease;
     content: '';
@@ -232,7 +233,7 @@ ul.nav-menu > li > a.active:before {
     bottom: -4px;
 }
 
-ul.nav-menu > li > a.active:before,
+ul.nav-menu > li.active > a:before,
 ul.nav-menu > li > a:hover:before {
     width: 100%;
     left: 0;
@@ -1537,7 +1538,6 @@ ul.nav-menu > li > a.toggle-menu:before {
 .arrow.next {
     opacity: 0.45;
     right: 20px;
-    background-image: url(../assets/img/paddle_next_999.png);
     transition: 0.2s linear all;
 }
 
@@ -1550,16 +1550,6 @@ ul.nav-menu > li > a.toggle-menu:before {
     width: 8px;
     left: 14px;
     top: 10px;
-}
-
-.arrow.prev:hover {
-    opacity: 1;
-    background-image: url(../assets/img/paddle_prev_fff.png);
-}
-
-.arrow.next:hover {
-    opacity: 1;
-    background-image: url(../assets/img/paddle_next_fff.png);
 }
 
 
@@ -1867,16 +1857,42 @@ ul.nav-menu > li > a.toggle-menu:before {
         color: #444;
         text-decoration: none;
     }
-    #error-msg {
-        color: red;
+    .gutter24 > .col-md-4 {
+        width: 100%;
     }
-    #valid-msg {
-        color: #00C900;
+    .gutter24 > .col-md-8 {
+        width: 100%;
     }
-    input.error {
-        border: 1px solid #FF7C7C;
+    .mobile-block {
+        display: none;
+    }
+    .mobile-block.visible {
+        display: block;
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background: #fff;
+        z-index: 1000;
+        overflow: scroll;
+    }
+    .mobile-block.visible .offer-list-blk {
+        margin: 0 -15px;
+    }
+    .table-head thead {
+        display: none;
     }
     .payment-selection {
         margin-top: 15px;
+    }
+    .radio label {
+        margin-right: 15px;
+    }
+    .slider {
+        height: 216px;
+    }
+    .offer-list-blk {
+        margin-top: 20px;
     }
 }
