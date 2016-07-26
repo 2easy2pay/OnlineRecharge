@@ -318,6 +318,7 @@ app.controller('paymentPageController', ['$scope', '$http', '$location', 'localS
 }]);
 app.controller('rechargeResultController', ['$scope', '$location', 'localStorageService', '$http', function ($scope, $location, localStorageService, $http) {
     $scope.jobOffers = [];
+
     var rechargeParams = localStorageService.get('nationalRechargeParams');
     var search = $location.search();
     $scope.paymentID = search.PaymentID;
@@ -417,82 +418,56 @@ app.controller('rechargeResultController', ['$scope', '$location', 'localStorage
     }
 }]);
 
-//International Recharge Controller
+//kamal -International Recharge Controller
 app.controller('InternationalRechargeController', ['$scope', '$http', 'localStorageService',
     function ($scope, $http, localStorageService) {
+
         $scope.redirect = function () {
-            //Set the recharge parameter set from international recharge page.
-            var paramObj = {
-                rechargeScope: 'International',
-                rechargeType: $scope.rechargeType,
-                operatorCode: $scope.operatorCode,
-                mobileNumber: $scope.mobileNumber,
-                amount: $scope.amount,
-                country:$scope.country
-            };
-            localStorageService.set('rechargeParams', paramObj);
-            window.location = "#/paymentOptions";
+            //Get phone number
+            //var MobileNumber = $("#MobileNumber").val();
+
+            if ($scope.rechargeForm.$valid) {
+                var paramObj = {
+                    serviceType: 'international',
+                    rechargeType: $scope.rechargeType,
+                    operatorCode: $scope.operatorCode,
+                    mobileNumber: $scope.mobileNumber,
+                    amount: $scope.amount
+                };
+                localStorageService.set('nationalRechargeParams', paramObj);
+                window.location = "#/paymentOptions";
+            }
 
         }
-       
-        //$http service for Getting the GetInternationalServiceProviders  
         $scope.setOperater = function () {
-            alert($scope.selected);
-            if ($scope.selected != 'undefined' || $scope.selected != null) {
+            //Get country code
+            var countryCode = $(".selected-flag").prop("title").split("+")[1];
 
-                $http({
-                    method: 'GET',
-                    url: '/Home/GetInternationalServiceProviders',
-                    data: { Code: $scope.selected }
-                }).
-            success(function (data) {
-                $scope.serviceProviders = data;
-            });
-            }
-        }
+            if (countryCode == "91")
+                countryCode = 'in';
+            else if (countryCode == "20")
+                countryCode = 'eg';
+            else if (countryCode == "965")
+                countryCode = 'kw';
+            else if (countryCode == "92")
+                countryCode = 'pk';
+            else if (countryCode == "63")
+                countryCode = 'ph';
+            else if (countryCode == "95")
+                countryCode = 'lk';
 
-
-        $http({
-            method: 'POST',
-            url: '/Home/GetAllVouchers'
-        }).
-       success(function (data) {
-           $scope.AllVouchers = data;
-       });
-
-
-        $scope.GetValue = function (operator) {
-            var operatorCode = $scope.operatorCode;
-            var OperatorName = $.grep($scope.serviceProviders, function (operator) {
-                return operator.Code == operatorCode;
-            })[0].Name;
-
-        }
-
-        $scope.GetServices = function () {
-            var data = $.param({
-                rechargeType: $scope.rechargeType,
-                operatorCode: $scope.operatorCode,
-
-            });
-            var config = {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
-                }
-            }
-
-            $http.post('/Home/GetService/', data, config)
-            .success(function (data, status, headers, config) {
-                $scope.services = data;
-            })
-            .error(function (data, status, header, config) {
-                $scope.ResponseDetails = "Data: " + data +
-                    "<hr />status: " + status +
-                    "<hr />headers: " + header +
-                    "<hr />config: " + config;
+            $http({
+                method: 'GET',
+                url: '/Home/GetInternationalServiceProviders?Code=' + countryCode
+            }).success(function (data) {
+                $scope.InternationalServiceProviders = data;
             });
         }
+
     }]);
+
+////End International Recharge Controller
+
 
 
 //app.controller('PopUpCtrl', ['$scope','ngDialog',function ($scope, ngDialog) {

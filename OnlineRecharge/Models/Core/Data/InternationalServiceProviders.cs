@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
@@ -14,10 +15,10 @@ namespace OnlineRecharge.Models.Core.Data
 
         public string Name { get; set; }
         public string Code { get; set; }
+        public int CountryID { get; set; }
 
-        /// <summary>
-        /// Foreign Key
-        /// </summary>
-        public virtual Countries Country { get; set; }
+        [ForeignKey("CountryID")]
+        public Countries Country { get; set; }
+
     }
 }

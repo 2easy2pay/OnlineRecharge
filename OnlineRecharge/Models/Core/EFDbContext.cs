@@ -29,8 +29,22 @@ namespace OnlineRecharge.Models.Core
 
 
 
+        #region International
+
+
+        public virtual DbSet<InternationalRecharges> InternationalRecharges
+        { get; set; }
+        public virtual DbSet<InternationalRechargePaymentDetails> InternationalRechargePaymentDetails
+        { get; set; }
+        public virtual DbSet<InternationalRechargeAPIResponseDetails> InternationalRechargeAPIResponseDetails
+        { get; set; }
+
+
+        #endregion
+
         public virtual DbSet<InternationalServiceProviders> internationalServiceProviders
         { get; set; }
+
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

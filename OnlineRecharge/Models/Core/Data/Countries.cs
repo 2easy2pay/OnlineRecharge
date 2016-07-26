@@ -15,11 +15,5 @@ namespace OnlineRecharge.Models.Core.Data
         public string Code { get; set; }
         public string Name { get; set; }
 
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public InternationalServiceProviders ServiceProvider { get; set; }
-
     }
 }

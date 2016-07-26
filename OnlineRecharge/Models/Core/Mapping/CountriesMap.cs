@@ -25,7 +25,7 @@ namespace OnlineRecharge.Models.Core.Mapping
             Property(t => t.DeletedDate).IsOptional();
 
             //table  
-            ToTable("Country");
+            ToTable("Countries");
             
         }
     }

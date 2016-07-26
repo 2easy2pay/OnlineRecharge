@@ -1060,13 +1060,20 @@
     <Compile Include="Migrations\201607250617537_NationalRechargeAPIResponseDetailsModified3.Designer.cs">
       <DependentUpon>201607250617537_NationalRechargeAPIResponseDetailsModified3.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201607250701591_KamalChanges.cs" />
-    <Compile Include="Migrations\201607250701591_KamalChanges.Designer.cs">
-      <DependentUpon>201607250701591_KamalChanges.cs</DependentUpon>
+    <Compile Include="Migrations\201607260732332_InternationalRechargeTables.cs" />
+    <Compile Include="Migrations\201607260732332_InternationalRechargeTables.Designer.cs">
+      <DependentUpon>201607260732332_InternationalRechargeTables.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201607260749401_ChangeCountryTableName.cs" />
+    <Compile Include="Migrations\201607260749401_ChangeCountryTableName.Designer.cs">
+      <DependentUpon>201607260749401_ChangeCountryTableName.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Core\BaseEntity.cs" />
     <Compile Include="Models\Core\Data\Countries.cs" />
+    <Compile Include="Models\Core\Data\InternationalRechargeAPIResponseDetails.cs" />
+    <Compile Include="Models\Core\Data\InternationalRechargePaymentDetails.cs" />
+    <Compile Include="Models\Core\Data\InternationalRecharges.cs" />
     <Compile Include="Models\Core\Data\InternationalServiceProviders.cs" />
     <Compile Include="Models\Core\Data\LanguageDirections.cs" />
     <Compile Include="Models\Core\Data\LanguageFlagNames.cs" />
@@ -1078,6 +1085,9 @@
     <Compile Include="Models\Core\Data\ServiceProviders.cs" />
     <Compile Include="Models\Core\EFDbContext.cs" />
     <Compile Include="Models\Core\Mapping\CountriesMap.cs" />
+    <Compile Include="Models\Core\Mapping\InternationalRechargeAPIResponseDetailMap.cs" />
+    <Compile Include="Models\Core\Mapping\InternationalRechargeMap.cs" />
+    <Compile Include="Models\Core\Mapping\InternationalRechargePaymentDetailMap.cs" />
     <Compile Include="Models\Core\Mapping\InternationalServiceProvidersMap.cs" />
     <Compile Include="Models\Core\Mapping\LanguageDirectionMap.cs" />
     <Compile Include="Models\Core\Mapping\NationalRechargeAPIResponseDetailMap.cs" />
@@ -1194,8 +1204,11 @@
     <EmbeddedResource Include="Migrations\201607250617537_NationalRechargeAPIResponseDetailsModified3.resx">
       <DependentUpon>201607250617537_NationalRechargeAPIResponseDetailsModified3.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201607250701591_KamalChanges.resx">
-      <DependentUpon>201607250701591_KamalChanges.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201607260732332_InternationalRechargeTables.resx">
+      <DependentUpon>201607260732332_InternationalRechargeTables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607260749401_ChangeCountryTableName.resx">
+      <DependentUpon>201607260749401_ChangeCountryTableName.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -7,13 +7,13 @@ namespace OnlineRecharge.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class KamalChanges : IMigrationMetadata
+    public sealed partial class InternationalRechargeTables : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(KamalChanges));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(InternationalRechargeTables));
         
         string IMigrationMetadata.Id
         {
-            get { return "201607250701591_KamalChanges"; }
+            get { return "201607260732332_InternationalRechargeTables"; }
         }
         
         string IMigrationMetadata.Source
