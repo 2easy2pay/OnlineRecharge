@@ -1,0 +1,107 @@
+﻿
+    <div class="row gutter24">
+
+        <div class="col-md-4">
+                <div class="recharge-block-wrap">
+
+                    <form name="rechargeForm" id="rechargeForm" novalidate ng-submit="redirect()">
+                        <div class="recharge-block">
+                            
+                            <div class="form-group margin-top20">
+                                <label translate="MobileNumber"></label>
+                                <input id="MobileNumber" name="MobileNumber" type="tel" international-phone-number only-countries="in,pk,eg,lk,ph" default-country="in"
+                                        ng-model="mobileNumber" required>
+                                <p ng-show="rechargeForm.MobileNumber.$invalid && !rechargeForm.MobileNumber.$pristine" class="valid-message">Please enter valid MobileNumber.</p>
+                                <!--ng-keydown="setOperater();"-->
+                            </div>
+
+                            <div class="form-group">
+                                <label translate="Operator"></label>
+                                <select class="form-control" name="Operator" ng-model="operatorCode" ng-options="s.Code as s.Name for s in InternationalServiceProviders"
+                                        ng-change="GetValue();" required></select>
+                                <p ng-show="rechargeForm.Operator.$invalid && !rechargeForm.Operator.$pristine" class="valid-message">Your Operator is required.</p>
+
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="#">Amount</label>
+                                <div class="input-grp">
+                                    <input type="text" class="form-control" ng-model="amount" name="amount" placeholder="Enter Amount" required>
+                                    <a href="#" class="browse-plan">Browse Plan</a>
+                                    <p ng-show="rechargeForm.amount.$invalid && !rechargeForm.amount.$pristine" class="help-block">Amount is required.</p>
+
+                                </div>
+                            </div>
+                            <div class="padding-top-4">
+                                <input type="submit" class="btn" value="{{ 'ProceedToRechargeButton' | translate }}">
+                            </div>
+                        </div>
+                    </form>
+</div>
+
+</div>
+        <div class="col-md-8 mobile-block">
+            <div class="offer-list-blk">
+                <div class="bigContaner-plans">
+                    <div class="topbar">
+                        <ul>
+                            <li><a href="#">Already Recharged</a></li>
+                            <li class="active"><a href="#">Offers</a></li>
+                        </ul>
+                    </div>
+                    <div class="offeres-table">
+                        <table class="table table-head">
+                            <thead>
+                            <th width="150">TalkTime</th>
+                            <th width="120">Validity</th>
+                            <th>Description</th>
+                            <th width="120">Price</th>
+                            </thead>
+                        </table>
+                        <div class="scroll-table">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td width="150">15-TT + 450 MB 3G/4G Data</td>
+                                        <td width="120">14 Days</td>
+                                        <td>U Medium : 300 MB Data + 150 MB Night Data ( 12 am to 6 am) ; Call 3 local Vodafone buddies @20p/min; Talktime Rs.15; Unlimited music downloads for 60 days Option of 60MB data loan. T&C Apply</td>
+                                        <td width="120">
+                                            <a class="price-btn" href="#">2 kd</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>15-TT + 450 MB 3G/4G Data</td>
+                                        <td>28 Days</td>
+                                        <td>U Medium : 300 MB Data + 150 MB Night Data ( 12 am to 6 am) ; Call 3 local Vodafone buddies @20p/min; Talktime Rs.15; Unlimited music downloads for 60 days Option of 60MB data loan. T&C Apply</td>
+                                        <td>
+                                            <a class="price-btn" href="#">5 kd</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="150">15-TT + 450 MB 3G/4G Data</td>
+                                        <td width="120">14 Days</td>
+                                        <td>U Medium : 300 MB Data + 150 MB Night Data ( 12 am to 6 am) ; Call 3 local Vodafone buddies @20p/min; Talktime Rs.15; Unlimited music downloads for 60 days Option of 60MB data loan. T&C Apply</td>
+                                        <td width="120">
+                                            <a class="price-btn" href="#">2 kd</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+
+
+    $(document).ready(function(){
+    
+        
+    });
+
+    
+</script>
+
