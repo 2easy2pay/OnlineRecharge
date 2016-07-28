@@ -183,6 +183,7 @@
     <Content Include="Content\img\sprite.png" />
     <Content Include="Content\img\subscribe-button.png" />
     <Content Include="Global.asax" />
+    <Content Include="Partials\DataCard.html" />
     <Content Include="Partials\International.html" />
     <Content Include="Partials\Mobile.html" />
     <Content Include="Partials\PaymentOptions.html" />
@@ -1068,9 +1069,19 @@
     <Compile Include="Migrations\201607260749401_ChangeCountryTableName.Designer.cs">
       <DependentUpon>201607260749401_ChangeCountryTableName.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201607280632518_DataCardTables.cs" />
+    <Compile Include="Migrations\201607280632518_DataCardTables.Designer.cs">
+      <DependentUpon>201607280632518_DataCardTables.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Core\BaseEntity.cs" />
     <Compile Include="Models\Core\Data\Countries.cs" />
+    <Compile Include="Models\Core\Data\DataCardRechargeAPIResponseDetailMap.cs" />
+    <Compile Include="Models\Core\Data\DataCardRechargeAPIResponseDetails.cs" />
+    <Compile Include="Models\Core\Data\DataCardRechargeMap.cs" />
+    <Compile Include="Models\Core\Data\DataCardRechargePaymentDetailMap.cs" />
+    <Compile Include="Models\Core\Data\DataCardRechargePaymentDetails.cs" />
+    <Compile Include="Models\Core\Data\DataCardRecharges.cs" />
     <Compile Include="Models\Core\Data\InternationalRechargeAPIResponseDetails.cs" />
     <Compile Include="Models\Core\Data\InternationalRechargePaymentDetails.cs" />
     <Compile Include="Models\Core\Data\InternationalRecharges.cs" />
@@ -1102,6 +1113,7 @@
     <Compile Include="Models\Helpers\KnetPaymentInitialResponse.cs" />
     <Compile Include="Models\Helpers\KnetPaymentInitiate.cs" />
     <Compile Include="Models\Helpers\KNetReponse.cs" />
+    <Compile Include="Models\Helpers\OnlineRechargeEnum.cs" />
     <Compile Include="Models\Helpers\RechargeAPICustomResponseModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -1209,6 +1221,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201607260749401_ChangeCountryTableName.resx">
       <DependentUpon>201607260749401_ChangeCountryTableName.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607280632518_DataCardTables.resx">
+      <DependentUpon>201607280632518_DataCardTables.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

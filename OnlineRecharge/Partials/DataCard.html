@@ -1,0 +1,77 @@
+﻿
+<div class="row gutter24">
+    <div class="col-md-4">
+        <div class="recharge-block-wrap">
+            <form name="rechargeForm" novalidate ng-submit="redirect()">
+                <div class="recharge-block">
+                    <div class="form-group">
+                        <label translate="MobileNumber"></label>
+                        <input id="MobileNumber" name="MobileNumber" type="text" international-phone-number only-countries="kw" default-country="kw" ng-model="mobileNumber" required>
+                        <p ng-show="rechargeForm.MobileNumber.$invalid && !rechargeForm.MobileNumber.$pristine" class="valid-message">You name is required.</p>
+
+                    </div>
+                    <div class="form-group">
+                        <label translate="Operator"></label>
+                        <select class="form-control" ng-model="operatorCode"
+                                ng-options="s.Code as s.Name for s in serviceProviders"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="#" translate="RechargeAmount"></label>
+                        <div class="input-grp">
+                            <input name="Amount" type="text" ng-disabled="true" ng-model="amount" class="form-control" required> 
+                            <!--<a href="#" class="browse-plan" translate="BrowsePlan"></a>-->
+                        </div>
+                        <p ng-show="rechargeForm.Amount.$invalid && !rechargeForm.Amount.$pristine" class="valid-message">You name is required.</p>
+                    
+                    </div>
+                    <div class="padding-top-4">
+                        <input type="submit" class="btn" value="{{ 'ProceedToRechargeButton' | translate }}"  >
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="offer-list-blk">
+            <div class="bigContaner-plans">
+                <div class="offeres-table">
+                    <table class="table table-head">
+                        <thead>
+                        <th width="140" translate="VoucherDetails_TableHeading_Operator"></th>
+                         <th translate="VoucherDetails_TableHeading_ServiceType">
+                         </th>
+                        <th translate="VoucherDetails_TableHeading_Offer"></th>
+                        <th width="120" translate="VoucherDetails_TableHeading_Amount"></th>
+                        </thead>
+                    </table>
+                    <div class="scroll-table">
+                        <table class="table">
+                            <tbody>
+                                <tr ng-repeat="voucher in AllVouchers| filter: operatorCode">
+                                    <td width="140">
+                                        <img ng-src="{{voucher.ImageURL}}" class="oprator-logo" /></td>
+                                   <td translate="VoucherDetails_TableStaticContent_ServiceType"></td>
+                                    <td translate="VoucherDetails_TableStaticContent_Offer"></td>
+                                    <td width="120">
+                                        <a ng-click="loadAmount(voucher);" class="price-btn">{{voucher.Amount}} KD</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8" ng-show="rechargeType == 'Prepaid' || rechargeType == 'Postpaid'">
+        <div class="offer-list-blk">
+            <div class="slider" ng-init="sliderAuto()" ng-controller="sliderCtrl">
+                <img ng-repeat="slide in slides" class="slide slide-animation nonDraggableImage"
+                     ng-swipe-right="nextSlide()" ng-swipe-left="prevSlide()"
+                     ng-hide="!isCurrentSlideIndex($index)" ng-src="{{slide.image}}">
+                <a class="arrow prev" href="javascript:void(0)" ng-click="nextSlide()"></a>
+                <a class="arrow next" href="javascript:void(0)" ng-click="prevSlide()"></a>
+            </div>
+        </div>
+    </div>
+</div>

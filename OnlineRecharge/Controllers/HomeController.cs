@@ -87,11 +87,15 @@ namespace OnlineRecharge.Controllers
 
         public JsonResult GetInternationalServiceProviders(string Code)
         {
-            List<InternationalServiceProviders> model = new List<InternationalServiceProviders>();
+
+            List<InternationalServiceProvidersModel> model = new List<InternationalServiceProvidersModel>();
             try
             {
-                model = context.internationalServiceProviders.Where(x => x.Code == Code).Select(
-                    x => new InternationalServiceProviders
+
+                Code = Code.ToUpper();
+                var countryId = context.Countries.Single(x => x.Code == Code).ID;
+                model = context.internationalServiceProviders.Where(x => x.CountryID == countryId).Select(
+                    x => new InternationalServiceProvidersModel
                     {
                         Code = x.Code,
                         Name = x.Name
@@ -111,6 +115,152 @@ namespace OnlineRecharge.Controllers
             var resp = await this.VoucherTranfer();
             return this.Json(resp, JsonRequestBehavior.AllowGet);
         }
+
+
+      
+
+        [HttpPost]
+        public async Task<JsonResult> GetAllDataCardVouchers()
+        {
+            var resp = await this.GetAllDataCardOperatorVouchers();
+            return this.Json(resp, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public async Task<List<VoucherDetailsModel>> GetAllDataCardOperatorVouchers()
+        {
+            try
+            {
+                List<VoucherDetailsModel> vouchers = new List<VoucherDetailsModel>();
+                using (var client = new HttpClient())
+                {
+
+                    #region login and get token
+                    var logindata = string.Format("grant_type=password&username={0}&password={1}", USERNAME, PASSWORD);//LOGIN DATA
+
+                    var url = BASEADDRESS + "token";
+
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
+                    request.Content = new StringContent(logindata, Encoding.UTF8, "application/x-www-form-urlencoded");
+
+                    var resp = await client.PostAsync(url, request.Content);
+                    Token token = new Token();
+                    if (resp.IsSuccessStatusCode)
+                    {
+                        token = await resp.Content.ReadAsAsync<Token>();
+                    }
+                    #endregion login and get token
+
+                    using (var httpClient = new HttpClient())
+                    {
+                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token.token_type, token.access_token);
+                        httpClient.BaseAddress = new Uri(BASEADDRESS);
+
+                        // New code:
+                        HttpResponseMessage response = await httpClient.GetAsync("api/Services/GetServiceList");
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var result = await response.Content.ReadAsAsync<List<Service>>();
+
+                            List<Service> operators = result.Where(x => x.OperatorType == "VI" || x.OperatorType == "MY").ToList();
+
+                            foreach (var item in operators)
+                            {
+                                foreach (var card in item.DenomCollection)
+                                {
+                                    VoucherDetailsModel model = new VoucherDetailsModel();
+                                    if (item.OperatorType == "VI")
+                                    {
+                                        model.OperatorCode = "VV";
+                                        model.ImageURL = "/Content/img/Operators/viva.png";
+                                    }
+                                    else if (item.OperatorType == "MY")
+                                    {
+                                        model.OperatorCode = "XP";
+                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                    }
+                                    model.Amount = card.Denom;
+                                    vouchers.Add(model);
+                                }
+                            }
+
+                        }
+
+                    }
+                }
+                return vouchers;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+
+        }
+
+
+        public int UpdateDataCardRechargeDetailsToDB(string mobileNumber, string rechargeType, string operatorCode, string paymentID, string status, string trackID, string tranID, string reference, TransferResponseDetailsModel result)
+        {
+            var model = context.DataCardRecharge.Create();
+            try
+            {
+
+                model.MobileNumber = mobileNumber;
+                model.amount = result.Amount;
+                model.ServiceProvider = context.ServiceProiders.Where(x => x.Code == operatorCode).FirstOrDefault();
+                model.IsActive = true;
+                model.IsDeleted = false;
+                model.CreatedBy = 1;
+                model.CreatedDate = DateTime.Now;
+                model.CustomerID = 1;
+                context.DataCardRecharge.Add(model);
+                context.SaveChanges();
+
+                var paymentDetail = context.DataCardRechargePaymentDetail.Create();
+                paymentDetail.PaymentID = paymentID;
+                paymentDetail.Result = status;
+                paymentDetail.TrackID = trackID;
+                paymentDetail.TransID = tranID;
+                paymentDetail.Ref = reference;
+                paymentDetail.DataCardRecharge = model;
+                context.DataCardRechargePaymentDetail.Add(paymentDetail);
+
+                var apiResponseDetail = context.DataCardRechargeApiDetail.Create();
+                apiResponseDetail.DataCardRecharge = model;
+                apiResponseDetail.PaymentID = result.PaymentID;
+                apiResponseDetail.PaymentRef = result.PaymentRef;
+                apiResponseDetail.Response = result.Response;
+                apiResponseDetail.ResponseDescription = result.ResponseDescription;
+                apiResponseDetail.Date = DateTime.Now;// result.Date;
+                apiResponseDetail.Denomination = result.Denomination;
+                apiResponseDetail.Password = result.Password;
+                apiResponseDetail.RechargeCode = result.RechargeCode;
+                apiResponseDetail.SerialNo = result.SerialNo;
+                context.DataCardRechargeApiDetail.Add(apiResponseDetail);
+                context.SaveChanges();
+
+            }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
+                throw;
+            }
+            return model.ID;
+        }
+
         #endregion
 
         #region Recharge API Service Methods
@@ -360,6 +510,7 @@ namespace OnlineRecharge.Controllers
             {
                 TransferResponseDetailsModel model = new TransferResponseDetailsModel();
                 string rechargeType = Request.Form["rechargeType"];
+                string serviceType = Request.Form["serviceType"];
                 string operatorName = Request.Form["operatorCode"];
                 string mobileNumber = Request.Form["mobileNumber"];
                 string amount = Request.Form["amount"];
@@ -418,7 +569,12 @@ namespace OnlineRecharge.Controllers
                             model.Denomination = result.Denomination;
                             model.Password = result.Password;
                             model.SerialNo = result.SerialNo;
-                            int id = UpdateRechargeDetailsToDB(mobileNumber, rechargeType, operatorName, paymentID, status, trackID, tranID, reference, model);
+                            if (ServiceType.DataCards.ToString() == serviceType)
+                            {
+                                int datacardresponse = UpdateDataCardRechargeDetailsToDB(mobileNumber, rechargeType, operatorName, paymentID, status, trackID, tranID, reference, model);
+                            }
+                            else
+                            { int id = UpdateRechargeDetailsToDB(mobileNumber, rechargeType, operatorName, paymentID, status, trackID, tranID, reference, model); }
                         }
 
                         //string data = string.Format("?OperatorName={0}&AmtSelected={1}&MobileNumber={2}&PaymentType={3}", operatorName, amount, mobileNumber, "CASH");
@@ -551,7 +707,7 @@ namespace OnlineRecharge.Controllers
         #endregion
 
         #region Kamal
-        //Internatinal Recharnges Update
+         //Internatinal Recharnges Update
         public int UpdateInternationalRechargeDetailsToDB(string mobileNumber, string rechargeType, string operatorCode, string paymentID, string status, string trackID, string tranID, string reference, TransferResponseDetailsModel result)
         {
             var model = context.InternationalRecharges.Create();
@@ -576,7 +732,7 @@ namespace OnlineRecharge.Controllers
                 paymentDetail.TrackID = trackID;
                 paymentDetail.TransID = tranID;
                 paymentDetail.Ref = reference;
-paymentDetail.InternationalRecharge = model;
+                paymentDetail.InternationalRecharge = model;
                 context.InternationalRechargePaymentDetails.Add(paymentDetail);
 
                 var apiResponseDetail = context.InternationalRechargeAPIResponseDetails.Create();
@@ -606,17 +762,15 @@ paymentDetail.InternationalRecharge = model;
             }
             return model.ID;
         }
-
-
         /// <summary>
-        /// Call before submit the payment.
-        /// </summary>
-        /// <param name="OperatorName"></param>
-        /// <param name="CountryCode"></param>
-        /// <param name="OperatorCode"></param>
-        /// <param name="MobileNumber"></param>
-        /// <param name="Amount"></param>
-        /// <returns></returns>
+                        /// Call before submit the payment.
+                        /// </summary>
+                        /// <param name="OperatorName"></param>
+                        /// <param name="CountryCode"></param>
+                        /// <param name="OperatorCode"></param>
+                        /// <param name="MobileNumber"></param>
+                        /// <param name="Amount"></param>
+                        /// <returns></returns>
         public async Task<JsonResult> InternationalTopupCheck(string OperatorName, string CountryCode, string OperatorCode, string MobileNumber, string Amount)
         {
             try
@@ -683,17 +837,6 @@ paymentDetail.InternationalRecharge = model;
             }
             return Json(true, JsonRequestBehavior.AllowGet);
         }
-
-        /// <summary>
-        ///  Save recharge details to db.
-        /// </summary>
-        /// <param name="OperatorName"></param>
-        /// <param name="CountryCode"></param>
-        /// <param name="OperatorCode"></param>
-        /// <param name="MobileNumber"></param>
-        /// <param name="Amount"></param>
-        /// <param name="PaymentType"></param>
-        /// <returns></returns>
         public async Task<JsonResult> InternationalTopupTransfer()
         {
             TransferResponseDetailsModel model = new TransferResponseDetailsModel();

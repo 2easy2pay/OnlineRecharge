@@ -27,17 +27,28 @@ namespace OnlineRecharge.Models.Core
         public virtual DbSet<NationalRechargeAPIResponseDetails> NationalRechargeAPIResponseDetails
         { get; set; }
 
-
+        public virtual DbSet<Countries> Countries
+        { get; set; }
 
         #region International
-
-
+       
         public virtual DbSet<InternationalRecharges> InternationalRecharges
         { get; set; }
         public virtual DbSet<InternationalRechargePaymentDetails> InternationalRechargePaymentDetails
         { get; set; }
         public virtual DbSet<InternationalRechargeAPIResponseDetails> InternationalRechargeAPIResponseDetails
         { get; set; }
+
+
+        #endregion
+
+        #region Data Card
+
+        public virtual DbSet<DataCardRecharges> DataCardRecharge { get; set; }
+
+        public virtual DbSet<DataCardRechargePaymentDetails> DataCardRechargePaymentDetail { get; set; }
+
+        public virtual DbSet<DataCardRechargeAPIResponseDetails> DataCardRechargeApiDetail { get; set; }
 
 
         #endregion

@@ -1,7 +1,6 @@
 ﻿/// <reference path="C:\Projects\Recharge\OnlineRecharge\OnlineRecharge\Partials/_Result.cshtml" />
 var app = angular.module('Multilingual', ['pascalprecht.translate',
    'ngCookies', 'ngRoute', 'internationalPhoneNumber', 'ngDialog', 'slider', 'LocalStorageModule']);
-
 //Configuration Section
 app.config(['$routeProvider', '$locationProvider',
 function ($routeProvider, $locationProvider) {
@@ -27,6 +26,10 @@ function ($routeProvider, $locationProvider) {
        templateUrl: '/Partials/International.html',
        controller: 'InternationalRechargeController'
     })
+    .when('/datacards', {
+        controller: "datacardController",
+        templateUrl: 'Partials/DataCard.html'
+    })
    .otherwise({ redirectTo: '/mobile' });
 
 }]);
@@ -47,7 +50,6 @@ app.config(['$translateProvider', function ($translateProvider) {
   .useLocalStorage()
   .useMissingTranslationHandlerLog();
 }]);
-
 app.run(['$rootScope', function ($rootScope) {
     $rootScope.lang = 'en';
 
@@ -172,89 +174,6 @@ app.controller('localRechargeController', ['$scope', '$http', 'localStorageServi
             $scope.amount = voucher.Amount;
         }
     }]);
-
-
-//International Recharge Controller
-app.controller('InternationalRechargeController', ['$scope', '$http', 'localStorageService',
-    function ($scope, $http, localStorageService) {
-        $scope.redirect = function () {
-            //Set the recharge parameter set from international recharge page.
-            var paramObj = {
-                rechargeScope: 'International',
-                rechargeType: $scope.rechargeType,
-                operatorCode: $scope.operatorCode,
-                mobileNumber: $scope.mobileNumber,
-                amount: $scope.amount
-            };
-            debugger;
-            localStorageService.set('rechargeParams', paramObj);
-            window.location = "#/paymentOptions";
-
-        }
-
-        //$http service for Getting the GetInternationalServiceProviders  
-        $scope.setOperater = function () {
-            debugger;
-            alert($scope.selected);
-            if ($scope.selected != 'undefined' || $scope.selected != '') {
-
-                $http({
-                    method: 'GET',
-                    url: '/Home/GetInternationalServiceProviders',
-                    data: { Code: $scope.selected }
-                }).
-            success(function (data) {
-                $scope.InternationalServiceProviders = data;
-            });
-            }
-        }
-
-
-        $http({
-            method: 'POST',
-            url: '/Home/GetAllVouchers'
-        }).
-       success(function (data) {
-           $scope.AllVouchers = data;
-       });
-
-
-        $scope.GetValue = function (operator) {
-            var operatorCode = $scope.operatorCode;
-            var OperatorName = $.grep($scope.serviceProviders, function (operator) {
-                return operator.Code == operatorCode;
-            })[0].Name;
-
-        }
-
-        $scope.GetServices = function () {
-            var data = $.param({
-                rechargeType: $scope.rechargeType,
-                operatorCode: $scope.operatorCode,
-
-            });
-            var config = {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
-                }
-            }
-
-            $http.post('/Home/GetService/', data, config)
-            .success(function (data, status, headers, config) {
-                $scope.services = data;
-            })
-            .error(function (data, status, header, config) {
-                $scope.ResponseDetails = "Data: " + data +
-                    "<hr />status: " + status +
-                    "<hr />headers: " + header +
-                    "<hr />config: " + config;
-            });
-        }
-    }]);
-
-//End International Recharge Controller.
-
-
 app.controller('paymentPageController', ['$scope', '$http', '$location', 'localStorageService', 'authCheck', '$rootScope', function ($scope, $http, $location, localStorageService, authCheck, $rootScope) {
   
     $scope.tabs = [{
@@ -416,33 +335,132 @@ app.controller('rechargeResultController', ['$scope', '$location', 'localStorage
                 "<hr />config: " + config;
         });
     }
-}]);
+    else if (rechargeParams.serviceType == 'DataCards') {
+        var data = $.param({
+            rechargeType: rechargeParams.rechargeType,
+            operatorCode: rechargeParams.operatorCode,
+            mobileNumber: rechargeParams.mobileNumber,
+            serviceType: rechargeParams.serviceType,
+            amount: rechargeParams.amount,
+            paymentID: $scope.paymentID,
+            result: $scope.result,
+            trackID: $scope.trackID,
+            tranID: $scope.tranID,
+            ref: $scope.ref
+        });
 
+        var config = {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+            }
+        }
+
+        $http.post('/Home/NationalVoucherTranfer', data, config)
+        .success(function (data, status, headers, config) {
+            $scope.APIResponse = data;
+        })
+        .error(function (data, status, header, config) {
+            $scope.ResponseDetails = "Data: " + data +
+                "<hr />status: " + status +
+                "<hr />headers: " + header +
+                "<hr />config: " + config;
+        });
+
+    }
+    else if (rechargeParams.serviceType == 'International') {
+
+
+        var TopValidationdata = $.param({
+            OperatorName: $scope.OperatorName,
+            CountryCode: $scope.CountryCode,
+            OperatorCode: $scope.OperatorCode,
+            MobileNumber: $scope.MobileNumber,
+            Amount: $scope.Amount,
+        });
+
+
+        $http.post('/Home/InternationalTopupCheck/', TopValidationdata, config)
+        .success(function (data, status, headers, config) {
+            $scope.InternationValidatoinResponse = data;
+        })
+
+        debugger;
+        var data = $.param({
+            rechargeType: rechargeParams.rechargeType,
+            operatorCode: rechargeParams.operatorCode,
+            mobileNumber: rechargeParams.mobileNumber,
+            amount: rechargeParams.amount,
+            paymentID: $scope.paymentID,
+            result: $scope.result,
+            trackID: $scope.trackID,
+            tranID: $scope.tranID,
+            ref: $scope.ref
+        });
+
+        $http.post('/Home/InternationalTopupTransfer', data, config)
+        .success(function (data, status, headers, config) {
+            $scope.APIResponse = data;
+        })
+        .error(function (data, status, header, config) {
+            $scope.ResponseDetails = "Data: " + data +
+                "<hr />status: " + status +
+                "<hr />headers: " + header +
+                "<hr />config: " + config;
+        });
+    }
+}]);
 //kamal -International Recharge Controller
 app.controller('InternationalRechargeController', ['$scope', '$http', 'localStorageService',
+
     function ($scope, $http, localStorageService) {
+        //set default country code.
+        var countryCode = 'in';
 
         $scope.redirect = function () {
-            //Get phone number
-            //var MobileNumber = $("#MobileNumber").val();
-
-            if ($scope.rechargeForm.$valid) {
-                var paramObj = {
-                    serviceType: 'international',
-                    rechargeType: $scope.rechargeType,
-                    operatorCode: $scope.operatorCode,
-                    mobileNumber: $scope.mobileNumber,
-                    amount: $scope.amount
-                };
-                localStorageService.set('nationalRechargeParams', paramObj);
-                window.location = "#/paymentOptions";
-            }
+            //Set the recharge parameter set from international recharge page.
+            var paramObj = {
+                rechargeScope: 'International',
+                rechargeType: $scope.rechargeType,
+                operatorCode: $scope.operatorCode,
+                mobileNumber: $scope.mobileNumber,
+                amount: $scope.amount
+            };
+            debugger;
+            localStorageService.set('rechargeParams', paramObj);
+            window.location = "#/paymentOptions";
 
         }
+
+        //On Selected country change bind the Operators.
+        $(document).ready(function () {
+
+            $("#MobileNumber").on("countrychange", function (e, countryData) {
+                $http({
+                    method: 'GET',
+                    url: '/Home/GetInternationalServiceProviders?Code=' + countryData.iso2
+                }).success(function (data) {
+                    $scope.InternationalServiceProviders = data;
+                });
+            });
+
+            //Default Operators binding.
+            $http({
+                method: 'GET',
+                url: '/Home/GetInternationalServiceProviders?Code=' + countryCode
+            }).success(function (data) {
+                $scope.InternationalServiceProviders = data;
+            });
+
+        });
+
+
+
         $scope.setOperater = function () {
+
+
             //Get country code
             var countryCode = $(".selected-flag").prop("title").split("+")[1];
-
+            var operater = '';
             if (countryCode == "91")
                 countryCode = 'in';
             else if (countryCode == "20")
@@ -453,7 +471,7 @@ app.controller('InternationalRechargeController', ['$scope', '$http', 'localStor
                 countryCode = 'pk';
             else if (countryCode == "63")
                 countryCode = 'ph';
-            else if (countryCode == "95")
+            else if (countryCode == "94")
                 countryCode = 'lk';
 
             $http({
@@ -463,54 +481,43 @@ app.controller('InternationalRechargeController', ['$scope', '$http', 'localStor
                 $scope.InternationalServiceProviders = data;
             });
         }
-
     }]);
+app.controller('datacardController', ['$scope', '$http', 'localStorageService',
+    function ($scope, $http, localStorageService) {
+        $scope.redirect = function () {
+            debugger
+            if ($scope.rechargeForm.$valid) {
+                var paramObj = {
+                    serviceType: 'DataCards',
+                    rechargeType: 'DataCards',
+                    operatorCode: $scope.operatorCode,
+                    mobileNumber: $scope.mobileNumber,
+                    amount: $scope.amount
+                };
+                localStorageService.set('nationalRechargeParams', paramObj);
+                window.location = "#/paymentOptions";
+            }
 
+        }
+        //$http service for Getting the ServiceProviders  
+        $http({
+            method: 'GET',
+            url: '/Home/GetServiceProviders'
+        }).
+        success(function (data) {
+            $scope.serviceProviders = data;
+        });
+
+        $http({
+            method: 'POST',
+            url: '/Home/GetAllDataCardVouchers'
+        }).
+       success(function (data) {
+           $scope.AllVouchers = data;
+       });
+
+        $scope.loadAmount = function (voucher) {
+            $scope.amount = voucher.Amount;
+        }
+    }]);
 ////End International Recharge Controller
-
-
-
-//app.controller('PopUpCtrl', ['$scope','ngDialog',function ($scope, ngDialog) {
-//    $scope.clickToOpen = function () {
-//        ngDialog.open({
-//            template: 'login.html',
-//            className: 'ngdialog-theme-default login-popup',
-//            controller: ['$scope',  function ($scope) {
-//                // controller logic
-//                $scope.tabs = [{
-//                    title: 'Login',
-//                    url: 'innerLogin.html'
-//                }, {
-//                    title: 'Register',
-//                    url: 'register.html'
-//                }];
-
-//                $scope.currentTab = 'innerLogin.html';
-
-//                $scope.loginTabClick = function (tab) {
-//                    $scope.currentTab = tab.url;
-//                }
-
-//                $scope.isActiveTab = function (tabUrl) {
-//                    return tabUrl == $scope.currentTab;
-//                }
-
-//                $scope.signin = function (user) {
-//                    $http.post('api/accounts/signin', user)
-//                        .success(function (data, status, headers, config) {
-//                            user.authenticated = true;
-//                            $rootScope.user = user;
-//                            $location.path('/');
-//                        })
-//                        .error(function (data, status, headers, config) {
-//                            user.authenticated = false;
-//                            $rootScope.user = {};
-//                        });
-//                };
-//            }]
-//        });
-//    };
-
-
-
-//}]);'$scope', 'ngDialog', '$window', '$rootScope', 'authCheck'

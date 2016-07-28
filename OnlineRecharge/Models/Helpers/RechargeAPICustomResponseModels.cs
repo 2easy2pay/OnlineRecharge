@@ -36,7 +36,12 @@ namespace OnlineRecharge.Models.Helpers
         public string SerialNo { get; set; }
     }
 
-   
+    public class InternationalServiceProvidersModel
+    {
+
+        public string Name { get; set; }
+        public string Code { get; set; }
+    }
     public class RechargeAPICustomResponseModels
     {
     }
