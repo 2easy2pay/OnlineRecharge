@@ -1,6 +1,6 @@
 ﻿/// <reference path="C:\Projects\Recharge\OnlineRecharge\OnlineRecharge\Partials/_Result.cshtml" />
 var app = angular.module('Multilingual', ['pascalprecht.translate',
-   'ngCookies', 'ngRoute', 'internationalPhoneNumber', 'ngDialog', 'slider', 'LocalStorageModule']);
+   'ngCookies', 'ngRoute', 'internationalPhoneNumber', 'ngDialog', 'slider', 'LocalStorageModule', 'blockUI']);
 //Configuration Section
 app.config(['$routeProvider', '$locationProvider',
 function ($routeProvider, $locationProvider) {
@@ -30,6 +30,10 @@ function ($routeProvider, $locationProvider) {
         controller: "datacardController",
         templateUrl: 'Partials/DataCard.html'
     })
+         .when('/shoppingcards', {
+             controller: "shoppingcardsController",
+             templateUrl: 'Partials/ShoppingCards.html'
+         })
    .otherwise({ redirectTo: '/mobile' });
 
 }]);
@@ -63,6 +67,27 @@ app.run(['$rootScope', function ($rootScope) {
     });
 }]);
 
+//Directive Sections
+app.directive('numbersOnly', function () {
+    return {
+        require: 'ngModel',
+        link: function (scope, element, attr, ngModelCtrl) {
+            function fromUser(text) {
+                if (text) {
+                    var transformedInput = text.replace(/[^0-9]/g, '');
+
+                    if (transformedInput !== text) {
+                        ngModelCtrl.$setViewValue(transformedInput);
+                        ngModelCtrl.$render();
+                    }
+                    return transformedInput;
+                }
+                return undefined;
+            }
+            ngModelCtrl.$parsers.push(fromUser);
+        }
+    };
+});
 //Service
 app.factory('rechargeParameterService', [function () {
     var rechargeParams = {};
@@ -101,9 +126,9 @@ app.controller('navCtrl', ['$scope', '$location', function ($scope, $location) {
 
 
 }]);
-app.controller('LanguageSwitchController', ['$scope', '$rootScope', '$translate','authCheck',
-function ($scope, $rootScope, $translate,authCheck) {
-      authCheck.isUserLoggedIn();
+app.controller('LanguageSwitchController', ['$scope', '$rootScope', '$translate',
+function ($scope, $rootScope, $translate) {
+      //authCheck.isUserLoggedIn();
       $rootScope.LogedinName = ($rootScope.LogedinName == 'My Account' || angular.isUndefined($rootScope.LogedinName)) ? 'My Account' : $rootScope.LogedinName;
       $rootScope.isLoggedIn = false;
       $scope.changeLanguage = function (langKey) {
@@ -127,26 +152,32 @@ function ($scope, $rootScope, $translate,authCheck) {
 app.controller('PopUpCtrl', ['$scope', 'ngDialog', '$rootScope', 'authCheck', '$window', function ($scope, ngDialog, $rootScope, authCheck, $window) {
     //alert($scope.username);
     $scope.clickToOpen = function () {
-        authCheck.isUserLoggedIn();
+        //authCheck.isUserLoggedIn();
     };
 
     $scope.Logout = function () {
         console.log('IN')
-        authCheck.Logout()
+      //  authCheck.Logout()
     }
 
 
 }]);
-app.controller('localRechargeController', ['$scope', '$http', 'localStorageService',
-    function ($scope, $http, localStorageService) {
+app.controller('localRechargeController', ['$scope', '$http', 'localStorageService','blockUI',
+function ($scope, $http, localStorageService,blockUI) {
+        var myBlock = blockUI.instances.get('myBlock');
         $scope.redirect = function () {
             if ($scope.rechargeForm.$valid) {
+                if (myBlock.state().blocking) {
+                    myBlock.stop();
+                } else {
+                    myBlock.start();
+                }
                 var paramObj = {
-                    serviceType: 'national',
-                    rechargeType: $scope.rechargeType,
-                    operatorCode: $scope.operatorCode,
-                    mobileNumber: $scope.mobileNumber,
-                    amount: $scope.amount
+                    ServiceType: 'national',
+                    RechargeType: $scope.rechargeType,
+                    OperatorCode: $scope.operatorCode,
+                    MobileNumber: $scope.mobileNumber,
+                    Amount: $scope.amount
                 };
                 localStorageService.set('nationalRechargeParams', paramObj);
                 window.location = "#/paymentOptions";
@@ -170,12 +201,74 @@ app.controller('localRechargeController', ['$scope', '$http', 'localStorageServi
            $scope.AllVouchers = data;
        });
 
+        $scope.refreshRechargeType = function () {
+            $scope.mobileNumber="",
+            $scope.amount=""
+        }
+
         $scope.loadAmount = function (voucher) {
             $scope.amount = voucher.Amount;
         }
+
+        $scope.CheckValidationForAmount = function () {
+            if ($scope.amount == null || $scope.amount == undefined) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        $scope.CheckValidationForOperator = function () {
+            if ($scope.operatorCode == null || $scope.operatorCode == undefined) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        $scope.CheckValidationForMobileNumer = function () {
+            if ($scope.mobileNumber == null || $scope.mobileNumber == undefined) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
     }]);
-app.controller('paymentPageController', ['$scope', '$http', '$location', 'localStorageService', 'authCheck', '$rootScope', function ($scope, $http, $location, localStorageService, authCheck, $rootScope) {
-  
+app.controller('paymentPageController', ['$scope', '$http', '$location', 'localStorageService', '$rootScope', '$timeout', 'blockUI', function ($scope, $http, $location, localStorageService, $rootScope, $timeout, blockUI) {
+    var search = $location.search();
+    if (search.id != undefined)
+    {
+        $http({
+            method: 'POST',
+            data:{id:search.id},
+            url: '/Home/GetRechargeParameter'
+        }).
+       success(function (data) {
+           if (data != "")
+           {
+               localStorageService.set('nationalRechargeParams', data);
+               var test= localStorageService.get('nationalRechargeParams');
+               console.log(test); // returns data --working
+               $scope.RechargeParameter = test; // assiged
+               console.log($scope.RechargeParameter);  // returns data --working
+           }
+           else
+           {
+               $scope.RechargeParameter = localStorageService.get('nationalRechargeParams');
+           }
+          
+       });
+        $timeout(function () {
+            console.log($scope.RechargeParameter);
+        }, 2000);
+    }
+    else
+    {
+        $scope.RechargeParameter = localStorageService.get('nationalRechargeParams');
+    }
     $scope.tabs = [{
         title: 'KNet',
         url: 'knet.html'
@@ -186,7 +279,7 @@ app.controller('paymentPageController', ['$scope', '$http', '$location', 'localS
         title: 'Wallet',
         url: 'wallet.html'
     }];
-    $scope.RechargeParameter = localStorageService.get('nationalRechargeParams');
+   
     $scope.currentTab = 'knet.html';
 
     $scope.onClickTab = function (tab) {
@@ -204,15 +297,17 @@ app.controller('paymentPageController', ['$scope', '$http', '$location', 'localS
             return '/Content/img/payment/visA.png'
     };
     $scope.ProcessKnetPayment = function () {
+        debugger;
+        blockUI.start();
         // use $.param jQuery function to serialize data from JSON 
         var data = $.param({
-            amount: $scope.RechargeParameter.amount,
-            contactNumber: "+" + $scope.RechargeParameter.mobileNumber,
+            amount: $scope.RechargeParameter.Amount,
+            contactNumber: "+" + $scope.RechargeParameter.MobileNumber,
             email: 'info@2easy2pay.com',
             paymentType: 'knet',
             returnUrl: 'https://api.2easy2pay.com/web/knetresponse/rechargeWebResponse',
             errorUrl: 'https://api.2easy2pay.com/web/knetresponse/rechargeWebResponse',
-            Udf1: $scope.RechargeParameter.amount
+            Udf1: $scope.RechargeParameter.Amount
         });
 
         var config = {
@@ -224,20 +319,20 @@ app.controller('paymentPageController', ['$scope', '$http', '$location', 'localS
         $http.post('/Home/ProcessKnetPayment', data, config)
         .success(function (data) {
             // build form
-
             var form = $('<form></form>');
             form.attr("action", data.URL);
             form.attr("method", "POST");
             $("body").append(form);
             form.submit();
+            blockUI.stop();
             form.remove();
         });
     };
     
 }]);
-app.controller('rechargeResultController', ['$scope', '$location', 'localStorageService', '$http', function ($scope, $location, localStorageService, $http) {
-    $scope.jobOffers = [];
-
+app.controller('rechargeResultController', ['$scope', '$location', 'localStorageService', '$http', 'blockUI', function ($scope, $location, localStorageService, $http, blockUI) {
+    debugger;
+    blockUI.start();
     var rechargeParams = localStorageService.get('nationalRechargeParams');
     var search = $location.search();
     $scope.paymentID = search.PaymentID;
@@ -245,12 +340,12 @@ app.controller('rechargeResultController', ['$scope', '$location', 'localStorage
     $scope.trackID = search.TrackID;
     $scope.tranID = search.TranID;
     $scope.ref = search.Ref;
-    if (rechargeParams.serviceType == 'national' && rechargeParams.rechargeType == 'Prepaid') {
+    if (rechargeParams.ServiceType == 'national' && rechargeParams.RechargeType == 'Prepaid') {
         var data = $.param({
-            rechargeType: rechargeParams.rechargeType,
-            operatorCode: rechargeParams.operatorCode,
-            mobileNumber: rechargeParams.mobileNumber,
-            amount: rechargeParams.amount,
+            rechargeType: rechargeParams.RechargeType,
+            operatorCode: rechargeParams.OperatorCode,
+            mobileNumber: rechargeParams.MobileNumber,
+            amount: rechargeParams.Amount,
             paymentID: $scope.paymentID,
             result: $scope.result,
             trackID: $scope.trackID,
@@ -275,12 +370,12 @@ app.controller('rechargeResultController', ['$scope', '$location', 'localStorage
                 "<hr />config: " + config;
         });
     }
-    else if (rechargeParams.serviceType == 'national' && rechargeParams.rechargeType == 'Postpaid') {
+    else if (rechargeParams.ServiceType == 'national' && rechargeParams.RechargeType == 'Postpaid') {
         var data = $.param({
-            rechargeType: rechargeParams.rechargeType,
-            operatorCode: rechargeParams.operatorCode,
-            mobileNumber: rechargeParams.mobileNumber,
-            amount: rechargeParams.amount,
+            rechargeType: rechargeParams.RechargeType,
+            operatorCode: rechargeParams.OperatorCode,
+            mobileNumber: rechargeParams.MobileNumber,
+            amount: rechargeParams.Amount,
             paymentID: $scope.paymentID,
             result: $scope.result,
             trackID: $scope.trackID,
@@ -305,12 +400,12 @@ app.controller('rechargeResultController', ['$scope', '$location', 'localStorage
                 "<hr />config: " + config;
         });
     }
-    else if (rechargeParams.serviceType == 'national' && rechargeParams.rechargeType == 'Vochers') {
+    else if (rechargeParams.ServiceType == 'national' && rechargeParams.RechargeType == 'Vochers') {
         var data = $.param({
-            rechargeType: rechargeParams.rechargeType,
-            operatorCode: rechargeParams.operatorCode,
-            mobileNumber: rechargeParams.mobileNumber,
-            amount: rechargeParams.amount,
+            rechargeType: rechargeParams.RechargeType,
+            operatorCode: rechargeParams.OperatorCode,
+            mobileNumber: rechargeParams.MobileNumber,
+            amount: rechargeParams.Amount,
             paymentID: $scope.paymentID,
             result: $scope.result,
             trackID: $scope.trackID,
@@ -335,13 +430,13 @@ app.controller('rechargeResultController', ['$scope', '$location', 'localStorage
                 "<hr />config: " + config;
         });
     }
-    else if (rechargeParams.serviceType == 'DataCards') {
+    else if (rechargeParams.ServiceType == 'DataCards') {
         var data = $.param({
-            rechargeType: rechargeParams.rechargeType,
-            operatorCode: rechargeParams.operatorCode,
-            mobileNumber: rechargeParams.mobileNumber,
-            serviceType: rechargeParams.serviceType,
-            amount: rechargeParams.amount,
+            rechargeType: rechargeParams.RechargeType,
+            operatorCode: rechargeParams.OperatorCode,
+            mobileNumber: rechargeParams.MobileNumber,
+            serviceType: rechargeParams.ServiceType,
+            amount: rechargeParams.Amount,
             paymentID: $scope.paymentID,
             result: $scope.result,
             trackID: $scope.trackID,
@@ -367,7 +462,7 @@ app.controller('rechargeResultController', ['$scope', '$location', 'localStorage
         });
 
     }
-    else if (rechargeParams.serviceType == 'International') {
+    else if (rechargeParams.ServiceType == 'International') {
 
 
         var TopValidationdata = $.param({
@@ -384,7 +479,6 @@ app.controller('rechargeResultController', ['$scope', '$location', 'localStorage
             $scope.InternationValidatoinResponse = data;
         })
 
-        debugger;
         var data = $.param({
             rechargeType: rechargeParams.rechargeType,
             operatorCode: rechargeParams.operatorCode,
@@ -408,6 +502,39 @@ app.controller('rechargeResultController', ['$scope', '$location', 'localStorage
                 "<hr />config: " + config;
         });
     }
+    else if (rechargeParams.ServiceType == 'ShoppingCards') {
+        var data = $.param({
+            rechargeType: rechargeParams.RechargeType,
+            operatorCode: rechargeParams.OperatorCode,
+            mobileNumber: rechargeParams.MobileNumber,
+            serviceType: rechargeParams.ServiceType,
+            amount: rechargeParams.Amount,
+            paymentID: $scope.paymentID,
+            result: $scope.result,
+            trackID: $scope.trackID,
+            tranID: $scope.tranID,
+            ref: $scope.ref
+        });
+
+        var config = {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+            }
+        }
+
+        $http.post('/Home/NationalVoucherTranfer', data, config)
+        .success(function (data, status, headers, config) {
+            $scope.APIResponse = data;
+        })
+        .error(function (data, status, header, config) {
+            $scope.ResponseDetails = "Data: " + data +
+                "<hr />status: " + status +
+                "<hr />headers: " + header +
+                "<hr />config: " + config;
+        });
+
+    }
+    blockUI.stop();
 }]);
 //kamal -International Recharge Controller
 app.controller('InternationalRechargeController', ['$scope', '$http', 'localStorageService',
@@ -425,7 +552,6 @@ app.controller('InternationalRechargeController', ['$scope', '$http', 'localStor
                 mobileNumber: $scope.mobileNumber,
                 amount: $scope.amount
             };
-            debugger;
             localStorageService.set('rechargeParams', paramObj);
             window.location = "#/paymentOptions";
 
@@ -485,7 +611,6 @@ app.controller('InternationalRechargeController', ['$scope', '$http', 'localStor
 app.controller('datacardController', ['$scope', '$http', 'localStorageService',
     function ($scope, $http, localStorageService) {
         $scope.redirect = function () {
-            debugger
             if ($scope.rechargeForm.$valid) {
                 var paramObj = {
                     serviceType: 'DataCards',
@@ -511,6 +636,43 @@ app.controller('datacardController', ['$scope', '$http', 'localStorageService',
         $http({
             method: 'POST',
             url: '/Home/GetAllDataCardVouchers'
+        }).
+       success(function (data) {
+           $scope.AllVouchers = data;
+       });
+
+        $scope.loadAmount = function (voucher) {
+            $scope.amount = voucher.Amount;
+        }
+    }]);
+//shoppingcardsController
+app.controller('shoppingcardsController', ['$scope', '$http', 'localStorageService',
+    function ($scope, $http, localStorageService) {
+        $scope.redirect = function () {
+            if ($scope.rechargeForm.$valid) {
+                var paramObj = {
+                    serviceType: 'ShoppingCards',
+                    rechargeType: 'ShoppingCards',
+                    operatorCode: $scope.operatorCode,
+                    amount: $scope.amount
+                };
+                localStorageService.set('nationalRechargeParams', paramObj);
+                window.location = "#/paymentOptions";
+            }
+
+        }
+        //$http service for Getting the ServiceProviders  
+        $http({
+            method: 'GET',
+            url: '/Home/GetShoppingCardProviders'
+        }).
+        success(function (data) {
+            $scope.shoppingcardsserviceProviders = data;
+        });
+
+        $http({
+            method: 'POST',
+            url: '/Home/GetAllShoppingCardVouchers'
         }).
        success(function (data) {
            $scope.AllVouchers = data;

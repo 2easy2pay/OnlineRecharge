@@ -1,25 +1,22 @@
-﻿using OnlineRecharge.Models.Core.Data;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.ModelConfiguration;
-using System.Linq;
-using System.Web;
+using OnlineRecharge.Models.Core.Data;
 
 namespace OnlineRecharge.Models.Core.Mapping
 {
-    public class ServiceProviderMap : EntityTypeConfiguration<ServiceProviders>
+    public class RechargeParameterMap : EntityTypeConfiguration<RechargeParameters>
     {
-        public ServiceProviderMap()
+        public RechargeParameterMap()
         {
             //key  
             HasKey(t => t.ID);
-
             //fieds  
             Property(t => t.ID).HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
-            Property(t => t.Name).IsRequired().HasMaxLength(20).HasColumnType("nvarchar");
-            Property(t => t.Code).IsRequired().HasMaxLength(10).HasColumnType("nvarchar");
-            Property(t => t.Dialer).IsRequired().HasMaxLength(50).HasColumnType("nvarchar");
+            Property(t => t.ServiceType).IsRequired().HasMaxLength(30).HasColumnType("nvarchar");
+            Property(t => t.RechargeType).IsRequired().HasMaxLength(30).HasColumnType("nvarchar");
+            Property(t => t.OperatorCode).IsRequired().HasMaxLength(30).HasColumnType("nvarchar"); Property(t => t.MobileNumber).IsRequired().HasMaxLength(30).HasColumnType("nvarchar");
+            Property(t => t.Amount).IsRequired().HasColumnType("decimal");
+
             Property(t => t.IsActive).IsRequired();
             Property(t => t.IsDeleted).IsOptional();
             Property(t => t.CreatedBy).IsRequired();
@@ -28,9 +25,9 @@ namespace OnlineRecharge.Models.Core.Mapping
             Property(t => t.ModifiedDate).IsOptional();
             Property(t => t.DeletedBy).IsOptional();
             Property(t => t.DeletedDate).IsOptional();
-
             //table  
-            ToTable("ServiceProviders");
+            ToTable("RechargeParameters");
+            
         }
     }
 }

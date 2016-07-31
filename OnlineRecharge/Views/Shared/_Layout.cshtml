@@ -44,7 +44,7 @@
                         <a href="http://www.2easy2pay.com/"><img src="~/Content/img/logo.jpg" alt="2easy2pay"></a>
                     </div>
                     <div class="my-account-blk pull-right mobile-hide" ng-controller="PopUpCtrl">
-                        <ul>
+                        @*<ul>
                             <li class="dropdown-myaccount">
                                 <a href="#" class="my-account"><i></i><span>My Account</span></a>
                                 <ul class="dropdown-menu">
@@ -53,7 +53,7 @@
                                     <li><a href="#"><i class="icon-wishlist"></i> Wishlist</a></li>
                                 </ul>
                             </li>
-                        </ul>
+                        </ul>*@
                         <script type="text/ng-template" id="login.html">
                             <div class="login-inside-header">
                                 <ul>
@@ -84,7 +84,6 @@
                                     </div>
                                 </div>
                                 <div class="form-grp">
-                                    @*<button id="btnLogin" ng-click="CallLogin();" tabindex="4" class="btn login-button" type="submit" name="btnLogin">Log in</button>*@
                                     <button id="btnLogin" tabindex="4" class="btn login-button" type="submit" name="btnLogin" ng-click="CallLogin();">Log in <img style="position: absolute;right: 82px;top: 10px;" width="26px" ng-show="loadingLogin" src="/Content/img/spinner.gif" /> </button>
                                 </div>
                             </div>
@@ -141,9 +140,9 @@
                         </li>*@
                         <li ng-repeat="navLink in navLinks" ng-class="navClass('{{navLink.Title}}')"> <a href='#/{{navLink.Title}}' translate="{{navLink.LinkText}}"></a></li>
                     </ul>
-                    <div class="pull-right search-form-wrap">
+                    @*<div class="pull-right search-form-wrap">
                         <input type="text" class="search-form" placeholder="Search Store">
-                    </div>
+                    </div>*@
                 </div>
             </div>
             <div class="responsive-nav-wrapper-parent">
@@ -332,9 +331,9 @@
     <script src="~/scripts/Utilities/angular-translate-handler-log.js"></script>
     <script src="~/scripts/Utilities/angular-translate-loader-static-files.js"></script>
     <script src="~/scripts/Utilities/angular-local-storage.js"></script>
-
+    <script src="~/scripts/angular-block-ui.js"></script>
     <script src="~/App/app.js"></script>
-
+    <script src="~/App/OnlineRechargefilter.js"></script>
     <script src="~/App/Common/factory.js"></script>
     @*<script src="~/App/Controllers/LoginCtrl.js"></script>*@
     <script src="~/scripts/angular-messages.min.js"></script>

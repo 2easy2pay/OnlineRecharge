@@ -1,0 +1,30 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Web;
+
+namespace OnlineRecharge.Models.Core.Data
+{
+    public class ShoppingCardAPIResponseDetails
+    {
+        public ShoppingCardAPIResponseDetails()
+        {
+
+        }
+
+        public int ID { get; set; }
+        public string Response { get; set; }
+
+
+        //Voucher API Response Fields
+        public decimal Denomination  { get; set; }
+        public string OperatorName { get; set; }
+        public string Password { get; set; }
+        public string RechargeCode { get; set; }
+        public string SerialNo { get; set; }
+        public int ShoppingCardsID { get; set; }
+        [ForeignKey("ShoppingCardsID")]
+        public ShoppingCards NationalRecharge { get; set; }
+    }
+}

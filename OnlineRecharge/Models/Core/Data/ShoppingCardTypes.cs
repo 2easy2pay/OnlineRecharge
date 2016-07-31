@@ -5,15 +5,18 @@ using System.Web;
 
 namespace OnlineRecharge.Models.Core.Data
 {
-    public class ServiceProviders : BaseEntity
+    /// <summary>
+    /// Need to configure from db. itunes, netflix
+    /// </summary>
+    public class ShoppingCardTypes : BaseEntity
     {
-        public ServiceProviders()
+        public ShoppingCardTypes()
         {
 
         }
 
         public string Name { get; set; }
         public string Code { get; set; }
-        public string Dialer { get; set; }
+
     }
 }

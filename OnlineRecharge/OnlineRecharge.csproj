@@ -152,6 +152,7 @@
     <Content Include="App\app.min.js" />
     <Content Include="App\Common\factory.js" />
     <Content Include="App\Controllers\LoginCtrl.js" />
+    <Content Include="App\OnlineRechargefilter.js" />
     <Content Include="App\Popup.js" />
     <Content Include="App\Validator.js" />
     <Content Include="Content\css\app-rtl.css" />
@@ -188,12 +189,14 @@
     <Content Include="Partials\Mobile.html" />
     <Content Include="Partials\PaymentOptions.html" />
     <Content Include="Partials\Result.html" />
+    <Content Include="Partials\ShoppingCards.html" />
     <Content Include="scripts\ai.0.22.9-build00167.js" />
     <Content Include="scripts\ai.0.22.9-build00167.min.js" />
     <Content Include="scripts\angular-animate.js" />
     <Content Include="scripts\angular-animate.min.js" />
     <Content Include="scripts\angular-aria.js" />
     <Content Include="scripts\angular-aria.min.js" />
+    <Content Include="scripts\angular-block-ui.js" />
     <Content Include="scripts\angular-cookies.js" />
     <Content Include="scripts\angular-cookies.min.js" />
     <Content Include="scripts\angular-csp.css" />
@@ -985,7 +988,9 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LogController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -1073,6 +1078,18 @@
     <Compile Include="Migrations\201607280632518_DataCardTables.Designer.cs">
       <DependentUpon>201607280632518_DataCardTables.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201607300847521_RechargeParameters.cs" />
+    <Compile Include="Migrations\201607300847521_RechargeParameters.Designer.cs">
+      <DependentUpon>201607300847521_RechargeParameters.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201607300952346_Shoppingcardstables.cs" />
+    <Compile Include="Migrations\201607300952346_Shoppingcardstables.Designer.cs">
+      <DependentUpon>201607300952346_Shoppingcardstables.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201607301126133_smschanges.cs" />
+    <Compile Include="Migrations\201607301126133_smschanges.Designer.cs">
+      <DependentUpon>201607301126133_smschanges.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Core\BaseEntity.cs" />
     <Compile Include="Models\Core\Data\Countries.cs" />
@@ -1093,8 +1110,16 @@
     <Compile Include="Models\Core\Data\NationalRechargePaymentDetails.cs" />
     <Compile Include="Models\Core\Data\NationalRecharges.cs" />
     <Compile Include="Models\Core\Data\NationalRechargeTypes.cs" />
+    <Compile Include="Models\Core\Data\RechargeParameters.cs" />
     <Compile Include="Models\Core\Data\ServiceProviders.cs" />
+    <Compile Include="Models\Core\Data\ShoppingCardAPIResponseDetails.cs" />
+    <Compile Include="Models\Core\Data\ShoppingCardPaymentDetails.cs" />
+    <Compile Include="Models\Core\Data\ShoppingCards.cs" />
+    <Compile Include="Models\Core\Data\ShoppingCardTypes.cs" />
+    <Compile Include="Models\Core\Data\SmsDetails.cs" />
+    <Compile Include="Models\Core\Data\SmsGatewayDetails.cs" />
     <Compile Include="Models\Core\EFDbContext.cs" />
+    <Compile Include="Models\Core\Mapping\RechargeParameterMap.cs" />
     <Compile Include="Models\Core\Mapping\CountriesMap.cs" />
     <Compile Include="Models\Core\Mapping\InternationalRechargeAPIResponseDetailMap.cs" />
     <Compile Include="Models\Core\Mapping\InternationalRechargeMap.cs" />
@@ -1108,6 +1133,12 @@
     <Compile Include="Models\Core\Mapping\LanguageFlagMap.cs" />
     <Compile Include="Models\Core\Mapping\LanguageMap.cs" />
     <Compile Include="Models\Core\Mapping\ServiceProviderMap.cs" />
+    <Compile Include="Models\Core\Mapping\ShoppingCardAPIResponseDetailMap.cs" />
+    <Compile Include="Models\Core\Mapping\ShoppingCardMap.cs" />
+    <Compile Include="Models\Core\Mapping\ShoppingCardPaymentDetailMap.cs" />
+    <Compile Include="Models\Core\Mapping\ShoppingCardTypesMap.cs" />
+    <Compile Include="Models\Core\Mapping\SmsDetailsMap.cs" />
+    <Compile Include="Models\Core\Mapping\SmsGatewayDetailsMap.cs" />
     <Compile Include="Models\Helpers\APIProvider.cs" />
     <Compile Include="Models\Helpers\DataContracts.cs" />
     <Compile Include="Models\Helpers\KnetPaymentInitialResponse.cs" />
@@ -1148,6 +1179,9 @@
     <Content Include="Views\Shared\Index.cshtml" />
     <Content Include="Views\Home\_PaymentOptions.cshtml" />
     <Content Include="Views\Home\_Result.cshtml" />
+    <Content Include="Views\Home\Dial.cshtml" />
+    <Content Include="Views\Error\Index.cshtml" />
+    <Content Include="Views\Logs\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1157,6 +1191,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Log\" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
@@ -1224,6 +1259,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201607280632518_DataCardTables.resx">
       <DependentUpon>201607280632518_DataCardTables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607300847521_RechargeParameters.resx">
+      <DependentUpon>201607300847521_RechargeParameters.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607300952346_Shoppingcardstables.resx">
+      <DependentUpon>201607300952346_Shoppingcardstables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607301126133_smschanges.resx">
+      <DependentUpon>201607301126133_smschanges.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

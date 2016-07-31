@@ -17,6 +17,7 @@ namespace OnlineRecharge.Models.Helpers
     {
         National=0,
         International=1,
-        DataCards=2
+        DataCards=2,
+        ShoppingCards = 3
     }
 }

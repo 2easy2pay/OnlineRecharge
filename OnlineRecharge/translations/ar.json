@@ -15,5 +15,8 @@
   "RechargeAmount": "Recharge Amount",
   "AmountPlaceHolder": "Enter Amount!",
   "BrowsePlan": "Browse Plan",
-  "ProceedToRechargeButton": "Proceed To Recharge"
+  "ProceedToRechargeButton": "Proceed To Recharge",
+  "CardTypes": "Card Types",
+  "VoucherDetails_TableHeading_Dollar_Amount": "Dollar Amount",
+  "VoucherDetails_TableStaticContent_ShoppingCardServiceType": "Shopping Cards"
 }

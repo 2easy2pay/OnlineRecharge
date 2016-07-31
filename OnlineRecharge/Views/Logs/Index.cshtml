@@ -1,0 +1,25 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h1>Error Logs - 2Easy2Pay</h1>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Server Time :<span class="mandatory"> <b> @System.DateTime.Now.ToString("MM/dd/yyyy HH:mm")</b></span>
+@model IEnumerable<string>
+<ul>
+    @foreach (var fullPath in Model)
+    {
+        var fileName = Path.GetFileName(fullPath);
+     if(fileName.Contains(DateTime.Now.ToString("yyyy")+"-"+DateTime.Now.ToString("MMM")))
+     {
+        
+        <li><a href="/Log/@fileName" target="@fileName" > @fileName</a></li>
+    }
+    }
+</ul>

@@ -52,7 +52,18 @@ namespace OnlineRecharge.Models.Core
 
 
         #endregion
+        #region Shopping Cards
 
+        public virtual DbSet<ShoppingCardTypes> ShoppingCardTypes
+        { get; set; }
+        public virtual DbSet<ShoppingCards> ShoppingCards
+        { get; set; }
+        public virtual DbSet<ShoppingCardPaymentDetails> ShoppingCardPaymentDetails
+        { get; set; }
+        public virtual DbSet<ShoppingCardAPIResponseDetails> ShoppingCardAPIResponseDetails
+        { get; set; }
+
+        #endregion
         public virtual DbSet<InternationalServiceProviders> internationalServiceProviders
         { get; set; }
 

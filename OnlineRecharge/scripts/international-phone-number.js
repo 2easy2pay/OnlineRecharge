@@ -34,13 +34,13 @@
             }
           }
           read = function () {
-              var value = element.val();
-              var intlNumber = element.intlTelInput("getNumber",intlTelInputUtils.numberFormat.NATIONAL);
-              if (intlNumber) {
-                  var countryData=element.intlTelInput("getSelectedCountryData");
-                  value =countryData.dialCode+ intlNumber;
-              }
-              return ctrl.$setViewValue(value);
+              //var value = element.val();
+              //var intlNumber = element.intlTelInput("getNumber",intlTelInputUtils.numberFormat.NATIONAL);
+              //if (intlNumber) {
+              //    var countryData=element.intlTelInput("getSelectedCountryData");
+              //    value =countryData.dialCode+ intlNumber;
+              //}
+              return ctrl.$setViewValue(element.val());
           };
           handleWhatsSupposedToBeAnArray = function(value) {
             if (value instanceof Array) {

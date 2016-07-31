@@ -14,10 +14,12 @@ using OnlineRecharge.Models.Helpers;
 using Newtonsoft.Json;
 using System.Net;
 using System.Data.Entity.Validation;
+using System.Configuration;
 
 namespace OnlineRecharge.Controllers
 {
-    public class HomeController : Controller
+    [HandleError]
+    public class HomeController : BaseController
     {
         public const string BASEADDRESS = "https://grcweb.grckiosk.com:8443/";
         public const string USERNAME = "101";
@@ -261,6 +263,25 @@ namespace OnlineRecharge.Controllers
             return model.ID;
         }
 
+             public JsonResult GetShoppingCardProviders()
+        {
+            List<ShoppingCardTypes> model = new List<ShoppingCardTypes>();
+            try
+            {
+                model = context.ShoppingCardTypes.ToList();
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            return this.Json(model, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult Dial(string Dialer)
+        {
+            ViewData["Dialer"] = Dialer;
+            return View();
+        }
         #endregion
 
         #region Recharge API Service Methods
@@ -508,7 +529,17 @@ namespace OnlineRecharge.Controllers
         {
             try
             {
+                WriteLog("VoucherTranfer", "VoucherTranfer");
                 TransferResponseDetailsModel model = new TransferResponseDetailsModel();
+                string apiUrl = string.Empty;
+                if (ConfigurationManager.AppSettings.AllKeys.Contains("ApiUrl")) // Key exists
+                {
+                    apiUrl = ConfigurationManager.AppSettings["ApiUrl"].ToString();
+                    WriteLog("VoucherTranfer apiUrl", apiUrl);
+                }
+                else//Error log
+                {
+                }
                 string rechargeType = Request.Form["rechargeType"];
                 string serviceType = Request.Form["serviceType"];
                 string operatorName = Request.Form["operatorCode"];
@@ -549,68 +580,67 @@ namespace OnlineRecharge.Controllers
                         if (response.IsSuccessStatusCode)
                         {
                             var result = await response.Content.ReadAsAsync<VoucherTransfer>();
-                            model.Amount = Convert.ToDecimal(amount);
-                            if (operatorName == "EZ")
+                            if (result.Response.ToUpper() == "S")
                             {
-                                model.ImageURL = "/Content/img/Operators/zain.png";
-                            }
-                            else if (operatorName == "VV")
-                            {
-                                model.ImageURL = "/Content/img/Operators/viva.png";
-                            }
-                            else if (operatorName == "XP")
-                            {
-                                model.ImageURL = "/Content/img/Operators/ooreedo.png";
-                            }
+                                model.Amount = Convert.ToDecimal(amount);
+                                if (operatorName == "EZ")
+                                {
+                                    model.ImageURL = "/Content/img/Operators/zain.png";
+                                }
+                                else if (operatorName == "VV")
+                                {
+                                    model.ImageURL = "/Content/img/Operators/viva.png";
+                                }
+                                else if (operatorName == "XP")
+                                {
+                                    model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                }
 
-                            model.OperatorName = GetOperatorNameByOperatorCode(operatorName);
-                            model.Response = result.Response;
-                            model.RechargeCode = result.RechargeCode;
-                            model.Denomination = result.Denomination;
-                            model.Password = result.Password;
-                            model.SerialNo = result.SerialNo;
-                            if (ServiceType.DataCards.ToString() == serviceType)
-                            {
-                                int datacardresponse = UpdateDataCardRechargeDetailsToDB(mobileNumber, rechargeType, operatorName, paymentID, status, trackID, tranID, reference, model);
+                                model.OperatorName = GetOperatorNameByOperatorCode(operatorName);
+                                model.Response = result.Response;
+                                model.RechargeCode = result.RechargeCode;
+                                model.Denomination = result.Denomination;
+                                model.Password = result.Password;
+                                model.SerialNo = result.SerialNo;
+                                if (ServiceType.DataCards.ToString() == serviceType)
+                                {
+                                    int datacardresponse = UpdateDataCardRechargeDetailsToDB(mobileNumber, rechargeType, operatorName, paymentID, status, trackID, tranID, reference, model);
+                                }
+                                else if (ServiceType.ShoppingCards.ToString() == serviceType)
+                                {
+                                    model.OperatorName = GetShoppingCardsOperatorName(operatorName);
+                                    int id = UpdateShoppingCardDetailsToDB(mobileNumber, rechargeType, operatorName, paymentID, status, trackID, tranID, reference, model);
+                                }
+                                else
+                                { int id = UpdateRechargeDetailsToDB(mobileNumber, rechargeType, operatorName, paymentID, status, trackID, tranID, reference, model); }
+                                if (ConfigurationManager.AppSettings.AllKeys.Contains("ApiUrl")) // Key exists
+                                {
+
+                                    apiUrl += "api/MessageApi/SendMessage?MobileNumber=" + mobileNumber + "&OperatorCode=" + operatorName + "&RechargeCode=" + result.RechargeCode + "&Amount=" + amount;
+                                    WriteLog("VoucherTranfer apiUrl", apiUrl);
+                                    using (var clients = new WebClient())
+                                    {
+                                        var resFrmApi = JsonConvert.DeserializeObject<string>(clients.DownloadString(apiUrl));
+                                    }
+                                }
                             }
-                            else
-                            { int id = UpdateRechargeDetailsToDB(mobileNumber, rechargeType, operatorName, paymentID, status, trackID, tranID, reference, model); }
+                            else//Failed
+                            {
+                                apiUrl += "api/MessageApi/FailedMessage?MobileNumber=" + mobileNumber + "&OperatorCode=" + operatorName;
+                                WriteLog("VoucherTranfer apiUrl failed ", apiUrl);
+                                using (var clients = new WebClient())
+                                {
+                                    var resFrmApi = JsonConvert.DeserializeObject<string>(clients.DownloadString(apiUrl));
+                                }
+                            }
                         }
-
-                        //string data = string.Format("?OperatorName={0}&AmtSelected={1}&MobileNumber={2}&PaymentType={3}", operatorName, amount, mobileNumber, "CASH");
-                        //HttpResponseMessage response = await httpClient.GetAsync("api/Services/BillPaymentTransfer" + data);
-                        //if (response.IsSuccessStatusCode)
-                        //{
-                        //    var result = await response.Content.ReadAsAsync<BillPaymentTransfer>();
-                        //    model.Amount = Convert.ToDecimal(amount);
-                        //    model.Date = result.Date;
-                        //    if (operatorName == "EZ")
-                        //    {
-                        //        model.ImageURL = "/Content/img/Operators/zain.png";
-                        //    }
-                        //    else if (operatorName == "VV")
-                        //    {
-                        //        model.ImageURL = "/Content/img/Operators/viva.png";
-                        //    }
-                        //    else if (operatorName == "XP")
-                        //    {
-                        //        model.ImageURL = "/Content/img/Operators/ooreedo.png";
-                        //    }
-
-                        //    model.OperatorName = GetOperatorNameByOperatorCode(operatorName);
-                        //    model.PaymentID = result.PaymentID;
-                        //    model.PaymentRef = result.PaymentRef;
-                        //    model.Response = result.Response;
-                        //    model.ResponseDescription = result.ResponseDescription;
-                        //    int id = UpdateRechargeDetailsToDB(mobileNumber, rechargeType, operatorName, paymentID, status, trackID, tranID, reference, model);
-                        //}
                     }
                 }
                 return model;
             }
             catch (Exception ex)
             {
-
+                WriteLog("VoucherTranfer Exception ", ex.Message);
                 throw ex;
             }
         }
@@ -619,6 +649,61 @@ namespace OnlineRecharge.Controllers
         #region DataAccess Methods
         public JsonResult GetServiceProviders()
         {
+            List<OperatorResponseModel> model = new List<OperatorResponseModel>();
+            try
+            {
+                model = context.ServiceProiders.Select(v=> new OperatorResponseModel()
+                {
+                    Code=v.Code,
+                    Name=v.Name
+                }).ToList();
+
+                foreach (var item in model)
+                {
+                    if(item.Code== "EZ")
+                    {
+                        item.ImageURL = "/Content/img/Operators/zain.png";
+                    }
+                    else if(item.Code=="XP")
+                    {
+                        item.ImageURL = "/Content/img/Operators/ooreedo.png";
+                    }
+                    else if (item.Code == "VV")
+                    {
+                        item.ImageURL = "/Content/img/Operators/viva.png";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            return this.Json(model, JsonRequestBehavior.AllowGet);
+        }
+
+        public string GetShoppingCardsOperatorName(string operatorCode)
+        {
+            string operatorName = string.Empty;
+            try
+            {
+                operatorName = context.ShoppingCardTypes.Where(x => x.Code == operatorCode).Select(v => v.Name).FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return operatorName;
+        }
+
+        /// <summary>
+        /// Bind Card Type drop down list.
+        /// </summary>
+        /// <returns></returns>
+
+        public JsonResult GetShoppingCardServiceProviders()
+        {
+
             List<ServiceProviders> model = new List<ServiceProviders>();
             try
             {
@@ -704,10 +789,65 @@ namespace OnlineRecharge.Controllers
             }
             return model.ID;
         }
+
+        public int UpdateShoppingCardDetailsToDB(string mobileNumber, string rechargeType, string operatorCode, string paymentID, string status, string trackID, string tranID, string reference, TransferResponseDetailsModel result)
+        {
+            var model = context.ShoppingCards.Create();
+            try
+            {
+
+
+                model.amount = result.Amount;
+                model.ServiceProvider = context.ShoppingCardTypes.Where(x => x.Code == operatorCode).FirstOrDefault();
+                //Set shopping Type card Id.
+                model.ShoppingCardTypesID = model.ServiceProvider.ID;
+                model.IsActive = true;
+                model.IsDeleted = false;
+                model.CreatedBy = 1;
+                model.CreatedDate = DateTime.Now;
+                model.CustomerID = 1;
+                context.ShoppingCards.Add(model);
+                context.SaveChanges();
+
+                var paymentDetail = context.ShoppingCardPaymentDetails.Create();
+                paymentDetail.PaymentID = paymentID;
+                paymentDetail.Result = status;
+                paymentDetail.TrackID = trackID;
+                paymentDetail.TransID = tranID;
+                paymentDetail.Ref = reference;
+                paymentDetail.ShoppingCards = model;
+                context.ShoppingCardPaymentDetails.Add(paymentDetail);
+
+                var apiResponseDetail = context.ShoppingCardAPIResponseDetails.Create();
+                apiResponseDetail.NationalRecharge = model;
+                apiResponseDetail.Response = result.Response;
+                apiResponseDetail.Denomination = result.Denomination;
+                apiResponseDetail.Password = result.Password;
+                apiResponseDetail.RechargeCode = result.RechargeCode;
+                apiResponseDetail.SerialNo = result.SerialNo;
+                context.ShoppingCardAPIResponseDetails.Add(apiResponseDetail);
+                context.SaveChanges();
+
+            }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
+            }
+            return model.ID;
+        }
         #endregion
 
         #region Kamal
-         //Internatinal Recharnges Update
+        //Internatinal Recharnges Update
         public int UpdateInternationalRechargeDetailsToDB(string mobileNumber, string rechargeType, string operatorCode, string paymentID, string status, string trackID, string tranID, string reference, TransferResponseDetailsModel result)
         {
             var model = context.InternationalRecharges.Create();
@@ -929,6 +1069,41 @@ namespace OnlineRecharge.Controllers
             return Json(model, JsonRequestBehavior.AllowGet);
         }
 
+        #endregion
+
+        #region Wallet API Methods
+        [HttpPost]
+        public JsonResult GetRechargeParameter(int id)
+        {
+            RechargeParamModel result = new RechargeParamModel();
+            try
+            {
+                string url = string.Empty;
+                using (var client = new HttpClient())
+                {
+                    string param = "id=" + id;
+                    url = "https://api.2easy2pay.com/Wallet/api/parameter/get?";
+                    HttpResponseMessage response = client.GetAsync(url + param, HttpCompletionOption.ResponseContentRead).Result;
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = response.Content.ReadAsAsync<RechargeParamModel>().Result;
+                    }
+
+                    url = string.Empty;
+                    url = "https://api.2easy2pay.com/Wallet/api/parameter/delete?";
+                    response = client.DeleteAsync(url + param).Result;
+                    if (response.IsSuccessStatusCode)
+                    {
+                        bool isDeleted = response.Content.ReadAsAsync<bool>().Result;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return this.Json(result, JsonRequestBehavior.AllowGet);
+        }
         #endregion
 
         #region Test Api Service

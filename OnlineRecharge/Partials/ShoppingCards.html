@@ -4,37 +4,19 @@
         <div class="recharge-block-wrap">
             <form name="rechargeForm" novalidate ng-submit="redirect()">
                 <div class="recharge-block">
-                    <h3 translate="RechargeCaption"> </h3>
-                    <div class="radio" ng-init="rechargeType='Prepaid'">
-                        <input id="Prepaid" type="radio" name="gender" value="Prepaid" ng-model="rechargeType" ng-change="refreshRechargeType()">
-                        <label for="Prepaid" translate="Prepaid"></label>
-                        <input id="Postpaid" type="radio" name="gender" value="Postpaid" ng-model="rechargeType" ng-change="refreshRechargeType()">
-                        <label for="Postpaid" translate="Postpaid"></label>
-                        <input id="Vochers" type="radio" name="gender" value="Vochers" ng-model="rechargeType" ng-change="refreshRechargeType()">
-                        <label for="Vochers" translate="Vochers"></label>
-                    </div>
-
+                    
                     <div class="form-group">
-                        <label translate="MobileNumber"></label>
-                        <input id="MobileNumber" name="MobileNumber" type="text" international-phone-number only-countries="kw" default-country="kw" ng-model="mobileNumber" required numbers-only maxlength="11">
-                        <p ng-show="CheckValidationForMobileNumer()" class="valid-message" translate="Validation_NationalRecharge_Mobile_Required"></p>
-                    </div>
-                    <div class="form-group">
-                        <label translate="Operator"></label>
-                        <select class="form-control" ng-model="operatorCode" ng-options="s.Code as s.Name for s in serviceProviders">
-                                <!-->
-                        <option ng-repeat="item in serviceProviders" data-content="{{item.ImageURL}}" value="{{item.Code}}">{{item.Name}}</option>-->
-                                
-                        </select>
-                        <p ng-show="CheckValidationForOperator()" class="valid-message" translate="Validation_NationalRecharge_Operator_Required"></p>
+                        <label translate="CardTypes"></label>
+                        <select class="form-control" ng-model="operatorCode"
+                                ng-options="s.Code as s.Name for s in shoppingcardsserviceProviders"></select>
                     </div>
                     <div class="form-group">
                         <label for="#" translate="RechargeAmount"></label>
                         <div class="input-grp">
-                            <input name="Amount" type="text" ng-disabled="rechargeType == 'Vochers'" ng-model="amount" class="form-control" placeholder="{{ 'AmountPlaceHolder' | translate }}" required ng-change="CheckValidationForAmount()" numbers-only> 
+                            <input name="Amount" type="text" ng-disabled="true" ng-model="amount" class="form-control" required> 
                             <!--<a href="#" class="browse-plan" translate="BrowsePlan"></a>-->
                         </div>
-                        <p ng-show="CheckValidationForAmount()" class="valid-message" translate="Validation_NationalRecharge_Amount_Required"></p>
+                        <p ng-show="rechargeForm.Amount.$invalid && !rechargeForm.Amount.$pristine" class="valid-message">Amount is required.</p>
                     
                     </div>
                     <div class="padding-top-4">
@@ -44,7 +26,7 @@
             </form>
         </div>
     </div>
-    <div class="col-md-8" ng-show="rechargeType == 'Vochers'">
+    <div class="col-md-8">
         <div class="offer-list-blk">
             <div class="bigContaner-plans">
                 <div class="offeres-table">
@@ -54,7 +36,9 @@
                          <th translate="VoucherDetails_TableHeading_ServiceType">
                          </th>
                         <th translate="VoucherDetails_TableHeading_Offer"></th>
+
                         <th width="120" translate="VoucherDetails_TableHeading_Amount"></th>
+                        <th translate="VoucherDetails_TableHeading_Dollar_Amount"></th>
                         </thead>
                     </table>
                     <div class="scroll-table">
@@ -63,10 +47,14 @@
                                 <tr ng-repeat="voucher in AllVouchers| filter: operatorCode">
                                     <td width="140">
                                         <img ng-src="{{voucher.ImageURL}}" class="oprator-logo" /></td>
-                                   <td translate="VoucherDetails_TableStaticContent_ServiceType"></td>
+                                   <td translate="VoucherDetails_TableStaticContent_ShoppingCardServiceType"></td>
                                     <td translate="VoucherDetails_TableStaticContent_Offer"></td>
+                                    
                                     <td width="120">
                                         <a ng-click="loadAmount(voucher);" class="price-btn">{{voucher.Amount}} KD</a>
+                                    </td>
+                                    <td width="120">
+                                        <a  class="price-btn">{{ voucher.Amount|DollerAmount}} $</a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -76,7 +64,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-8" ng-show="rechargeType == 'Prepaid' || rechargeType == 'Postpaid'">
+    <div class="col-md-8">
         <div class="offer-list-blk">
             <div class="slider" ng-init="sliderAuto()" ng-controller="sliderCtrl">
                 <img ng-repeat="slide in slides" class="slide slide-animation nonDraggableImage"

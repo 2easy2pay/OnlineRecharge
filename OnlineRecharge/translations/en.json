@@ -1,5 +1,5 @@
 ﻿{
-  "RechargeCaption": "Recharge Or Pay Bill",
+  "RechargeCaption": "Recharge",
   "Prepaid": "Prepaid",
   "Postpaid": "Postpaid",
   "Vochers": "Vochers",
@@ -44,6 +44,15 @@
   "Result_RechargeSuccess_Details_Heading": "Recharge Details",
   "Result_RechargeSuccess_Details_By_Label": "By ",
 
-   "GeneralLabels_KD": "KD"
+  "GeneralLabels_KD": "KD",
 
+
+  "CardTypes": "Card Types",
+  "VoucherDetails_TableHeading_Dollar_Amount": "Dollar Amount",
+  "VoucherDetails_TableStaticContent_ShoppingCardServiceType": "Shopping Cards",
+
+
+  "Validation_NationalRecharge_Mobile_Required": "Mobile numer is required!",
+  "Validation_NationalRecharge_Operator_Required": "Please select operator!",
+  "Validation_NationalRecharge_Amount_Required": "Amount is required!"
 }

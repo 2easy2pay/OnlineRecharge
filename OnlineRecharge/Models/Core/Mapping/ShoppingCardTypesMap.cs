@@ -8,9 +8,9 @@ using System.Web;
 
 namespace OnlineRecharge.Models.Core.Mapping
 {
-    public class ServiceProviderMap : EntityTypeConfiguration<ServiceProviders>
+    public class ShoppingCardTypesMap : EntityTypeConfiguration<ShoppingCardTypes>
     {
-        public ServiceProviderMap()
+        public ShoppingCardTypesMap()
         {
             //key  
             HasKey(t => t.ID);
@@ -19,7 +19,6 @@ namespace OnlineRecharge.Models.Core.Mapping
             Property(t => t.ID).HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             Property(t => t.Name).IsRequired().HasMaxLength(20).HasColumnType("nvarchar");
             Property(t => t.Code).IsRequired().HasMaxLength(10).HasColumnType("nvarchar");
-            Property(t => t.Dialer).IsRequired().HasMaxLength(50).HasColumnType("nvarchar");
             Property(t => t.IsActive).IsRequired();
             Property(t => t.IsDeleted).IsOptional();
             Property(t => t.CreatedBy).IsRequired();
@@ -30,7 +29,7 @@ namespace OnlineRecharge.Models.Core.Mapping
             Property(t => t.DeletedDate).IsOptional();
 
             //table  
-            ToTable("ServiceProviders");
+            ToTable("ShoppingCardTypes");
         }
     }
 }

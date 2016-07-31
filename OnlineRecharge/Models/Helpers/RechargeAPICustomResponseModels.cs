@@ -12,6 +12,22 @@ namespace OnlineRecharge.Models.Helpers
         public decimal Amount { get; set; }
     }
 
+    public class OperatorResponseModel
+    {
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public string ImageURL { get; set; }
+    }
+
+    public class RechargeParamModel
+    {
+        public string ServiceType { get; set; }
+        public string RechargeType { get; set; }
+        public string OperatorCode { get; set; }
+        public string MobileNumber { get; set; }
+        public decimal Amount { get; set; }
+    }
+
     public class TransferResponseDetailsModel
     {
         public string Response { get; set; }
