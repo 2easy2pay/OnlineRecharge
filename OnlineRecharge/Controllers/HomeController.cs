@@ -24,6 +24,7 @@ namespace OnlineRecharge.Controllers
         public const string BASEADDRESS = "https://grcweb.grckiosk.com:8443/";
         public const string USERNAME = "101";
         public const string PASSWORD = "000";
+
         #region Fields
         EFDbContext context = new EFDbContext();
         #endregion
@@ -118,9 +119,6 @@ namespace OnlineRecharge.Controllers
             return this.Json(resp, JsonRequestBehavior.AllowGet);
         }
 
-
-      
-
         [HttpPost]
         public async Task<JsonResult> GetAllDataCardVouchers()
         {
@@ -204,66 +202,7 @@ namespace OnlineRecharge.Controllers
 
         }
 
-
-        public int UpdateDataCardRechargeDetailsToDB(string mobileNumber, string rechargeType, string operatorCode, string paymentID, string status, string trackID, string tranID, string reference, TransferResponseDetailsModel result)
-        {
-            var model = context.DataCardRecharge.Create();
-            try
-            {
-
-                model.MobileNumber = mobileNumber;
-                model.amount = result.Amount;
-                model.ServiceProvider = context.ServiceProiders.Where(x => x.Code == operatorCode).FirstOrDefault();
-                model.IsActive = true;
-                model.IsDeleted = false;
-                model.CreatedBy = 1;
-                model.CreatedDate = DateTime.Now;
-                model.CustomerID = 1;
-                context.DataCardRecharge.Add(model);
-                context.SaveChanges();
-
-                var paymentDetail = context.DataCardRechargePaymentDetail.Create();
-                paymentDetail.PaymentID = paymentID;
-                paymentDetail.Result = status;
-                paymentDetail.TrackID = trackID;
-                paymentDetail.TransID = tranID;
-                paymentDetail.Ref = reference;
-                paymentDetail.DataCardRecharge = model;
-                context.DataCardRechargePaymentDetail.Add(paymentDetail);
-
-                var apiResponseDetail = context.DataCardRechargeApiDetail.Create();
-                apiResponseDetail.DataCardRecharge = model;
-                apiResponseDetail.PaymentID = result.PaymentID;
-                apiResponseDetail.PaymentRef = result.PaymentRef;
-                apiResponseDetail.Response = result.Response;
-                apiResponseDetail.ResponseDescription = result.ResponseDescription;
-                apiResponseDetail.Date = DateTime.Now;// result.Date;
-                apiResponseDetail.Denomination = result.Denomination;
-                apiResponseDetail.Password = result.Password;
-                apiResponseDetail.RechargeCode = result.RechargeCode;
-                apiResponseDetail.SerialNo = result.SerialNo;
-                context.DataCardRechargeApiDetail.Add(apiResponseDetail);
-                context.SaveChanges();
-
-            }
-            catch (DbEntityValidationException e)
-            {
-                foreach (var eve in e.EntityValidationErrors)
-                {
-                    Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
-                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
-                    foreach (var ve in eve.ValidationErrors)
-                    {
-                        Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
-                            ve.PropertyName, ve.ErrorMessage);
-                    }
-                }
-                throw;
-            }
-            return model.ID;
-        }
-
-             public JsonResult GetShoppingCardProviders()
+        public JsonResult GetShoppingCardProviders()
         {
             List<ShoppingCardTypes> model = new List<ShoppingCardTypes>();
             try
@@ -277,15 +216,346 @@ namespace OnlineRecharge.Controllers
             }
             return this.Json(model, JsonRequestBehavior.AllowGet);
         }
+
         public ActionResult Dial(string Dialer)
         {
-            ViewData["Dialer"] = Dialer;
+            if (!Dialer.EndsWith("#"))
+            {
+                ViewData["Dialer"] = Dialer + "#";
+            }
+            else
+                ViewData["Dialer"] = Dialer;
             return View();
+        }
+
+        /// <summary>
+        /// Call before submit the payment.
+        /// </summary>
+        /// <param name="OperatorName"></param>
+        /// <param name="CountryCode"></param>
+        /// <param name="OperatorCode"></param>
+        /// <param name="MobileNumber"></param>
+        /// <param name="Amount"></param>
+        /// <returns></returns>
+        public async Task<JsonResult> InternationalTopupCheck(string OperatorName, string CountryCode, string OperatorCode, string MobileNumber, string Amount)
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+
+                    #region login and get token
+                    var logindata = string.Format("grant_type=password&username={0}&password={1}", USERNAME, PASSWORD);//LOGIN DATA
+
+                    var url = BASEADDRESS + "token";
+
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
+                    request.Content = new StringContent(logindata, Encoding.UTF8, "application/x-www-form-urlencoded");
+
+                    var resp = await client.PostAsync(url, request.Content);
+                    Token token = new Token();
+                    if (resp.IsSuccessStatusCode)
+                    {
+                        token = await resp.Content.ReadAsAsync<Token>();
+                    }
+                    #endregion login and get token
+                    #region call services test
+
+
+                    using (var httpClient = new HttpClient())
+                    {
+                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token.token_type, token.access_token);
+                        httpClient.BaseAddress = new Uri(BASEADDRESS);
+
+
+                        //TestWebServiceClient.ServiceReference2.InternationalTopupCheck obj1 = 
+                        //(TestWebServiceClient.ServiceReference2.InternationalTopupCheck)WCTest.InternationalTopupCheck("IT/IN/VF/919645834359/2.000");
+                        string data = string.Format("?OperatorName={0}&CountryCode={1}&OperatorCode={2}&MobileNumber={3}&Amount={4}",
+                               "IT", CountryCode, OperatorCode, MobileNumber, Amount);
+                        HttpResponseMessage response = await httpClient.GetAsync("api/Services/InternationalTopupCheck" + data);
+
+                        //first call InternationalTopupCheck
+                        //Internation topup transfer
+
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var result = await response.Content.ReadAsAsync<InternationalTopupCheck>();
+                        }
+                        else
+                        {
+                            //MessageBox.Show(response.ReasonPhrase);
+                        }
+
+                    }
+                    #endregion call services test
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            return Json(true, JsonRequestBehavior.AllowGet);
+        }
+        public async Task<JsonResult> InternationalTopupTransfer()
+        {
+            TransferResponseDetailsModel model = new TransferResponseDetailsModel();
+            try
+            {
+
+                using (var client = new HttpClient())
+                {
+
+                    string rechargeType = Request.Form["rechargeType"];
+                    string operatorName = Request.Form["operatorCode"];
+                    string mobileNumber = Request.Form["mobileNumber"];
+                    string amount = Request.Form["amount"];
+                    string paymentID = Request.Form["paymentID"];
+                    string status = Request.Form["result"];
+                    string trackID = Request.Form["trackID"];
+                    string tranID = Request.Form["tranID"];
+                    string reference = Request.Form["ref"];
+                    string countryCode = Request.Form["countryCode"];
+                    string operatorCode = Request.Form["operatorCode"];
+
+
+                    #region login and get token
+
+                    var logindata = string.Format("grant_type=password&username={0}&password={1}", USERNAME, PASSWORD);//LOGIN DATA
+
+                    var url = BASEADDRESS + "token";
+
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
+                    request.Content = new StringContent(logindata, Encoding.UTF8, "application/x-www-form-urlencoded");
+
+                    var resp = await client.PostAsync(url, request.Content);
+                    Token token = new Token();
+                    if (resp.IsSuccessStatusCode)
+                    {
+                        token = await resp.Content.ReadAsAsync<Token>();
+                    }
+                    #endregion login and get token
+                    #region call services test
+
+
+                    using (var httpClient = new HttpClient())
+                    {
+                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token.token_type, token.access_token);
+                        httpClient.BaseAddress = new Uri(BASEADDRESS);
+
+
+                        //TestWebServiceClient.ServiceReference2.InternationalTopupCheck obj1 = 
+                        //(TestWebServiceClient.ServiceReference2.InternationalTopupCheck)WCTest.InternationalTopupCheck("IT/IN/VF/919645834359/2.000");
+                        string data = string.Format("?OperatorName={0}&amount={1}&MobileNumber={2}&CountryCode={3}&OperatorCode={4}&PaymentType={5}",
+                            "IT", amount, mobileNumber, countryCode, operatorCode, "CASH");
+                        HttpResponseMessage response = await httpClient.GetAsync("api/Services/InternationalTopupTransfer" + data);
+
+                        //first call InternationalTopupCheck
+                        //Internation topup transfer
+
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var result = await response.Content.ReadAsAsync<TopupTransfer>();
+
+                            model.PaymentID = result.PaymentID;
+                            model.PaymentRef = result.PaymentRef;
+                            model.Response = result.Response;
+                            model.ResponseDescription = result.ResponseDescription;
+                            int id = UpdateInternationalRechargeDetailsToDB(mobileNumber, rechargeType, operatorName, paymentID, status, trackID, tranID, reference, model);
+
+                        }
+                        else
+                        {
+                            //MessageBox.Show(response.ReasonPhrase);
+                        }
+
+                    }
+
+
+                    #endregion call services test
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            return Json(model, JsonRequestBehavior.AllowGet);
+        }
+        public async Task<JsonResult> GetAllShoppingCardVouchers()
+        {
+            var resp = await this.GetAllShoppingCardOperatorVouchers();
+            return this.Json(resp, JsonRequestBehavior.AllowGet);
         }
         #endregion
 
         #region Recharge API Service Methods
+        [HttpPost]
+        public async Task<List<VoucherResponseModel>> GetAllShoppingCardOperatorVouchers()
+        {
+            try
+            {
+                List<VoucherResponseModel> vouchers = new List<VoucherResponseModel>();
+                using (var client = new HttpClient())
+                {
 
+                    #region login and get token
+                    var logindata = string.Format("grant_type=password&username={0}&password={1}", USERNAME, PASSWORD);//LOGIN DATA
+
+                    var url = BASEADDRESS + "token";
+
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
+                    request.Content = new StringContent(logindata, Encoding.UTF8, "application/x-www-form-urlencoded");
+
+                    var resp = await client.PostAsync(url, request.Content);
+                    Token token = new Token();
+                    if (resp.IsSuccessStatusCode)
+                    {
+                        token = await resp.Content.ReadAsAsync<Token>();
+                    }
+                    #endregion login and get token
+
+                    using (var httpClient = new HttpClient())
+                    {
+                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token.token_type, token.access_token);
+                        httpClient.BaseAddress = new Uri(BASEADDRESS);
+
+                        // New code:
+                        HttpResponseMessage response = await httpClient.GetAsync("api/Services/GetServiceList");
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var result = await response.Content.ReadAsAsync<List<Service>>();
+
+                            string[] OperatorTypes = new string[] { "AZ", "CU", "FB", "GB", "GK", "IK", "IG", "IN", "IP", "TI", "NF", "OC", "PS", "PW", "PK", "RZ", "RX", "SM" };
+
+                            List<Service> operators = result.Where(x => OperatorTypes.Contains(x.OperatorType)).ToList();
+
+                            foreach (var item in operators)
+                            {
+                                foreach (var card in item.DenomCollection)
+                                {
+                                    VoucherResponseModel model = new VoucherResponseModel();
+                                    if (item.OperatorType == "AZ")
+                                    {
+                                        model.OperatorCode = item.OperatorType;
+                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                    }
+                                    else if (item.OperatorType == "CU")
+                                    {
+                                        model.OperatorCode = item.OperatorType;
+                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                    }
+                                    else if (item.OperatorType == "FB")
+                                    {
+                                        model.OperatorCode = item.OperatorType;
+                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                    }
+                                    else if (item.OperatorType == "GP")
+                                    {
+                                        model.OperatorCode = item.OperatorType;
+                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                    }
+                                    else if (item.OperatorType == "GK")
+                                    {
+                                        model.OperatorCode = item.OperatorType;
+                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                    }
+                                    else if (item.OperatorType == "IK")
+                                    {
+                                        model.OperatorCode = item.OperatorType;
+                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+
+                                    }
+                                    else if (item.OperatorType == "IG")
+                                    {
+                                        model.OperatorCode = item.OperatorType;
+                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                    }
+                                    else if (item.OperatorType == "IN")
+                                    {
+                                        model.OperatorCode = item.OperatorType;
+                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                    }
+                                    else if (item.OperatorType == "IP")
+                                    {
+                                        model.OperatorCode = item.OperatorType;
+                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                    }
+                                    else if (item.OperatorType == "OC")
+                                    {
+                                        model.OperatorCode = item.OperatorType;
+                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                    }
+                                    else if (item.OperatorType == "OS")
+                                    {
+                                        model.OperatorCode = item.OperatorType;
+                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                    }
+                                    else if (item.OperatorType == "PW")
+                                    {
+                                        model.OperatorCode = item.OperatorType;
+                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                    }
+                                    else if (item.OperatorType == "PK")
+                                    {
+                                        model.OperatorCode = item.OperatorType;
+                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                    }
+                                    else if (item.OperatorType == "MY")
+                                    {
+                                        model.OperatorCode = item.OperatorType;
+                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                    }
+                                    else if (item.OperatorType == "RZ")
+                                    {
+                                        model.OperatorCode = item.OperatorType;
+                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                    }
+                                    else if (item.OperatorType == "RX")
+                                    {
+                                        model.OperatorCode = item.OperatorType;
+                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                    }
+                                    else if (item.OperatorType == "SM")
+                                    {
+                                        model.OperatorCode = item.OperatorType;
+                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                    }
+
+                                    model.Amount = card.Denom;
+                                    vouchers.Add(model);
+                                }
+                            }
+
+                        }
+
+                    }
+                }
+                return vouchers;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+
+        }
         [HttpPost]
         public async Task<List<VoucherDetailsModel>> GetAllOperatorVouchers()
         {
@@ -364,7 +634,6 @@ namespace OnlineRecharge.Controllers
 
             
         }
-
 
         [HttpPost]
         public async Task<TransferResponseDetailsModel> TopupTransfer()
@@ -844,10 +1113,66 @@ namespace OnlineRecharge.Controllers
             }
             return model.ID;
         }
-        #endregion
 
-        #region Kamal
-        //Internatinal Recharnges Update
+
+        public int UpdateDataCardRechargeDetailsToDB(string mobileNumber, string rechargeType, string operatorCode, string paymentID, string status, string trackID, string tranID, string reference, TransferResponseDetailsModel result)
+        {
+            var model = context.DataCardRecharge.Create();
+            try
+            {
+
+                model.MobileNumber = mobileNumber;
+                model.amount = result.Amount;
+                model.ServiceProvider = context.ServiceProiders.Where(x => x.Code == operatorCode).FirstOrDefault();
+                model.IsActive = true;
+                model.IsDeleted = false;
+                model.CreatedBy = 1;
+                model.CreatedDate = DateTime.Now;
+                model.CustomerID = 1;
+                context.DataCardRecharge.Add(model);
+                context.SaveChanges();
+
+                var paymentDetail = context.DataCardRechargePaymentDetail.Create();
+                paymentDetail.PaymentID = paymentID;
+                paymentDetail.Result = status;
+                paymentDetail.TrackID = trackID;
+                paymentDetail.TransID = tranID;
+                paymentDetail.Ref = reference;
+                paymentDetail.DataCardRecharge = model;
+                context.DataCardRechargePaymentDetail.Add(paymentDetail);
+
+                var apiResponseDetail = context.DataCardRechargeApiDetail.Create();
+                apiResponseDetail.DataCardRecharge = model;
+                apiResponseDetail.PaymentID = result.PaymentID;
+                apiResponseDetail.PaymentRef = result.PaymentRef;
+                apiResponseDetail.Response = result.Response;
+                apiResponseDetail.ResponseDescription = result.ResponseDescription;
+                apiResponseDetail.Date = DateTime.Now;// result.Date;
+                apiResponseDetail.Denomination = result.Denomination;
+                apiResponseDetail.Password = result.Password;
+                apiResponseDetail.RechargeCode = result.RechargeCode;
+                apiResponseDetail.SerialNo = result.SerialNo;
+                context.DataCardRechargeApiDetail.Add(apiResponseDetail);
+                context.SaveChanges();
+
+            }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
+                throw;
+            }
+            return model.ID;
+        }
+
         public int UpdateInternationalRechargeDetailsToDB(string mobileNumber, string rechargeType, string operatorCode, string paymentID, string status, string trackID, string tranID, string reference, TransferResponseDetailsModel result)
         {
             var model = context.InternationalRecharges.Create();
@@ -902,172 +1227,11 @@ namespace OnlineRecharge.Controllers
             }
             return model.ID;
         }
-        /// <summary>
-                        /// Call before submit the payment.
-                        /// </summary>
-                        /// <param name="OperatorName"></param>
-                        /// <param name="CountryCode"></param>
-                        /// <param name="OperatorCode"></param>
-                        /// <param name="MobileNumber"></param>
-                        /// <param name="Amount"></param>
-                        /// <returns></returns>
-        public async Task<JsonResult> InternationalTopupCheck(string OperatorName, string CountryCode, string OperatorCode, string MobileNumber, string Amount)
-        {
-            try
-            {
-                using (var client = new HttpClient())
-                {
+        #endregion
 
-                    #region login and get token
-                    var logindata = string.Format("grant_type=password&username={0}&password={1}", USERNAME, PASSWORD);//LOGIN DATA
+        #region Kamal
+        //Internatinal Recharnges Update
 
-                    var url = BASEADDRESS + "token";
-
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
-                    request.Content = new StringContent(logindata, Encoding.UTF8, "application/x-www-form-urlencoded");
-
-                    var resp = await client.PostAsync(url, request.Content);
-                    Token token = new Token();
-                    if (resp.IsSuccessStatusCode)
-                    {
-                        token = await resp.Content.ReadAsAsync<Token>();
-                    }
-                    #endregion login and get token
-                    #region call services test
-
-
-                    using (var httpClient = new HttpClient())
-                    {
-                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token.token_type, token.access_token);
-                        httpClient.BaseAddress = new Uri(BASEADDRESS);
-
-
-                        //TestWebServiceClient.ServiceReference2.InternationalTopupCheck obj1 = 
-                        //(TestWebServiceClient.ServiceReference2.InternationalTopupCheck)WCTest.InternationalTopupCheck("IT/IN/VF/919645834359/2.000");
-                        string data = string.Format("?OperatorName={0}&CountryCode={1}&OperatorCode={2}&MobileNumber={3}&Amount={4}",
-                               "IT", CountryCode, OperatorCode, MobileNumber, Amount);
-                        HttpResponseMessage response = await httpClient.GetAsync("api/Services/InternationalTopupCheck" + data);
-
-                        //first call InternationalTopupCheck
-                        //Internation topup transfer
-
-
-                        if (response.IsSuccessStatusCode)
-                        {
-                            var result = await response.Content.ReadAsAsync<InternationalTopupCheck>();
-                        }
-                        else
-                        {
-                            //MessageBox.Show(response.ReasonPhrase);
-                        }
-
-                    }
-                    #endregion call services test
-
-                }
-
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
-            return Json(true, JsonRequestBehavior.AllowGet);
-        }
-        public async Task<JsonResult> InternationalTopupTransfer()
-        {
-            TransferResponseDetailsModel model = new TransferResponseDetailsModel();
-            try
-            {
-
-                using (var client = new HttpClient())
-                {
-
-                    string rechargeType = Request.Form["rechargeType"];
-                    string operatorName = Request.Form["operatorCode"];
-                    string mobileNumber = Request.Form["mobileNumber"];
-                    string amount = Request.Form["amount"];
-                    string paymentID = Request.Form["paymentID"];
-                    string status = Request.Form["result"];
-                    string trackID = Request.Form["trackID"];
-                    string tranID = Request.Form["tranID"];
-                    string reference = Request.Form["ref"];
-                    string countryCode = Request.Form["countryCode"];
-                    string operatorCode = Request.Form["operatorCode"];
-
-
-                    #region login and get token
-
-                    var logindata = string.Format("grant_type=password&username={0}&password={1}", USERNAME, PASSWORD);//LOGIN DATA
-
-                    var url = BASEADDRESS + "token";
-
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
-                    request.Content = new StringContent(logindata, Encoding.UTF8, "application/x-www-form-urlencoded");
-
-                    var resp = await client.PostAsync(url, request.Content);
-                    Token token = new Token();
-                    if (resp.IsSuccessStatusCode)
-                    {
-                        token = await resp.Content.ReadAsAsync<Token>();
-                    }
-                    #endregion login and get token
-                    #region call services test
-
-
-                    using (var httpClient = new HttpClient())
-                    {
-                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token.token_type, token.access_token);
-                        httpClient.BaseAddress = new Uri(BASEADDRESS);
-
-
-                        //TestWebServiceClient.ServiceReference2.InternationalTopupCheck obj1 = 
-                        //(TestWebServiceClient.ServiceReference2.InternationalTopupCheck)WCTest.InternationalTopupCheck("IT/IN/VF/919645834359/2.000");
-                        string data = string.Format("?OperatorName={0}&amount={1}&MobileNumber={2}&CountryCode={3}&OperatorCode={4}&PaymentType={5}",
-                            "IT", amount, mobileNumber, countryCode, operatorCode, "CASH");
-                        HttpResponseMessage response = await httpClient.GetAsync("api/Services/InternationalTopupTransfer" + data);
-
-                        //first call InternationalTopupCheck
-                        //Internation topup transfer
-
-
-                        if (response.IsSuccessStatusCode)
-                        {
-                            var result = await response.Content.ReadAsAsync<TopupTransfer>();
-
-                            model.PaymentID = result.PaymentID;
-                            model.PaymentRef = result.PaymentRef;
-                            model.Response = result.Response;
-                            model.ResponseDescription = result.ResponseDescription;
-                            int id = UpdateInternationalRechargeDetailsToDB(mobileNumber, rechargeType, operatorName, paymentID, status, trackID, tranID, reference, model);
-
-                        }
-                        else
-                        {
-                            //MessageBox.Show(response.ReasonPhrase);
-                        }
-
-                    }
-
-
-                    #endregion call services test
-
-                }
-
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
-            return Json(model, JsonRequestBehavior.AllowGet);
-        }
 
         #endregion
 

@@ -400,7 +400,7 @@ app.controller('rechargeResultController', ['$scope', '$location', 'localStorage
                 "<hr />config: " + config;
         });
     }
-    else if (rechargeParams.ServiceType == 'national' && rechargeParams.RechargeType == 'Vochers') {
+    else if (rechargeParams.ServiceType == 'national' && rechargeParams.RechargeType == 'Vouchers') {
         var data = $.param({
             rechargeType: rechargeParams.RechargeType,
             operatorCode: rechargeParams.OperatorCode,
