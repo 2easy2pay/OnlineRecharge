@@ -10,20 +10,22 @@
                         <label for="Prepaid" translate="Prepaid"></label>
                         <input id="Postpaid" type="radio" name="gender" value="Postpaid" ng-model="rechargeType" ng-change="refreshRechargeType()">
                         <label for="Postpaid" translate="Postpaid"></label>
-                        <input id="Vochers" type="radio" name="gender" value="Vochers" ng-model="rechargeType" ng-change="refreshRechargeType()">
-                        <label for="Vochers" translate="Vochers"></label>
+                        <input id="Vouchers" type="radio" name="gender" value="Vouchers" ng-model="rechargeType" ng-change="refreshRechargeType()">
+                        <label for="Vouchers" translate="Vochers"></label>
                     </div>
 
                     <div class="form-group">
                         <label translate="MobileNumber"></label>
                         <input id="MobileNumber" name="MobileNumber" type="text" international-phone-number only-countries="kw" default-country="kw" ng-model="mobileNumber" required numbers-only maxlength="11">
-                        <p ng-show="CheckValidationForMobileNumer()" class="valid-message" translate="Validation_NationalRecharge_Mobile_Required"></p>
+                        <p ng-show="TopupValidation.Response=='F'" class="valid-message" >{{TopupValidation.ResponseDescription}}</p>
+                        <p ng-model="validationRef" ng-show="CheckValidationForMobileNumer()" class="valid-message" >{{ validationRef | translate }}</p>
                     </div>
                     <div class="form-group">
                         <label translate="Operator"></label>
-                        <select class="form-control" ng-model="operatorCode" ng-options="s.Code as s.Name for s in serviceProviders">
-                                <!-->
-                        <option ng-repeat="item in serviceProviders" data-content="{{item.ImageURL}}" value="{{item.Code}}">{{item.Name}}</option>-->
+                        <select selectpicker="" class="select-dropdown" ng-model="operatorCode" ng-change="refershAmount()" toggle-dropdown>
+                            <!--ng-options="s.Code as s.Name for s in serviceProviders"data-content="{{item.ImageURL}}"--> 
+                                
+                        <option ng-repeat="item in serviceProviders"  data-content="<span class='label label-success' ><span ng-bind='{{item.Name}}'></span><img src='/Content/img/Operators/{{item.Code}}.png' /></span>"   value="{{item.Code}}">{{item.Name}}</option>
                                 
                         </select>
                         <p ng-show="CheckValidationForOperator()" class="valid-message" translate="Validation_NationalRecharge_Operator_Required"></p>
@@ -31,7 +33,7 @@
                     <div class="form-group">
                         <label for="#" translate="RechargeAmount"></label>
                         <div class="input-grp">
-                            <input name="Amount" type="text" ng-disabled="rechargeType == 'Vochers'" ng-model="amount" class="form-control" placeholder="{{ 'AmountPlaceHolder' | translate }}" required ng-change="CheckValidationForAmount()" numbers-only> 
+                            <input name="Amount" type="text" ng-disabled="rechargeType == 'Vouchers'" ng-model="amount" class="form-control" placeholder="{{ 'AmountPlaceHolder' | translate }}" required ng-change="CheckValidationForAmount()" numbers-only> 
                             <!--<a href="#" class="browse-plan" translate="BrowsePlan"></a>-->
                         </div>
                         <p ng-show="CheckValidationForAmount()" class="valid-message" translate="Validation_NationalRecharge_Amount_Required"></p>
@@ -44,7 +46,7 @@
             </form>
         </div>
     </div>
-    <div class="col-md-8" ng-show="rechargeType == 'Vochers'">
+    <div class="col-md-8" ng-show="rechargeType == 'Vouchers'">
         <div class="offer-list-blk">
             <div class="bigContaner-plans">
                 <div class="offeres-table">

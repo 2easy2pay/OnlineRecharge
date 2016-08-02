@@ -159,10 +159,12 @@
     <Content Include="Content\css\app-ltr.css" />
     <Content Include="Content\css\bootstrap-rtl.css" />
     <Content Include="Content\css\bootstrap-ltr.css" />
+    <Content Include="Content\css\bootstrap-select.css" />
     <Content Include="Content\css\intlTelInput.css" />
     <Content Include="Content\css\ngDialog-theme-default.css" />
     <Content Include="Content\css\ngDialog-theme-plain.css" />
     <Content Include="Content\css\ngDialog.css" />
+    <Content Include="Content\img\alert-icon.jpg" />
     <Content Include="Content\img\Banner\Img1.jpg" />
     <Content Include="Content\img\Banner\Img2.png" />
     <Content Include="Content\img\close.png" />
@@ -173,12 +175,13 @@
     <Content Include="Content\img\flags\us.png" />
     <Content Include="Content\img\logo.jpg" />
     <Content Include="Content\img\open-lock2.png" />
-    <Content Include="Content\img\Operators\ooreedo.png" />
-    <Content Include="Content\img\Operators\viva.png" />
-    <Content Include="Content\img\Operators\zain.png" />
+    <Content Include="Content\img\Operators\XP.png" />
+    <Content Include="Content\img\Operators\VV.png" />
+    <Content Include="Content\img\Operators\EZ.png" />
     <Content Include="Content\img\payment-Method.png" />
     <Content Include="Content\img\payment\knet.jpg" />
     <Content Include="Content\img\payment\visA.png" />
+    <Content Include="Content\img\preloader.gif" />
     <Content Include="Content\img\social-sprite-1.png" />
     <Content Include="Content\img\spinner.gif" />
     <Content Include="Content\img\sprite.png" />
@@ -973,12 +976,14 @@
     <Content Include="scripts\ngDialog.js" />
     <Content Include="scripts\respond.js" />
     <Content Include="scripts\Slider\slider.js" />
+    <Content Include="scripts\Utilities\angular-bootstrap-select.js" />
     <Content Include="scripts\Utilities\angular-local-storage.js" />
     <Content Include="scripts\Utilities\angular-translate-handler-log.js" />
     <Content Include="scripts\Utilities\angular-translate-loader-static-files.js" />
     <Content Include="scripts\Utilities\angular-translate-storage-cookie.js" />
     <Content Include="scripts\Utilities\angular-translate-storage-local.js" />
     <Content Include="scripts\Utilities\angular-translate.js" />
+    <Content Include="scripts\Utilities\bootstrap-select.js" />
     <Content Include="scripts\utils.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

@@ -1,4 +1,4 @@
-﻿<div class="row">
+nn<div class="row">
     <div class="col-md-8">
         <div class="pay-details">
             <div class="headr clearfix">
@@ -34,7 +34,12 @@
         <div class="hidden">
             <div class="payment-selection">
                 <div class="order-summery">
-                    <h3 translate="PaymentSummary"></h3>
+                    <div class="clearfix">
+                        <h3 translate="PaymentSummary"></h3>
+                        <span class="status success">
+                            {{result}}
+                        </span>
+                    </div>
                     <div class="line"></div>
                     <div class="pay-summery-list">
                         <span translate="PaymentSummary_PaymentID"></span> {{paymentID}}
@@ -45,9 +50,6 @@
                     <div class="pay-summery-list">
                         <span translate="PaymentSummary_TrackID"></span> {{trackID}}
                     </div>
-                    <span class="status success">
-                        {{result}}
-                    </span>
                 </div>
             </div>
         </div>

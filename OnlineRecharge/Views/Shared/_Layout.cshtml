@@ -11,6 +11,7 @@
     <link href="~/Content/css/intlTelInput.css" rel="stylesheet" />
     <link href="~/Content/css/ngDialog.css" rel="stylesheet" />
     <link href="~/Content/css/ngDialog-theme-default.css" rel="stylesheet" />
+    <link href="~/Content/css/bootstrap-select.css" rel="stylesheet" />
     <link href="~/Content/css/ngDialog-theme-plain.css" rel="stylesheet" />
     @Scripts.Render("~/bundles/modernizr")
 </head>
@@ -147,7 +148,7 @@
             </div>
             <div class="responsive-nav-wrapper-parent">
                 <div class="responsive-nav-wrapper">
-                    <div class="menu-title"></div>
+                    @*<div class="menu-title"></div>
                     <div class="mobile-user-wrap">
                         <a href="#" class="user-icon"></a>
                         <ul class="user-account-dropdown mobile-dropdown">
@@ -160,6 +161,12 @@
                         <div class="search-form-wrap mobile-dropdown">
                             <input type="text" class="search-form" placeholder="Search Store">
                         </div>
+                    </div>*@
+                    <div class="mobile-menu-icons">
+                        <a class="mobile-icon active" href="#"></a>
+                        <a class="international-icon" href="#"></a>
+                        <a class="dataCard-icon" href="#"></a>
+                        <a class="shopping-icon" href="#"></a>
                     </div>
                 </div>
             </div>
@@ -263,20 +270,6 @@
             <div class="close-menu"></div>
             <ul class="side-menu">
                 <li>
-                    <a href="#" class="sub-menu">Products</a>
-                    <div class="sub-menu-ul">
-                        <div class="close-menu-inner"></div>
-                        <ul>
-                            <li>
-                                <a href="#">US Imported</a>
-                            </li>
-                            <li>
-                                <a href="#">Computers</a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-                <li>
                     <a href="#">Recharge</a>
                 </li>
                 <li>
@@ -288,28 +281,14 @@
                 <li>
                     <a href="#">Shopping Cards</a>
                 </li>
-                <li>
-                    <a href="#">Manufactures</a>
-                </li>
-                <li>
-                    <a href="#">Vendors</a>
-                </li>
-                <li>
-                    <a href="#">Contact Us</a>
-                </li>
-                <li>
-                    <a href="#">Blog</a>
-                </li>
             </ul>
         </div>
         <div class="overlay"></div>
     </div>
-
-
-
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     <script src="~/scripts/intlTelInput.js"></script>
+    <script src="~/scripts/Utilities/bootstrap-select.js"></script>
     @Scripts.Render("~/bundles/angular")
     <script src="~/scripts/angular-animate.min.js"></script>
     <script src="~/scripts/angular-touch.min.js"></script>
@@ -332,6 +311,8 @@
     <script src="~/scripts/Utilities/angular-translate-loader-static-files.js"></script>
     <script src="~/scripts/Utilities/angular-local-storage.js"></script>
     <script src="~/scripts/angular-block-ui.js"></script>
+    <script src="~/scripts/Utilities/angular-bootstrap-select.js"></script>
+
     <script src="~/App/app.js"></script>
     <script src="~/App/OnlineRechargefilter.js"></script>
     <script src="~/App/Common/factory.js"></script>

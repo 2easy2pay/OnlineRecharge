@@ -111,16 +111,29 @@
           ctrl.$validators.internationalPhoneNumber = function (value) {
               var selectedCountry;
               selectedCountry = element.intlTelInput('getSelectedCountryData');
-              if (!value || (selectedCountry && selectedCountry.dialCode === value)) {
+              //if (!value || (selectedCountry && selectedCountry.dialCode === value)) {
+              //    element.addClass("intlsuccess");
+              //    element.removeClass("intlerror");
+              //    return true;
+              //}
+              if (value!=undefined && element.intlTelInput("isValidNumber")) {
                   element.addClass("intlsuccess");
                   element.removeClass("intlerror");
+                  var error = element.intlTelInput("getValidationError");
+                  if (error == intlTelInputUtils.validationError.TOO_SHORT) {
+                      // the number is too short
+                  }
+                  var testscope = angular.element($("#MobileNumber")).scope();
+                  testscope.interrorcode = error;
                   return true;
-              }
-              if (element.intlTelInput("isValidNumber")) {
-                  element.addClass("intlsuccess");
-                  element.removeClass("intlerror");
-                  return true;
-              } else {
+              } else if(value!=undefined)
+              {
+                  var error = element.intlTelInput("getValidationError");
+                  if (error == intlTelInputUtils.validationError.TOO_SHORT) {
+                      // the number is too short
+                  }
+                  var testscope = angular.element($("#MobileNumber")).scope();
+                  testscope.interrorcode = error;
                   element.addClass("intlerror");
                   element.removeClass("intlsuccess");
                   return false;
@@ -128,8 +141,6 @@
           };
           element.on('blur keyup change', function (event) {
             return scope.$apply(read);
-          });
-          element.on("countrychange", function (e, countryData) {
           });
           return element.on('$destroy', function() {
             element.intlTelInput('destroy');

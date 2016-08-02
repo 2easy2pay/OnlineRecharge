@@ -37,13 +37,13 @@
                                    
                                 </div>
                             </div>
-                            <div class="some-note">
-                                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
+                            <div class="some-note" translate="VisaMasterPaymentCaption">
+                              
                             </div>
-                            <a class="make-payment" href="#">Make Payment</a>
+                            <!--<a class="make-payment" href="#">Make Payment</a>-->
                         </script>
                         <script type="text/ng-template" id="wallet.html">
-                            Demo 3
+                            <!--Demo 3-->
                         </script>
                     </div>
                 </div>
@@ -55,9 +55,16 @@
                     <div class="order-summery">
                         <h3 translate="OrderSummary"></h3>
                         <div class="offerSelctionDetails">
-                            <h4>{{RechargeParameter.MobileNumber}}</h4>
-                            <span>{{RechargeParameter.OperatorCode}}</span>
-                        </div>
+                            <h4>
+                                serviceProvider : <img ng-src="/Content/img/Operators/{{RechargeParameter.OperatorCode}}.png" />
+                            </h4>
+                            <h4>
+                                mobilenumber : {{RechargeParameter.MobileNumber}}
+                            </h4>
+                                <h4>serviceType : {{RechargeParameter.ServiceType}}</h4>
+                            <h4>offer : N/A</h4>
+                                <!--<span>{{RechargeParameter.OperatorCode}}</span>-->
+</div>
                     </div>
                     <div class="devider"></div>
                         <div class="amount-pay clearfix">

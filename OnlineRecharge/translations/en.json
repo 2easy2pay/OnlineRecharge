@@ -43,6 +43,8 @@
   "Result_RechargeSuccess_Caption3": "Your Transaction is successful!",
   "Result_RechargeSuccess_Details_Heading": "Recharge Details",
   "Result_RechargeSuccess_Details_By_Label": "By ",
+  "VisaMasterPaymentCaption": "Visa/Master Not Avaliabel for this Services!!",
+
 
   "GeneralLabels_KD": "KD",
 
@@ -52,7 +54,8 @@
   "VoucherDetails_TableStaticContent_ShoppingCardServiceType": "Shopping Cards",
 
 
-  "Validation_NationalRecharge_Mobile_Required": "Mobile numer is required!",
+  "mobilerequired": "Mobile number is required!",
+  "mobileminlength": "Enter 8 digit mobile number!",
   "Validation_NationalRecharge_Operator_Required": "Please select operator!",
   "Validation_NationalRecharge_Amount_Required": "Amount is required!"
 }
