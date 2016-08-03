@@ -44,7 +44,12 @@
   "Result_RechargeSuccess_Details_Heading": "Recharge Details",
   "Result_RechargeSuccess_Details_By_Label": "By ",
   "VisaMasterPaymentCaption": "Visa/Master Not Avaliabel for this Services!!",
-
+  "Result_RechargeFailure_Caption2": " KD failed.",
+  "Result_RechargeFailure_Caption3": "Your Transaction is not successful!",
+  "Result_RechargeSuccess_Details_MobileNumber": "MobileNumber",
+  "Result_RechargeSuccess_Details_RechargeType": "Recharge Type",
+  "Result_RechargeSuccess_Details_Offer": "Offer",
+  "Result_RechargeSuccess_Details_Voucher": "Voucher",
 
   "GeneralLabels_KD": "KD",
 

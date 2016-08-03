@@ -424,142 +424,163 @@ app.controller('paymentPageController', ['$scope', '$http', '$location', 'localS
             form.remove();
         });
     };
-    blockUI.stop();
+    //blockUI.stop();
 }]);
 app.controller('rechargeResultController', ['$scope', '$location', 'localStorageService', '$http', 'blockUI', function ($scope, $location, localStorageService, $http, blockUI) {
     blockUI.start();
     var rechargeParams = localStorageService.get('nationalRechargeParams');
+    $scope.RechargeParams = rechargeParams;
     var search = $location.search();
     $scope.paymentID = search.PaymentID;
     $scope.result = search.Result;
     $scope.trackID = search.TrackID;
     $scope.tranID = search.TranID;
     $scope.ref = search.Ref;
-    if (rechargeParams.ServiceType == 'national' && rechargeParams.RechargeType == 'Prepaid') {
-        var data = $.param({
-            rechargeType: rechargeParams.RechargeType,
-            operatorCode: rechargeParams.OperatorCode,
-            mobileNumber: rechargeParams.MobileNumber,
-            amount: rechargeParams.Amount,
-            paymentID: $scope.paymentID,
-            result: $scope.result,
-            trackID: $scope.trackID,
-            tranID: $scope.tranID,
-            ref: $scope.ref
-        });
+    if (search.Result == "CAPTURED")
+    {
+        if (rechargeParams.ServiceType == 'national' && rechargeParams.RechargeType == 'Prepaid') {
+            var data = $.param({
+                rechargeType: rechargeParams.RechargeType,
+                operatorCode: rechargeParams.OperatorCode,
+                mobileNumber: rechargeParams.MobileNumber,
+                amount: rechargeParams.Amount,
+                paymentID: $scope.paymentID,
+                result: $scope.result,
+                trackID: $scope.trackID,
+                tranID: $scope.tranID,
+                ref: $scope.ref
+            });
 
-        var config = {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+            var config = {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+                }
             }
+
+            $http.post('/Home/TranferNationalTopup', data, config)
+            .success(function (data, status, headers, config) {
+                $scope.APIResponse = data;
+            })
+            .error(function (data, status, header, config) {
+                $scope.ResponseDetails = "Data: " + data +
+                    "<hr />status: " + status +
+                    "<hr />headers: " + header +
+                    "<hr />config: " + config;
+            });
         }
+        else if (rechargeParams.ServiceType == 'national' && rechargeParams.RechargeType == 'Postpaid') {
+            var data = $.param({
+                rechargeType: rechargeParams.RechargeType,
+                operatorCode: rechargeParams.OperatorCode,
+                mobileNumber: rechargeParams.MobileNumber,
+                amount: rechargeParams.Amount,
+                paymentID: $scope.paymentID,
+                result: $scope.result,
+                trackID: $scope.trackID,
+                tranID: $scope.tranID,
+                ref: $scope.ref
+            });
 
-        $http.post('/Home/TranferNationalTopup', data, config)
-        .success(function (data, status, headers, config) {
-            $scope.APIResponse = data;
-        })
-        .error(function (data, status, header, config) {
-            $scope.ResponseDetails = "Data: " + data +
-                "<hr />status: " + status +
-                "<hr />headers: " + header +
-                "<hr />config: " + config;
-        });
-    }
-    else if (rechargeParams.ServiceType == 'national' && rechargeParams.RechargeType == 'Postpaid') {
-        var data = $.param({
-            rechargeType: rechargeParams.RechargeType,
-            operatorCode: rechargeParams.OperatorCode,
-            mobileNumber: rechargeParams.MobileNumber,
-            amount: rechargeParams.Amount,
-            paymentID: $scope.paymentID,
-            result: $scope.result,
-            trackID: $scope.trackID,
-            tranID: $scope.tranID,
-            ref: $scope.ref
-        });
-
-        var config = {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+            var config = {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+                }
             }
+
+            $http.post('/Home/NationalBillPayment', data, config)
+            .success(function (data, status, headers, config) {
+                $scope.APIResponse = data;
+            })
+            .error(function (data, status, header, config) {
+                $scope.ResponseDetails = "Data: " + data +
+                    "<hr />status: " + status +
+                    "<hr />headers: " + header +
+                    "<hr />config: " + config;
+            });
         }
+        else if (rechargeParams.ServiceType == 'national' && rechargeParams.RechargeType == 'Vouchers') {
+            var data = $.param({
+                rechargeType: rechargeParams.RechargeType,
+                operatorCode: rechargeParams.OperatorCode,
+                mobileNumber: rechargeParams.MobileNumber,
+                amount: rechargeParams.Amount,
+                paymentID: $scope.paymentID,
+                result: $scope.result,
+                trackID: $scope.trackID,
+                tranID: $scope.tranID,
+                ref: $scope.ref
+            });
 
-        $http.post('/Home/NationalBillPayment', data, config)
-        .success(function (data, status, headers, config) {
-            $scope.APIResponse = data;
-        })
-        .error(function (data, status, header, config) {
-            $scope.ResponseDetails = "Data: " + data +
-                "<hr />status: " + status +
-                "<hr />headers: " + header +
-                "<hr />config: " + config;
-        });
-    }
-    else if (rechargeParams.ServiceType == 'national' && rechargeParams.RechargeType == 'Vouchers') {
-        var data = $.param({
-            rechargeType: rechargeParams.RechargeType,
-            operatorCode: rechargeParams.OperatorCode,
-            mobileNumber: rechargeParams.MobileNumber,
-            amount: rechargeParams.Amount,
-            paymentID: $scope.paymentID,
-            result: $scope.result,
-            trackID: $scope.trackID,
-            tranID: $scope.tranID,
-            ref: $scope.ref
-        });
-
-        var config = {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+            var config = {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+                }
             }
+
+            $http.post('/Home/NationalVoucherTranfer', data, config)
+            .success(function (data, status, headers, config) {
+                $scope.APIResponse = data;
+            })
+            .error(function (data, status, header, config) {
+                $scope.ResponseDetails = "Data: " + data +
+                    "<hr />status: " + status +
+                    "<hr />headers: " + header +
+                    "<hr />config: " + config;
+            });
         }
+        else if (rechargeParams.ServiceType == 'DataCards') {
+            debugger;
+            if ($scope.result == 'CAPTURED' || $scope.result == 'NOT CAPTURED') {
+                var data = $.param({
+                    RechargeType: rechargeParams.RechargeType,
+                    OperatorCode: rechargeParams.OperatorCode,
+                    MobileNumber: rechargeParams.MobileNumber,
+                    ServiceType: rechargeParams.ServiceType,
+                    amount: rechargeParams.Amount,
+                    paymentID: $scope.paymentID,
+                    result: $scope.result,
+                    trackID: $scope.trackID,
+                    tranID: $scope.tranID,
+                    ref: $scope.ref
+                });
 
-        $http.post('/Home/NationalVoucherTranfer', data, config)
-        .success(function (data, status, headers, config) {
-            $scope.APIResponse = data;
-        })
-        .error(function (data, status, header, config) {
-            $scope.ResponseDetails = "Data: " + data +
-                "<hr />status: " + status +
-                "<hr />headers: " + header +
-                "<hr />config: " + config;
-        });
-    }
-    else if (rechargeParams.ServiceType == 'DataCards') {
-        var data = $.param({
-            rechargeType: rechargeParams.RechargeType,
-            operatorCode: rechargeParams.OperatorCode,
-            mobileNumber: rechargeParams.MobileNumber,
-            serviceType: rechargeParams.ServiceType,
-            amount: rechargeParams.Amount,
-            paymentID: $scope.paymentID,
-            result: $scope.result,
-            trackID: $scope.trackID,
-            tranID: $scope.tranID,
-            ref: $scope.ref
-        });
-
-        var config = {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+                var config = {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+                    }
+                }
+                $http.post('/Home/NationalVoucherTranfer', data, config)
+                .success(function (data, status, headers, config) {
+                    $scope.APIResponse = data;
+                })
+                .error(function (data, status, header, config) {
+                    $scope.ResponseDetails = "Data: " + data +
+                        "<hr />status: " + status +
+                        "<hr />headers: " + header +
+                        "<hr />config: " + config;
+                });
             }
+            else {
+                debugger
+                var data = ({
+                    RechargeType: rechargeParams.RechargeType,
+                    OperatorCode: rechargeParams.OperatorCode,
+                    MobileNumber: rechargeParams.MobileNumber,
+                    ServiceType: rechargeParams.ServiceType,
+                    amount: rechargeParams.Amount,
+                    paymentID: $scope.paymentID,
+                    result: $scope.result,
+                    trackID: $scope.trackID,
+                    tranID: $scope.tranID,
+                    ref: $scope.ref
+                });
+                $scope.APIResponse = data;
+            }
+
         }
+        else if (rechargeParams.ServiceType == 'International') {
 
-        $http.post('/Home/NationalVoucherTranfer', data, config)
-        .success(function (data, status, headers, config) {
-            $scope.APIResponse = data;
-        })
-        .error(function (data, status, header, config) {
-            $scope.ResponseDetails = "Data: " + data +
-                "<hr />status: " + status +
-                "<hr />headers: " + header +
-                "<hr />config: " + config;
-        });
-
-    }
-    else if (rechargeParams.ServiceType == 'International') {
-
-        //if ($scope.result == 'CAPTURED') {
+            //if ($scope.result == 'CAPTURED') {
             //Local storage parameter.
             var TopValidationdata = $.param({
                 OperatorName: rechargeParams.OperatorName,
@@ -620,42 +641,62 @@ app.controller('rechargeResultController', ['$scope', '$location', 'localStorage
 
 
             })
-        //}
+            //}
 
 
-    }
-    else if (rechargeParams.ServiceType == 'ShoppingCards') {
-        var data = $.param({
-            rechargeType: rechargeParams.RechargeType,
-            operatorCode: rechargeParams.OperatorCode,
-            mobileNumber: rechargeParams.MobileNumber,
-            serviceType: rechargeParams.ServiceType,
-            amount: rechargeParams.Amount,
-            paymentID: $scope.paymentID,
-            result: $scope.result,
-            trackID: $scope.trackID,
-            tranID: $scope.tranID,
-            ref: $scope.ref
-        });
-
-        var config = {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
-            }
         }
+        else if (rechargeParams.ServiceType == 'ShoppingCards') {
+            debugger
+            var data = $.param({
+                RechargeType: rechargeParams.RechargeType,
+                OperatorCode: rechargeParams.OperatorCode,
+                MobileNumber: rechargeParams.MobileNumber,
+                serviceType: rechargeParams.ServiceType,
+                amount: rechargeParams.Amount,
+                paymentID: $scope.paymentID,
+                result: $scope.result,
+                trackID: $scope.trackID,
+                tranID: $scope.tranID,
+                ref: $scope.ref
+            });
 
-        $http.post('/Home/NationalVoucherTranfer', data, config)
-        .success(function (data, status, headers, config) {
-            $scope.APIResponse = data;
-        })
-        .error(function (data, status, header, config) {
-            $scope.ResponseDetails = "Data: " + data +
-                "<hr />status: " + status +
-                "<hr />headers: " + header +
-                "<hr />config: " + config;
-        });
+            var config = {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+                }
+            }
+            if ($scope.result == 'CAPTURED' || $scope.result == 'NOT CAPTURED') {
+                $http.post('/Home/NationalVoucherTranfer', data, config)
+                .success(function (data, status, headers, config) {
+                    $scope.APIResponse = data;
+                })
+                .error(function (data, status, header, config) {
+                    $scope.ResponseDetails = "Data: " + data +
+                        "<hr />status: " + status +
+                        "<hr />headers: " + header +
+                        "<hr />config: " + config;
+                });
+            }
+            else {
+                debugger
+                var data = ({
+                    RechargeType: rechargeParams.RechargeType,
+                    OperatorCode: rechargeParams.OperatorCode,
+                    MobileNumber: rechargeParams.MobileNumber,
+                    ServiceType: rechargeParams.ServiceType,
+                    amount: rechargeParams.Amount,
+                    paymentID: $scope.paymentID,
+                    result: $scope.result,
+                    trackID: $scope.trackID,
+                    tranID: $scope.tranID,
+                    ref: $scope.ref
+                });
+                $scope.APIResponse = data;
+            }
 
+        }
     }
+   
     blockUI.stop();
 }]);
 //kamal -International Recharge Controller
@@ -772,28 +813,70 @@ app.controller('InternationalRechargeController', ['$scope', '$http', 'localStor
         }
 
     }]);
+//Data Card 
 app.controller('datacardController', ['$scope', '$http', 'localStorageService',
     function ($scope, $http, localStorageService) {
+        debugger
+
         $scope.redirect = function () {
-            if ($scope.rechargeForm.$valid) {
-                var paramObj = {
-                    serviceType: 'DataCards',
-                    rechargeType: 'DataCards',
-                    operatorCode: $scope.operatorCode,
-                    mobileNumber: $scope.mobileNumber,
-                    amount: $scope.amount
-                };
-                localStorageService.set('nationalRechargeParams', paramObj);
-                window.location = "#/paymentOptions";
+
+            debugger;
+            /*************Validate the international top up recharge.*************/
+            var data = $.param({
+                mobileNumber: $scope.mobileNumber,
+                amount: $scope.amount,
+                rechargeType: "DataCards",
+                serviceType: "DataCards",
+                operatorCode: $scope.operatorCode
+            });
+
+            var config = {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+                }
             }
 
+            $http.post('/Home/ValidateVoucher', data, config)
+            .success(function (data) {
+                debugger
+                if (data.Result == 'S') {
+                    //Set the recharge parameter set from international recharge page.
+                    var paramObj = {
+                        ServiceType: 'DataCards',
+                        RechargeType: 'DataCards',
+                        OperatorCode: $scope.operatorCode,
+                        MobileNumber: $scope.mobileNumber,
+                        Amount: $scope.amount
+
+                    };
+                    localStorageService.set('nationalRechargeParams', paramObj);
+                    window.location = "#/paymentOptions";
+                }
+                else {
+                    $scope.validationError = data.Result;
+                }
+
+            });
+            /*************Validate the international top up recharge.*************/
+
+
         }
+
+
+
+        //Clear amount.
+        $scope.ClearAmount = function () {
+            $scope.OperatorName = $("#ddlOperator option:selected").text();
+            $scope.amount = '';
+        }
+
         //$http service for Getting the ServiceProviders  
         $http({
             method: 'GET',
-            url: '/Home/GetServiceProviders'
+            url: '/Home/GetServiceDataCardProviders'
         }).
         success(function (data) {
+            debugger
             $scope.serviceProviders = data;
         });
 
@@ -808,21 +891,115 @@ app.controller('datacardController', ['$scope', '$http', 'localStorageService',
         $scope.loadAmount = function (voucher) {
             $scope.amount = voucher.Amount;
         }
+
+
+        $scope.stringFormat = function () {
+            var s = arguments[0];
+            for (var i = 0; i < arguments.length - 1; i++) {
+                var reg = new RegExp("\\{" + i + "\\}", "gm");
+                s = s.replace(reg, arguments[i + 1]);
+            }
+
+            return s;
+        }
+
+        $scope.PopulateSpan = function (item) {
+            if (item.Code == '-1') {
+                return item.Name;
+            }
+            else {
+                return this.stringFormat('<img  src=/Content/img/Operators/{0}-small.png />' + " {1}", item.Code, item.Name);
+            }
+
+
+        }
     }]);
+//shoppingcardsController
 //shoppingcardsController
 app.controller('shoppingcardsController', ['$scope', '$http', 'localStorageService',
     function ($scope, $http, localStorageService) {
+
         $scope.redirect = function () {
-            if ($scope.rechargeForm.$valid) {
-                var paramObj = {
-                    serviceType: 'ShoppingCards',
-                    rechargeType: 'ShoppingCards',
-                    operatorCode: $scope.operatorCode,
-                    amount: $scope.amount
-                };
-                localStorageService.set('nationalRechargeParams', paramObj);
-                window.location = "#/paymentOptions";
+
+            debugger;
+            /*************Validate the international top up recharge.*************/
+            var data = $.param({
+                mobileNumber: $scope.mobileNumber,
+                amount: $scope.amount,
+                rechargeType: "ShoppingCards",
+                serviceType: "ShoppingCards",
+                operatorCode: $scope.operatorCode
+            });
+
+            var config = {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+                }
             }
+
+            $http.post('/Home/ValidateVoucher', data, config)
+            .success(function (data) {
+                debugger
+                if (data.Result == 'S') {
+                    //Set the recharge parameter set from international recharge page.
+                    var paramObj = {
+                        ServiceType: 'ShoppingCards',
+                        RechargeType: 'ShoppingCards',
+                        OperatorCode: $scope.operatorCode,
+                        Amount: $scope.amount,
+                        MobileNumber: $scope.mobileNumber
+                    };
+                    localStorageService.set('nationalRechargeParams', paramObj);
+                    window.location = "#/paymentOptions";
+                }
+                else
+                    $scope.validationError = data.Result;
+
+            });
+            /*************Validate the international top up recharge.*************/
+
+
+        }
+
+        //Clear amount.
+        $scope.ClearAmount = function () {
+            $scope.OperatorName = $("#ddlOperator option:selected").text();
+            $scope.amount = '';
+        }
+
+        $scope.stringFormat = function () {
+            var s = arguments[0];
+            for (var i = 0; i < arguments.length - 1; i++) {
+                var reg = new RegExp("\\{" + i + "\\}", "gm");
+                s = s.replace(reg, arguments[i + 1]);
+            }
+
+            return s;
+        }
+
+        $scope.PopulateSpan = function (item) {
+            if (item.Code == '-1') {
+                return item.Name;
+            }
+            else {
+                var imageName = item.Name;
+                if (item.Code == "GP" || item.Code == "GK")
+                    imageName = "google-play";
+                else if (item.Code == "PS" || item.Code == "PK" || item.Code == "PW")
+                    imageName = "playstation";
+                else if (item.Code == "IN" || item.Code == "IG" || item.Code == "IP")
+                    imageName = "isbre";
+                else if (item.Code == "IK")
+                    imageName = "inter-key";
+                else if (item.Code == "RX")
+                    imageName = "Rapplez";
+                else if (item.Code == "IT")
+                    imageName = "iTunes";
+
+
+                return this.stringFormat('<img  src=/Content/img/ShoppingCards/{0}-small.png />' + " {1}", imageName, item.Name);
+            }
+
 
         }
         //$http service for Getting the ServiceProviders  

@@ -62,7 +62,7 @@
                     <div class="scroll-table">
                         <table class="table">
                             <tbody>
-                                <tr ng-repeat="voucher in AllVouchers| filter: operatorCode">
+                                <tr ng-repeat="voucher in AllVouchers| filter:{ operatorCode: '!-1'}">
                                     <td width="140">
                                         <img ng-src="/Content/img/Operators/{{voucher.OperatorCode}}-small.png" class="oprator-logo" /></td>
                                    <td translate="VoucherDetails_TableStaticContent_ServiceType"></td>

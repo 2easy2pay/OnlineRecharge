@@ -1,35 +1,54 @@
-nn<div class="row">
+<div class="row">
     <div class="col-md-8">
         <div class="pay-details">
             <div class="headr clearfix">
-                <div ng-show="APIResponse.Response=='S'" class="pull-left">
-                    <div class="img-notify success"></div>
+                <div  class="pull-left">
+                    <div ng-show="APIResponse.Response=='S'" class="img-notify success"></div>
+                    <div ng-show="result=='NOT CAPTURED'" class="img-notify error"></div>
+                    <div ng-show="result=='CANCELED'" class="img-notify error"></div>
                 </div>
-                <div class="headr-content">
+
+                <div class="headr-content" ng-show="APIResponse.Response=='S'">
                     {{ 'Result_RechargeSuccess_Caption1' | translate }} {{APIResponse.Amount}} {{ 'Result_RechargeSuccess_Caption2' | translate }}<br>{{ 'Result_RechargeSuccess_Caption3' | translate }}
                 </div>
-            </div>
+
+                <div class="headr-content" ng-show="APIResponse.Response=='F' || result=='NOT CAPTURED' || result=='CANCELED'">
+                    {{ 'Result_RechargeSuccess_Caption1' | translate }} {{RechargeParams.Amount}} {{ 'Result_RechargeFailure_Caption2' | translate }}<br>{{ 'Result_RechargeFailure_Caption3' | translate }}
+                </div>
             <div class="payContent">
                 <div class="title" translate="Result_RechargeSuccess_Details_Heading"></div>
                 <table class="table payTable">
                     <tbody>
                         <tr>
                             <td width="10%">
-                                <div class="operator-img"><img ng-src="{{APIResponse.ImageURL}}" alt=""></div>
+                                <div class="operator-img"><img ng-src="/Content/img/Operators/{{RechargeParams.OperatorCode}}.png" alt=""></div>
                             </td>
                             <td>
                                 <div class="pay-describe">
-                                    <br>{{'Result_RechargeSuccess_Details_By_Label' | translate}}: {{APIResponse.OperatorName}},
-                                    {{APIResponse.RechargeCode}}
+{{'Result_RechargeSuccess_Details_MobileNumber' | translate}}: {{RechargeParams.MobileNumber}}
                                 </div>
                             </td>
-                            <td width="10%" class="text-right"><b>{{APIResponse.Amount}} {{'GeneralLabels_KD' | translate}}</b></td>
+                            <td><div class="pay-describe">
+    {{'Result_RechargeSuccess_Details_RechargeType' | translate}}: {{RechargeParams.RechargeType}}
+</div></td>
+                            <td>
+                                <div class="pay-describe">
+                                    {{'Result_RechargeSuccess_Details_Offer' | translate}}: "N/A"
+                                </div>
+                            </td>
+                            <td ng-show="RechargeParams.RechargeType=='Vouchers'">
+                                <div class="pay-describe">
+                                    {{'Result_RechargeSuccess_Details_Voucher' | translate}}: {{APIResponse.RechargeCode}}
+                                </div>
+                            </td>
+                            <td width="10%" class="text-right"><b>{{RechargeParams.Amount}} {{'GeneralLabels_KD' | translate}}</b></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
+        </div>
     <div class="col-md-4">
         <div class="hidden">
             <div class="payment-selection">

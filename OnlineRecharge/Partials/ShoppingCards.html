@@ -4,11 +4,24 @@
         <div class="recharge-block-wrap">
             <form name="rechargeForm" novalidate ng-submit="redirect()">
                 <div class="recharge-block">
-                    
+                    <div class="form-group">
+                        <label translate="MobileNumber"></label>
+                        <input id="MobileNumber" name="MobileNumber" type="text" international-phone-number only-countries="kw" default-country="kw" ng-model="mobileNumber" required>
+                        <p ng-show="rechargeForm.MobileNumber.$invalid && !rechargeForm.MobileNumber.$pristine" class="valid-message">Mobile Number is required.</p>
+                        <p ng-show="validationError !=''" class="valid-message">{{validationError}}</p>
+                    </div>
                     <div class="form-group">
                         <label translate="CardTypes"></label>
-                        <select class="form-control" ng-model="operatorCode"
-                                ng-options="s.Code as s.Name for s in shoppingcardsserviceProviders"></select>
+                        <!--<select class="form-control" ng-model="operatorCode" ng-change="ClearAmount();" id="ddlOperator"
+                                ng-options="s.Code as s.Name for s in shoppingcardsserviceProviders"></select>-->
+
+
+                        <select id="ddlOperator" class="select-dropdown form-control" ng-model="operatorCode" ng-change="ClearAmount()" toggle-dropdown>
+
+                            <option ng-repeat="item in shoppingcardsserviceProviders" ng-bind-html="PopulateSpan(item)" value="{{item.Code}}"></option>
+
+                        </select>
+
                     </div>
                     <div class="form-group">
                         <label for="#" translate="RechargeAmount"></label>
@@ -37,8 +50,9 @@
                          </th>
                         <th translate="VoucherDetails_TableHeading_Offer"></th>
 
-                        <th width="120" translate="VoucherDetails_TableHeading_Amount"></th>
+                        
                         <th translate="VoucherDetails_TableHeading_Dollar_Amount"></th>
+                        <th width="120" translate="VoucherDetails_TableHeading_Amount"></th>
                         </thead>
                     </table>
                     <div class="scroll-table">
@@ -49,13 +63,13 @@
                                         <img ng-src="{{voucher.ImageURL}}" class="oprator-logo" /></td>
                                    <td translate="VoucherDetails_TableStaticContent_ShoppingCardServiceType"></td>
                                     <td translate="VoucherDetails_TableStaticContent_Offer"></td>
-                                    
+                                    <td width="120">
+                                        <a class="price-btn">{{ voucher.Amount|DollerAmount}} $</a>
+                                    </td>
                                     <td width="120">
                                         <a ng-click="loadAmount(voucher);" class="price-btn">{{voucher.Amount}} KD</a>
                                     </td>
-                                    <td width="120">
-                                        <a  class="price-btn">{{ voucher.Amount|DollerAmount}} $</a>
-                                    </td>
+                                    
                                 </tr>
                             </tbody>
                         </table>

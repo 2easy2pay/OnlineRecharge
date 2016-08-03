@@ -1199,6 +1199,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\img\ShoppingCards\" />
     <Folder Include="Log\" />
   </ItemGroup>
   <ItemGroup>

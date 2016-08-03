@@ -210,12 +210,10 @@ namespace OnlineRecharge.Controllers
                                     if (item.OperatorType == "VI")
                                     {
                                         model.OperatorCode = "VV";
-                                 
                                     }
                                     else if (item.OperatorType == "MY")
                                     {
                                         model.OperatorCode = "XP";
-                                        
                                     }
                                     model.Amount = card.Denom;
                                     vouchers.Add(model);
@@ -242,7 +240,19 @@ namespace OnlineRecharge.Controllers
             List<ShoppingCardTypes> model = new List<ShoppingCardTypes>();
             try
             {
-                model = context.ShoppingCardTypes.ToList();
+
+                //NP,IT,RX
+
+                model = context.ShoppingCardTypes.Where(x => x.Code == "AZ" || x.Code == "CU" || x.Code == "FB" || x.Code == "GP"
+                          || x.Code == "GK" || x.Code == "IK" || x.Code == "IG" || x.Code == "IT"
+
+                          || x.Code == "IN" || x.Code == "IP" || x.Code == "OC" || x.Code == "PS" || x.Code == "PW"
+
+                          || x.Code == "NP"
+
+                          || x.Code == "PK" || x.Code == "TI" || x.Code == "NF" || x.Code == "MY" || x.Code == "RZ" || x.Code == "RX" || x.Code == "SM").ToList();
+
+                model.Insert(0, new ShoppingCardTypes { Code = "-1", Name = "select" });
             }
             catch (Exception ex)
             {
@@ -568,19 +578,6 @@ namespace OnlineRecharge.Controllers
                             var result = await response.Content.ReadAsAsync<TopupTransfer>();
                             model.Amount = Convert.ToDecimal(amount);
                             model.Date = result.Date;
-                            if (operatorName == "EZ")
-                            {
-                                model.ImageURL = "/Content/img/Operators/zain.png";
-                            }
-                            else if (operatorName == "VV")
-                            {
-                                model.ImageURL = "/Content/img/Operators/viva.png";
-                            }
-                            else if (operatorName == "XP")
-                            {
-                                model.ImageURL = "/Content/img/Operators/ooreedo.png";
-                            }
-
                             model.OperatorName = GetOperatorNameByOperatorCode(operatorName);
                             model.PaymentID = result.PaymentID;
                             model.PaymentRef = result.PaymentRef;
@@ -1098,8 +1095,16 @@ namespace OnlineRecharge.Controllers
 
                             string[] OperatorTypes = new string[] { "AZ", "CU", "FB", "GB", "GK", "IK", "IG", "IN", "IP", "TI", "NF", "OC", "PS", "PW", "PK", "RZ", "RX", "SM" };
 
-                            List<Service> operators = result.Where(x => OperatorTypes.Contains(x.OperatorType)).ToList();
 
+                            List<Service> operators = result.Where(x => x.OperatorType == "AZ" || x.OperatorType == "CU" || x.OperatorType == "FB" || x.OperatorType == "GP"
+                            || x.OperatorType == "GK" || x.OperatorType == "IK" || x.OperatorType == "IG"
+
+                            || x.OperatorType == "IN" || x.OperatorType == "IP" || x.OperatorType == "OC" || x.OperatorType == "PS" || x.OperatorType == "PW"
+                           || x.OperatorType == "NP"
+
+                             || x.OperatorType == "PK" || x.OperatorType == "TI" || x.OperatorType == "NF" || x.OperatorType == "MY" || x.OperatorType == "RZ" || x.OperatorType == "RX" || x.OperatorType == "SM").ToList();
+
+                            //x.OperatorType == "IT"=null
                             foreach (var item in operators)
                             {
                                 foreach (var card in item.DenomCollection)
@@ -1108,90 +1113,104 @@ namespace OnlineRecharge.Controllers
                                     if (item.OperatorType == "AZ")
                                     {
                                         model.OperatorCode = item.OperatorType;
-                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                        model.ImageURL = "/Content/img/ShoppingCards/amazon-small.png";
                                     }
                                     else if (item.OperatorType == "CU")
                                     {
                                         model.OperatorCode = item.OperatorType;
-                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                        model.ImageURL = "/Content/img/ShoppingCards/cashu-small.png";
                                     }
                                     else if (item.OperatorType == "FB")
                                     {
                                         model.OperatorCode = item.OperatorType;
-                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                        model.ImageURL = "/Content/img/ShoppingCards/facebook-small.png";
                                     }
                                     else if (item.OperatorType == "GP")
                                     {
                                         model.OperatorCode = item.OperatorType;
-                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                        model.ImageURL = "/Content/img/ShoppingCards/google-play-small.png";
                                     }
                                     else if (item.OperatorType == "GK")
                                     {
                                         model.OperatorCode = item.OperatorType;
-                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                        model.ImageURL = "/Content/img/ShoppingCards/google-play-small.png";
                                     }
                                     else if (item.OperatorType == "IK")
                                     {
                                         model.OperatorCode = item.OperatorType;
-                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                        model.ImageURL = "/Content/img/ShoppingCards/inter-key.png";
 
                                     }
                                     else if (item.OperatorType == "IG")
                                     {
                                         model.OperatorCode = item.OperatorType;
-                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                        model.ImageURL = "/Content/img/ShoppingCards/isbre-small.png";
                                     }
                                     else if (item.OperatorType == "IN")
                                     {
                                         model.OperatorCode = item.OperatorType;
-                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                        model.ImageURL = "/Content/img/ShoppingCards//isbre-small.png";
                                     }
                                     else if (item.OperatorType == "IP")
                                     {
                                         model.OperatorCode = item.OperatorType;
-                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                        model.ImageURL = "/Content/img/ShoppingCards/isbre-small.png";
                                     }
                                     else if (item.OperatorType == "OC")
                                     {
                                         model.OperatorCode = item.OperatorType;
-                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                        model.ImageURL = "/Content/img/ShoppingCards/onecard-small.png";
                                     }
-                                    else if (item.OperatorType == "OS")
+                                    else if (item.OperatorType == "PS")
                                     {
                                         model.OperatorCode = item.OperatorType;
-                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                        model.ImageURL = "/Content/img/ShoppingCards/playstation-small.png";
                                     }
                                     else if (item.OperatorType == "PW")
                                     {
                                         model.OperatorCode = item.OperatorType;
-                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                        model.ImageURL = "/Content/img/ShoppingCards/playstation-small.png";
                                     }
                                     else if (item.OperatorType == "PK")
                                     {
                                         model.OperatorCode = item.OperatorType;
-                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                        model.ImageURL = "/Content/img/ShoppingCards/playstation-small.png";
                                     }
-                                    else if (item.OperatorType == "MY")
+                                    else if (item.OperatorType == "TI")
                                     {
                                         model.OperatorCode = item.OperatorType;
-                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                        model.ImageURL = "/Content/img/ShoppingCards/iTunes-small.png";
+                                    }
+                                    else if (item.OperatorType == "IT")
+                                    {
+                                        model.OperatorCode = item.OperatorType;
+                                        model.ImageURL = "/Content/img/ShoppingCards/iTunes-small.png";
+                                    }
+                                    else if (item.OperatorType == "NF")
+                                    {
+                                        model.OperatorCode = item.OperatorType;
+                                        model.ImageURL = "/Content/img/ShoppingCards/netflix-small.png";
                                     }
                                     else if (item.OperatorType == "RZ")
                                     {
                                         model.OperatorCode = item.OperatorType;
-                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                        model.ImageURL = "/Content/img/ShoppingCards/Rapplez-small.png";
                                     }
                                     else if (item.OperatorType == "RX")
                                     {
                                         model.OperatorCode = item.OperatorType;
-                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                        model.ImageURL = "/Content/img/ShoppingCards/Rapplez.png";
                                     }
                                     else if (item.OperatorType == "SM")
                                     {
                                         model.OperatorCode = item.OperatorType;
-                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                        model.ImageURL = "/Content/img/ShoppingCards/steam-small.png";
                                     }
-
+                                    else if (item.OperatorType == "NF")
+                                    {
+                                        model.OperatorCode = item.OperatorType;
+                                        model.ImageURL = "/Content/img/ShoppingCards/netflix-small.png";
+                                    }
                                     model.Amount = card.Denom;
                                     vouchers.Add(model);
                                 }
@@ -1211,7 +1230,7 @@ namespace OnlineRecharge.Controllers
 
 
         }
-       
+
         #endregion
 
         #region DataAccess Methods
@@ -1516,7 +1535,28 @@ namespace OnlineRecharge.Controllers
         #region Kamal
         //Internatinal Recharnges Update
 
+        public JsonResult GetServiceDataCardProviders()
+        {
+            List<InternationalServiceProvidersModel> model = new List<InternationalServiceProvidersModel>();
+            try
+            {
+                model = context.ServiceProiders.Select(x => new InternationalServiceProvidersModel
+                {
+                    Code = x.Code,
+                    Name = x.Name
+                }).ToList();
 
+                model.Insert(0, new InternationalServiceProvidersModel() { Code = "-1", Name = "select" });
+
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            return this.Json(model, JsonRequestBehavior.AllowGet);
+        }
         #endregion
 
         #region Wallet API Methods
