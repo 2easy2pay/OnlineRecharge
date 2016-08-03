@@ -210,12 +210,12 @@ namespace OnlineRecharge.Controllers
                                     if (item.OperatorType == "VI")
                                     {
                                         model.OperatorCode = "VV";
-                                        model.ImageURL = "/Content/img/Operators/viva.png";
+                                 
                                     }
                                     else if (item.OperatorType == "MY")
                                     {
                                         model.OperatorCode = "XP";
-                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
+                                        
                                     }
                                     model.Amount = card.Denom;
                                     vouchers.Add(model);
@@ -382,12 +382,19 @@ namespace OnlineRecharge.Controllers
 
                         HttpResponseMessage response = new HttpResponseMessage();
 
-                        string ApiUrl = string.Format("api/Services/InternationalTopupValidation?CountryCode={0}&OperatorCode={1}&MobileNumber={2}", CountryCode.ToUpper(), OperatorCode, MobileNumber);
-                        response = await httpClient.GetAsync(ApiUrl);
+                        string data = string.Format("?CountryCode={0}&OperatorCode={1}&MobileNumber={2}", "IN", "BL", "919959610594");
+                        response = await httpClient.GetAsync("api/Services/InternationalTopupValidation" + data);
                         if (response.IsSuccessStatusCode)
                         {
                             model = await response.Content.ReadAsAsync<InternationalTopupValidation>();
                         }
+
+                        //string ApiUrl = string.Format("api/Services/InternationalTopupValidation?CountryCode={0}&OperatorCode={1}&MobileNumber={2}", CountryCode.ToUpper(), OperatorCode, MobileNumber);
+                        //response = await httpClient.GetAsync(ApiUrl);
+                        //if (response.IsSuccessStatusCode)
+                        //{
+                        //    model = await response.Content.ReadAsAsync<InternationalTopupValidation>();
+                        //}
 
                     }
 
@@ -839,18 +846,6 @@ namespace OnlineRecharge.Controllers
                                 foreach (var card in item.DenomCollection)
                                 {
                                     VoucherDetailsModel model = new VoucherDetailsModel();
-                                    if (item.OperatorType == "EZ")
-                                    {
-                                        model.ImageURL = "/Content/img/Operators/zain.png";
-                                    }
-                                    else if (item.OperatorType == "VV")
-                                    {
-                                        model.ImageURL = "/Content/img/Operators/viva.png";
-                                    }
-                                    else if (item.OperatorType == "XP")
-                                    {
-                                        model.ImageURL = "/Content/img/Operators/ooreedo.png";
-                                    }
                                     model.Amount = card.Denom;
                                     model.OperatorCode = item.OperatorType;
                                     vouchers.Add(model);

@@ -175,9 +175,12 @@
     <Content Include="Content\img\flags\us.png" />
     <Content Include="Content\img\logo.jpg" />
     <Content Include="Content\img\open-lock2.png" />
+    <Content Include="Content\img\Operators\XP-small.png" />
+    <Content Include="Content\img\Operators\VV-small.png" />
     <Content Include="Content\img\Operators\XP.png" />
     <Content Include="Content\img\Operators\VV.png" />
     <Content Include="Content\img\Operators\EZ.png" />
+    <Content Include="Content\img\Operators\EZ-small.png" />
     <Content Include="Content\img\payment-Method.png" />
     <Content Include="Content\img\payment\knet.jpg" />
     <Content Include="Content\img\payment\visA.png" />

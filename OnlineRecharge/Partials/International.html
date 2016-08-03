@@ -6,13 +6,13 @@
                     
                     <form name="rechargeForm" id="rechargeForm" novalidate ng-submit="redirect()">
                         <div class="recharge-block">
-                            <span class="error" ng-model="error"></span>
-                            
                             <div class="form-group margin-top20">
                                 <label translate="MobileNumber"></label>
                                 <input id="MobileNumber" name="MobileNumber" type="tel" international-phone-number only-countries="in,pk,eg,lk,ph" preferred-countries="in"
                                        ng-model="mobileNumber" required>
-                                <p ng-show="rechargeForm.MobileNumber.$invalid && !rechargeForm.MobileNumber.$pristine" class="valid-message">Please enter valid Mobile Number.</p>
+                                <p ng-show="InternationalTopupValidation.Response=='F'" class="valid-message">{{InternationalTopupValidation.ResponseDescription}}</p>
+                                <p ng-model="validationRef" ng-show="CheckValidationForMobileNumer()" class="valid-message">{{ validationRef | translate }}</p>
+                                <!--<p ng-show="rechargeForm.MobileNumber.$invalid && !rechargeForm.MobileNumber.$pristine" class="valid-message">Please enter valid Mobile Number.</p>-->
                                 <!--ng-keydown="setOperater();"-->
                             </div>
 

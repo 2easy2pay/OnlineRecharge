@@ -1,6 +1,6 @@
 ﻿/// <reference path="C:\Projects\Recharge\OnlineRecharge\OnlineRecharge\Partials/_Result.cshtml" />
 var app = angular.module('Multilingual', ['pascalprecht.translate',
-   'ngCookies', 'ngRoute', 'internationalPhoneNumber', 'ngDialog', 'slider', 'LocalStorageModule', 'blockUI', 'angular-bootstrap-select']);
+   'ngCookies', 'ngRoute', 'internationalPhoneNumber', 'ngDialog', 'slider', 'LocalStorageModule', 'blockUI', 'angular-bootstrap-select', 'ngSanitize']);
 //Configuration Section
 app.config(['$routeProvider', '$locationProvider',
 function ($routeProvider, $locationProvider) {
@@ -166,9 +166,8 @@ app.controller('localRechargeController', ['$scope', '$http', 'localStorageServi
 function ($scope, $http, localStorageService,blockUI) {
         var myBlock = blockUI.instances.get('myBlock');
         $scope.redirect = function () {
-            debugger;
             $scope.CheckValidationForAmount = function () {
-                if ($scope.amount == null || $scope.amount == undefined) {
+                if ($scope.amount == null || $scope.amount == undefined || $scope.amount == "") {
                     return true;
                 }
                 else {
@@ -177,8 +176,7 @@ function ($scope, $http, localStorageService,blockUI) {
             }
 
             $scope.CheckValidationForOperator = function () {
-                debugger;
-                if ($scope.operatorCode == null || $scope.operatorCode == undefined) {
+                if ($scope.operatorCode == null || $scope.operatorCode == undefined || $scope.operatorCode == '-1' || typeof $scope.operatorCode == 'object') {
                     return true;
                 }
                 else {
@@ -200,7 +198,6 @@ function ($scope, $http, localStorageService,blockUI) {
                     return false;
                 }
             }
-            debugger;
             if ($scope.rechargeForm.$valid) {
                 if (myBlock.state().blocking) {
                     myBlock.stop();
@@ -315,8 +312,29 @@ function ($scope, $http, localStorageService,blockUI) {
             $scope.amount = voucher.Amount;
             $scope.operatorCode = voucher.OperatorCode;
         }
+        $scope.stringFormat=function()
+        {
+            var s = arguments[0];
+            for (var i = 0; i < arguments.length - 1; i++) {
+                var reg = new RegExp("\\{" + i + "\\}", "gm");
+                s = s.replace(reg, arguments[i + 1]);
+            }
 
-      
+            return s;
+        }
+        $scope.PopulateSpan = function (item) {
+            if (item.Code == '-1')
+            {
+                return item.Name;
+            }
+            else
+            {
+                return this.stringFormat('<img  src=/Content/img/Operators/{0}-small.png />' + " {1}", item.Code, item.Name);
+            }
+           
+          
+        }
+     
     }]);
 app.controller('paymentPageController', ['$scope', '$http', '$location', 'localStorageService', '$rootScope', '$timeout', 'blockUI', function ($scope, $http, $location, localStorageService, $rootScope, $timeout, blockUI) {
     blockUI.start();
@@ -540,10 +558,8 @@ app.controller('rechargeResultController', ['$scope', '$location', 'localStorage
 
     }
     else if (rechargeParams.ServiceType == 'International') {
-        debugger
 
         //if ($scope.result == 'CAPTURED') {
-            debugger
             //Local storage parameter.
             var TopValidationdata = $.param({
                 OperatorName: rechargeParams.OperatorName,
@@ -560,7 +576,6 @@ app.controller('rechargeResultController', ['$scope', '$location', 'localStorage
             //Check validation. if s pass else whos cross image with response.
             $http.post('/Home/InternationalTopupCheck/', TopValidationdata, config)
             .success(function (data, status, headers, config) {
-                debugger
                 if (data.Response == 'S') {
 
                     var data = $.param({
@@ -588,7 +603,6 @@ app.controller('rechargeResultController', ['$scope', '$location', 'localStorage
                     });
                 }
                 else {
-                    debugger
                     var data = ({
                         RechargeType: rechargeParams.RechargeType,
                         OperatorCode: rechargeParams.OperatorCode,
@@ -647,63 +661,90 @@ app.controller('rechargeResultController', ['$scope', '$location', 'localStorage
 //kamal -International Recharge Controller
 //International Recharge Controller
 app.controller('InternationalRechargeController', ['$scope', '$http', 'localStorageService',
-
     function ($scope, $http, localStorageService) {
         //set default country code.
         var countryCode = 'in';
 
         $scope.redirect = function () {
-
-            debugger;
-            /*************Validate the international top up recharge.*************/
-            var data = $.param({
-                CountryCode: countryCode,
-                OperatorCode: $scope.operatorCode,
-                MobileNumber: $scope.mobileNumber
-            });
-
-            var config = {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+            $scope.CheckValidationForAmount = function () {
+                if ($scope.amount == null || $scope.amount == undefined || $scope.amount == "") {
+                    return true;
+                }
+                else {
+                    return false;
                 }
             }
-            $http.post('/Home/InternationalTopupValidation', data, config)
-           .success(function (data) {
-               debugger
-               if (data.Response == 'S') {
-                   //Set the recharge parameter set from international recharge page.
-                   var paramObj = {
-                       ServiceType: "International",
-                       RechargeType: 'International',
-                       OperatorCode: $scope.operatorCode,
-                       MobileNumber: $scope.mobileNumber,
-                       CountryCode: countryCode,
-                       Amount: $scope.amount,
-                       OperatorName: $scope.OperatorName
-                   };
-                   localStorageService.set('nationalRechargeParams', paramObj);
-                   window.location = "#/paymentOptions";
-               }
-               else if (data.Response == 'F') {
 
-                   //If fails show the error message to end user.
-                   // $scope.error = data.ResponseDescription;
-                   $('.error').html(data.ResponseDescription);
-               }
-               else if (data.Response == null) {
-                   $scope.error = 'Invalid Number or server error.';
-                   //If fails show the error message to end user.
-                   $('.error').html($scope.error)
-               }
-           });
-            /*************Validate the international top up recharge.*************/
+            $scope.CheckValidationForOperator = function () {
+                if ($scope.operatorCode == null || $scope.operatorCode == undefined || $scope.operatorCode == '-1' || typeof $scope.operatorCode == 'object') {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
 
+            $scope.CheckValidationForMobileNumer = function () {
+                debugger;
+                if ($scope.interrorcode == 4 || $scope.interrorcode == undefined) {
+                    $scope.validationRef = "mobilerequired";
+                    return true;
+                }
+                else if ($scope.interrorcode == 2) {
+                    $scope.validationRef = "mobileminlength";
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            if ($scope.rechargeForm.$valid) {
 
+                /*************Validate the international top up recharge.*************/
+                debugger;
+                var countryData = $('#MobileNumber').intlTelInput("getSelectedCountryData");
+                var data = $.param({
+                    CountryCode: countryCode,
+                    OperatorCode: $scope.operatorCode,
+                    MobileNumber: countryData.dialCode + $scope.mobileNumber
+                });
+
+                var config = {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+                    }
+                }
+                $http.post('/Home/InternationalTopupValidation', data, config)
+               .success(function (data) {
+                   debugger;
+                   if (data.Response == 'S') {
+                       //Set the recharge parameter set from international recharge page.
+                       var paramObj = {
+                           ServiceType: "International",
+                           RechargeType: 'International',
+                           OperatorCode: $scope.operatorCode,
+                           MobileNumber: $scope.mobileNumber,
+                           CountryCode: countryCode,
+                           Amount: $scope.amount,
+                           OperatorName: $scope.OperatorName
+                       };
+                       localStorageService.set('nationalRechargeParams', paramObj);
+                       window.location = "#/paymentOptions";
+                   }
+                   else if (data.Response == 'F') {
+                       $scope.InternationalTopupValidation = data;
+                   }
+                   else if (data.Response == null) {
+                      
+                   }
+               });
+                /*************Validate the international top up recharge.*************/
+
+            }
         }
 
         //On Selected country change bind the Operators.
         $(document).ready(function () {
-            debugger
             $("#MobileNumber").on("countrychange", function (e, countryData) {
                 countryCode = countryData.iso2;
                 $http({

@@ -16,7 +16,7 @@
 
                     <div class="form-group">
                         <label translate="MobileNumber"></label>
-                        <input id="MobileNumber" name="MobileNumber" type="text" international-phone-number only-countries="kw" default-country="kw" ng-model="mobileNumber" required numbers-only maxlength="11">
+                        <input id="MobileNumber" name="MobileNumber" type="text" international-phone-number only-countries="kw" default-country="kw" ng-model="mobileNumber" required numbers-only maxlength="8">
                         <p ng-show="TopupValidation.Response=='F'" class="valid-message" >{{TopupValidation.ResponseDescription}}</p>
                         <p ng-model="validationRef" ng-show="CheckValidationForMobileNumer()" class="valid-message" >{{ validationRef | translate }}</p>
                     </div>
@@ -25,7 +25,7 @@
                         <select selectpicker="" class="select-dropdown" ng-model="operatorCode" ng-change="refershAmount()" toggle-dropdown>
                             <!--ng-options="s.Code as s.Name for s in serviceProviders"data-content="{{item.ImageURL}}"--> 
                                 
-                        <option ng-repeat="item in serviceProviders"  data-content="<span class='label label-success' ><span ng-bind='{{item.Name}}'></span><img src='/Content/img/Operators/{{item.Code}}.png' /></span>"   value="{{item.Code}}">{{item.Name}}</option>
+                        <option ng-repeat="item in serviceProviders"  ng-bind-html="PopulateSpan(item)" value="{{item.Code}}"></option>
                                 
                         </select>
                         <p ng-show="CheckValidationForOperator()" class="valid-message" translate="Validation_NationalRecharge_Operator_Required"></p>
@@ -64,7 +64,7 @@
                             <tbody>
                                 <tr ng-repeat="voucher in AllVouchers| filter: operatorCode">
                                     <td width="140">
-                                        <img ng-src="{{voucher.ImageURL}}" class="oprator-logo" /></td>
+                                        <img ng-src="/Content/img/Operators/{{voucher.OperatorCode}}-small.png" class="oprator-logo" /></td>
                                    <td translate="VoucherDetails_TableStaticContent_ServiceType"></td>
                                     <td translate="VoucherDetails_TableStaticContent_Offer"></td>
                                     <td width="120">

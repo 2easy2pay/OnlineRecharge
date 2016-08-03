@@ -56,17 +56,16 @@
                         <h3 translate="OrderSummary"></h3>
                         <div class="offerSelctionDetails">
                             <h4>
-                                serviceProvider : <img ng-src="/Content/img/Operators/{{RechargeParameter.OperatorCode}}.png" />
+                                <img ng-src="/Content/img/Operators/{{RechargeParameter.OperatorCode}}.png" /> 
                             </h4>
-                            <h4>
-                                mobilenumber : {{RechargeParameter.MobileNumber}}
-                            </h4>
-                                <h4>serviceType : {{RechargeParameter.ServiceType}}</h4>
-                            <h4>offer : N/A</h4>
-                                <!--<span>{{RechargeParameter.OperatorCode}}</span>-->
-</div>
+                            <h4>Mobile Number : <span>{{RechargeParameter.MobileNumber}}</span></h4>
+                            <h4>Service Type : <span>{{RechargeParameter.ServiceType}}</span></h4>
+                        </div>
                     </div>
                     <div class="devider"></div>
+                        <div class="transition-id">
+                            <span>offer :</span> N/A
+                        </div>
                         <div class="amount-pay clearfix">
                         <span class="pull-left" translate="AmountPayable"></span>
                         <span class="amt pull-right">{{RechargeParameter.Amount}} KD</span>

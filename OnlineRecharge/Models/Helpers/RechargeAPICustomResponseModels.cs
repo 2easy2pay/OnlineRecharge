@@ -7,7 +7,6 @@ namespace OnlineRecharge.Models.Helpers
 {
     public class VoucherDetailsModel
     {
-        public string ImageURL { get; set; }
         public string OperatorCode { get; set; }
         public decimal Amount { get; set; }
     }
