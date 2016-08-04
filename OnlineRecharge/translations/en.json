@@ -50,7 +50,8 @@
   "Result_RechargeSuccess_Details_RechargeType": "Recharge Type",
   "Result_RechargeSuccess_Details_Offer": "Offer",
   "Result_RechargeSuccess_Details_Voucher": "Voucher",
-
+  "2004_RECIPIENT NOT_REGISTERED IN BILLING SYSTEM": "Not a valid operator number",
+  "ZESB-1001-error": "Not a valid operator number",
   "GeneralLabels_KD": "KD",
 
 

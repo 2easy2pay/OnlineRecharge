@@ -5,9 +5,9 @@
                 <div  class="pull-left">
                     <div ng-show="APIResponse.Response=='S'" class="img-notify success"></div>
                     <div ng-show="result=='NOT CAPTURED'" class="img-notify error"></div>
-                    <div ng-show="result=='CANCELED'" class="img-notify error"></div>
+                    <div ng-show="result=='CANCELED'" class="img-notify pending"></div>
                 </div>
-
+ 
                 <div class="headr-content" ng-show="APIResponse.Response=='S'">
                     {{ 'Result_RechargeSuccess_Caption1' | translate }} {{APIResponse.Amount}} {{ 'Result_RechargeSuccess_Caption2' | translate }}<br>{{ 'Result_RechargeSuccess_Caption3' | translate }}
                 </div>
@@ -15,6 +15,8 @@
                 <div class="headr-content" ng-show="APIResponse.Response=='F' || result=='NOT CAPTURED' || result=='CANCELED'">
                     {{ 'Result_RechargeSuccess_Caption1' | translate }} {{RechargeParams.Amount}} {{ 'Result_RechargeFailure_Caption2' | translate }}<br>{{ 'Result_RechargeFailure_Caption3' | translate }}
                 </div>
+           
+        </div>
             <div class="payContent">
                 <div class="title" translate="Result_RechargeSuccess_Details_Heading"></div>
                 <table class="table payTable">
@@ -25,28 +27,33 @@
                             </td>
                             <td>
                                 <div class="pay-describe">
-{{'Result_RechargeSuccess_Details_MobileNumber' | translate}}: {{RechargeParams.MobileNumber}}
+                                    <span class="span-mobile">+965 - {{RechargeParams.MobileNumber}}</span> <br>
+                                    <span class="dull">{{'Result_RechargeSuccess_Details_MobileNumber' | translate}}</span>
                                 </div>
                             </td>
-                            <td><div class="pay-describe">
-    {{'Result_RechargeSuccess_Details_RechargeType' | translate}}: {{RechargeParams.RechargeType}}
-</div></td>
                             <td>
                                 <div class="pay-describe">
-                                    {{'Result_RechargeSuccess_Details_Offer' | translate}}: "N/A"
+                                     {{RechargeParams.RechargeType}}<br>
+                                    <span class="dull">{{'Result_RechargeSuccess_Details_RechargeType' | translate}} </span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="pay-describe">
+                                    "N/A" <br>
+                                    <span class="dull">{{'Result_RechargeSuccess_Details_Offer' | translate}}</span>
                                 </div>
                             </td>
                             <td ng-show="RechargeParams.RechargeType=='Vouchers'">
                                 <div class="pay-describe">
-                                    {{'Result_RechargeSuccess_Details_Voucher' | translate}}: {{APIResponse.RechargeCode}}
+                                     <span class="voucherNumber">{{APIResponse.RechargeCode}} </span><br>
+                                    <span class="dull">{{'Result_RechargeSuccess_Details_Voucher' | translate}}</span> 
                                 </div>
                             </td>
-                            <td width="10%" class="text-right"><b>{{RechargeParams.Amount}} {{'GeneralLabels_KD' | translate}}</b></td>
+                            <td width="10%"><b>{{RechargeParams.Amount}} {{'GeneralLabels_KD' | translate}}</b> <br><span class="dull">Amount</span></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-        </div>
     </div>
         </div>
     <div class="col-md-4">
@@ -55,9 +62,10 @@
                 <div class="order-summery">
                     <div class="clearfix">
                         <h3 translate="PaymentSummary"></h3>
-                        <span class="status success">
-                            {{result}}
-                        </span>
+                        <span ng-show="APIResponse.Response=='S'" class="status success">{{result}}</span>
+                        <span ng-show="result=='NOT CAPTURED'" class="status failed">{{result}}</span>
+                        <span ng-show="result=='CANCELED'" class="status pending">{{result}}</span>
+                       
                     </div>
                     <div class="line"></div>
                     <div class="pay-summery-list">

@@ -300,8 +300,10 @@ function ($scope, $http, localStorageService,blockUI) {
        });
 
         $scope.refreshRechargeType = function () {
-            $scope.mobileNumber="",
-            $scope.amount=""
+            $scope.mobileNumber = "";
+            $scope.amount = "";
+            $scope.operatorCode = "-1";
+            $('.apivalidation').addClass('ng-hide');
         }
      
         $scope.refershAmount = function () {
@@ -424,7 +426,7 @@ app.controller('paymentPageController', ['$scope', '$http', '$location', 'localS
             form.remove();
         });
     };
-    //blockUI.stop();
+    blockUI.stop();
 }]);
 app.controller('rechargeResultController', ['$scope', '$location', 'localStorageService', '$http', 'blockUI', function ($scope, $location, localStorageService, $http, blockUI) {
     blockUI.start();
@@ -579,14 +581,12 @@ app.controller('rechargeResultController', ['$scope', '$location', 'localStorage
 
         }
         else if (rechargeParams.ServiceType == 'International') {
-
-            //if ($scope.result == 'CAPTURED') {
-            //Local storage parameter.
+            var countryData = $('#MobileNumber').intlTelInput("getSelectedCountryData");
             var TopValidationdata = $.param({
                 OperatorName: rechargeParams.OperatorName,
                 CountryCode: rechargeParams.CountryCode,
                 OperatorCode: rechargeParams.OperatorCode,
-                MobileNumber: rechargeParams.MobileNumber,
+                MobileNumber: countryData.dialCode + rechargeParams.MobileNumber,
                 Amount: rechargeParams.Amount
             });
             var config = {
@@ -602,7 +602,7 @@ app.controller('rechargeResultController', ['$scope', '$location', 'localStorage
                     var data = $.param({
                         RechargeType: rechargeParams.RechargeType,
                         OperatorCode: rechargeParams.OperatorCode,
-                        MobileNumber: rechargeParams.MobileNumber,
+                        MobileNumber: countryData.dialCode + rechargeParams.MobileNumber,
                         amount: data.LocalCountryCurrecy,
                         CountryCode: rechargeParams.CountryCode,
                         paymentID: $scope.paymentID,
@@ -812,6 +812,26 @@ app.controller('InternationalRechargeController', ['$scope', '$http', 'localStor
             $scope.amount = '';
         }
 
+        $scope.stringFormat = function () {
+            var s = arguments[0];
+            for (var i = 0; i < arguments.length - 1; i++) {
+                var reg = new RegExp("\\{" + i + "\\}", "gm");
+                s = s.replace(reg, arguments[i + 1]);
+            }
+
+            return s;
+        }
+        $scope.PopulateSpan = function (item) {
+            if (item.Code == '-1') {
+                return item.Name;
+            }
+            else {
+                return this.stringFormat('<img  src=/Content/img/Operators/{0}-small.png />' + " {1}", item.Code, item.Name);
+            }
+
+
+        }
+
     }]);
 //Data Card 
 app.controller('datacardController', ['$scope', '$http', 'localStorageService',
@@ -819,47 +839,83 @@ app.controller('datacardController', ['$scope', '$http', 'localStorageService',
         debugger
 
         $scope.redirect = function () {
-
-            debugger;
-            /*************Validate the international top up recharge.*************/
-            var data = $.param({
-                mobileNumber: $scope.mobileNumber,
-                amount: $scope.amount,
-                rechargeType: "DataCards",
-                serviceType: "DataCards",
-                operatorCode: $scope.operatorCode
-            });
-
-            var config = {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+            //An
+            $scope.CheckValidationForMobileNumer = function () {
+                debugger;
+                if ($scope.interrorcode == 4 || $scope.interrorcode == undefined) {
+                    $scope.validationRef = "mobilerequired";
+                    return true;
+                }
+                else if ($scope.interrorcode == 2) {
+                    $scope.validationRef = "mobileminlength";
+                    return true;
+                }
+                else {
+                    return false;
                 }
             }
 
-            $http.post('/Home/ValidateVoucher', data, config)
-            .success(function (data) {
-                debugger
-                if (data.Result == 'S') {
-                    //Set the recharge parameter set from international recharge page.
-                    var paramObj = {
-                        ServiceType: 'DataCards',
-                        RechargeType: 'DataCards',
-                        OperatorCode: $scope.operatorCode,
-                        MobileNumber: $scope.mobileNumber,
-                        Amount: $scope.amount
-
-                    };
-                    localStorageService.set('nationalRechargeParams', paramObj);
-                    window.location = "#/paymentOptions";
+            //An
+            $scope.CheckValidationForOperator = function () {
+                if ($scope.operatorCode == null || $scope.operatorCode == undefined || $scope.operatorCode == '-1' || typeof $scope.operatorCode == 'object') {
+                    return true;
                 }
                 else {
-                    $scope.validationError = data.Result;
+                    return false;
+                }
+            }
+
+            //An
+            $scope.CheckValidationForAmount = function () {
+                if ($scope.amount == null || $scope.amount == undefined || $scope.amount == "") {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            debugger;
+            /*************Validate the international top up recharge.*************/
+            if ($scope.rechargeForm.$valid)//An
+            {
+                var data = $.param({
+                    mobileNumber: $scope.mobileNumber,
+                    amount: $scope.amount,
+                    rechargeType: "DataCards",
+                    serviceType: "DataCards",
+                    operatorCode: $scope.operatorCode
+                });
+
+                var config = {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+                    }
                 }
 
-            });
-            /*************Validate the international top up recharge.*************/
+                $http.post('/Home/ValidateVoucher', data, config)
+                .success(function (data) {
+                    debugger
+                    if (data.Result == 'S') {
+                        //Set the recharge parameter set from international recharge page.
+                        var paramObj = {
+                            ServiceType: 'DataCards',
+                            RechargeType: 'DataCards',
+                            OperatorCode: $scope.operatorCode,
+                            MobileNumber: $scope.mobileNumber,
+                            Amount: $scope.amount
 
+                        };
+                        localStorageService.set('nationalRechargeParams', paramObj);
+                        window.location = "#/paymentOptions";
+                    }
+                    else {
+                        $scope.validationError = data.Result;
+                    }
 
+                });
+                /*************Validate the international top up recharge.*************/
+
+            }
         }
 
 
@@ -920,45 +976,81 @@ app.controller('shoppingcardsController', ['$scope', '$http', 'localStorageServi
     function ($scope, $http, localStorageService) {
 
         $scope.redirect = function () {
-
-            debugger;
-            /*************Validate the international top up recharge.*************/
-            var data = $.param({
-                mobileNumber: $scope.mobileNumber,
-                amount: $scope.amount,
-                rechargeType: "ShoppingCards",
-                serviceType: "ShoppingCards",
-                operatorCode: $scope.operatorCode
-            });
-
-            var config = {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+            //An
+            $scope.CheckValidationForMobileNumer = function () {
+                debugger;
+                if ($scope.interrorcode == 4 || $scope.interrorcode == undefined) {
+                    $scope.validationRef = "mobilerequired";
+                    return true;
+                }
+                else if ($scope.interrorcode == 2) {
+                    $scope.validationRef = "mobileminlength";
+                    return true;
+                }
+                else {
+                    return false;
                 }
             }
 
-            $http.post('/Home/ValidateVoucher', data, config)
-            .success(function (data) {
-                debugger
-                if (data.Result == 'S') {
-                    //Set the recharge parameter set from international recharge page.
-                    var paramObj = {
-                        ServiceType: 'ShoppingCards',
-                        RechargeType: 'ShoppingCards',
-                        OperatorCode: $scope.operatorCode,
-                        Amount: $scope.amount,
-                        MobileNumber: $scope.mobileNumber
-                    };
-                    localStorageService.set('nationalRechargeParams', paramObj);
-                    window.location = "#/paymentOptions";
+            //An
+            $scope.CheckValidationForOperator = function () {
+                if ($scope.operatorCode == null || $scope.operatorCode == undefined || $scope.operatorCode == '-1' || typeof $scope.operatorCode == 'object') {
+                    return true;
                 }
-                else
-                    $scope.validationError = data.Result;
+                else {
+                    return false;
+                }
+            }
 
-            });
+            //An
+            $scope.CheckValidationForAmount = function () {
+                if ($scope.amount == null || $scope.amount == undefined || $scope.amount == "") {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            debugger;
             /*************Validate the international top up recharge.*************/
+            if ($scope.rechargeForm.$valid)//An
+            {
+                var data = $.param({
+                    mobileNumber: $scope.mobileNumber,
+                    amount: $scope.amount,
+                    rechargeType: "ShoppingCards",
+                    serviceType: "ShoppingCards",
+                    operatorCode: $scope.operatorCode
+                });
 
+                var config = {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+                    }
+                }
 
+                $http.post('/Home/ValidateVoucher', data, config)
+                .success(function (data) {
+                    debugger
+                    if (data.Result == 'S') {
+                        //Set the recharge parameter set from international recharge page.
+                        var paramObj = {
+                            ServiceType: 'ShoppingCards',
+                            RechargeType: 'ShoppingCards',
+                            OperatorCode: $scope.operatorCode,
+                            Amount: $scope.amount,
+                            MobileNumber: $scope.mobileNumber
+                        };
+                        localStorageService.set('nationalRechargeParams', paramObj);
+                        window.location = "#/paymentOptions";
+                    }
+                    else
+                        $scope.validationError = data.Result;
+
+                });
+                /*************Validate the international top up recharge.*************/
+
+            }
         }
 
         //Clear amount.

@@ -801,7 +801,7 @@ ul.nav-menu > li > a.toggle-menu:before {
 }
 
 .table td {
-    padding: 25px 20px;
+    padding: 25px 15px;
     vertical-align: top;
 }
 
@@ -1078,10 +1078,18 @@ ul.nav-menu > li > a.toggle-menu:before {
     color: #888;
 }
 
+.offerSelctionDetails h4 > span.operator {
+    font-weight: 600;
+    line-height: 29px;
+    display: inline-block;
+    margin: 8px 0 0 5px;
+    vertical-align: middle;
+    color: #a0a09f;
+}
+
 .offerSelctionDetails h4 > img {
-    border: 1px solid #d9d9d9;
-    padding: 2px 12px;
     margin-bottom: 3px;
+    margin-top: 12px;
 }
 
 .offerSelctionDetails > span {
@@ -1119,7 +1127,7 @@ ul.nav-menu > li > a.toggle-menu:before {
 }
 
 .transition-id {
-    padding: 0 20px 20px;
+    padding: 0 20px 15px;
 }
 
 .transition-id > span {
@@ -1129,6 +1137,7 @@ ul.nav-menu > li > a.toggle-menu:before {
 .amount-pay {
     background: #fffcdc;
     padding: 14px 20px;
+    margin-top: 5px;
 }
 
 .hidden {
@@ -1462,6 +1471,14 @@ ul.nav-menu > li > a.toggle-menu:before {
     background: url(../img/sprite.png) no-repeat 0 -35px;
 }
 
+.img-notify.error {
+    background: url(../img/sprite.png) no-repeat -43px -35px;
+}
+
+.img-notify.pending {
+    background: url(../img/sprite.png) no-repeat -86px -35px;
+}
+
 .pay-details .headr-content {
     margin-right: 55px;
     font-size: 12px;
@@ -1485,19 +1502,13 @@ ul.nav-menu > li > a.toggle-menu:before {
     padding-bottom: 7px;
 }
 
-.operator-img {
-    padding: 5px 10px;
-    border: 1px solid #d9d9d9;
-    display: inline-block;
-}
-
 .payTable td:first-child {
     padding-left: 0;
     padding-right: 0;
 }
 
 .pay-describe {
-    font-size: 11px;
+    font-size: 12px;
 }
 
 
@@ -1752,6 +1763,7 @@ body.block-ui > .block-ui-container,
     font-weight: 400;
     position: relative;
     outline: none !important;
+    padding-right: 12px !important;
 }
 
 .select-dropdown .dropdown-toggle.btn:focus {
@@ -1768,7 +1780,7 @@ body.block-ui > .block-ui-container,
     border-right: 4px solid transparent;
     border-left: 4px solid transparent;
     position: absolute;
-    right: 10px;
+    left: 10px !important;
     top: 16px;
 }
 
@@ -1814,10 +1826,6 @@ body.block-ui > .block-ui-container,
     margin-right: 5px;
 }
 
-.select-dropdown ul.dropdown-menu.inner li:first-child {
-    display: none;
-}
-
 .select-dropdown .glyphicon.Zain,
 .select-dropdown .glyphicon.Viva,
 .select-dropdown .glyphicon.Oreedo {
@@ -1846,7 +1854,7 @@ body.block-ui > .block-ui-container,
 }
 
 .bootstrap-select.btn-group .dropdown-menu li a span.text > img {
-    margin-right: 5px;
+    margin-left: 5px;
 }
 
 .bootstrap-select.btn-group .dropdown-toggle .filter-option {
@@ -1855,6 +1863,33 @@ body.block-ui > .block-ui-container,
 
 
 /*select dropdown end*/
+
+.offerSelctionDetails h4 > span.mobile-Number {
+    font-size: 16px;
+    color: #ef094a;
+    font-weight: 700;
+}
+
+.span-mobile {
+    font-size: 15px;
+    font-weight: 600;
+    color: #26bbe6;
+}
+
+span.dull {
+    font-size: 12px;
+    color: #aaa;
+    font-style: italic;
+}
+
+span.voucherNumber {
+    color: #ef094a;
+    font-weight: 600;
+}
+
+.operator-img {
+    margin-top: 4px;
+}
 
 @media (max-width: 767px) {
     .mobile-header-menu {
@@ -2238,5 +2273,13 @@ body.block-ui > .block-ui-container,
     .mobile-menu-icons > a.shopping-icon:before {
         width: 24px;
         background: url(../img/mobile-menu-icons.png) no-repeat -168px -13px;
+    }
+    .table td {
+        padding: 11px 0px;
+        vertical-align: top;
+        display: inline-block;
+        width: 50%;
+        border-top: 1px solid #f1f1f1;
+        margin-top: -1px;
     }
 }

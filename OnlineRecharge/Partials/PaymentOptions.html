@@ -50,21 +50,23 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div class="hidden">
+            <div class="hidden"> 
                 <div class="payment-selection">
                     <div class="order-summery">
                         <h3 translate="OrderSummary"></h3>
                         <div class="offerSelctionDetails">
                             <h4>
-                                <img ng-src="/Content/img/Operators/{{RechargeParameter.OperatorCode}}.png" /> 
+                                <img ng-src="/Content/img/Operators/{{RechargeParameter.OperatorCode}}.png" />
                             </h4>
-                            <h4>Mobile Number : <span>{{RechargeParameter.MobileNumber}}</span></h4>
-                            <h4>Service Type : <span>{{RechargeParameter.ServiceType}}</span></h4>
+                            <h4><span class="mobile-Number">+965 - {{RechargeParameter.MobileNumber}}</span></h4>
                         </div>
                     </div>
                     <div class="devider"></div>
                         <div class="transition-id">
-                            <span>offer :</span> N/A
+                            <span>Service Type :</span> {{RechargeParameter.ServiceType}}
+                        </div>
+                        <div class="transition-id">
+                            <span>offer :</span> N/A 
                         </div>
                         <div class="amount-pay clearfix">
                         <span class="pull-left" translate="AmountPayable"></span>

@@ -945,18 +945,35 @@ namespace OnlineRecharge.Controllers
                                 if (ServiceType.DataCards.ToString() == serviceType)
                                 {
                                     int datacardresponse = UpdateDataCardRechargeDetailsToDB(mobileNumber, rechargeType, operatorName, paymentID, status, trackID, tranID, reference, model);
+                                    if (ConfigurationManager.AppSettings.AllKeys.Contains("ApiUrl")) // Key exists
+                                    {
+                                        apiUrl += "api/MessageApi/DataCardsSendMessage?MobileNumber=" + mobileNumber + "&OperatorCode=" + operatorName + "&RechargeCode=" + result.RechargeCode + "&Amount=" + amount + "&TranID=" + tranID;
+                                        WriteLog("DataCards apiUrl", apiUrl);
+                                        using (var clients = new WebClient())
+                                        {
+                                            var resFrmApi = JsonConvert.DeserializeObject<string>(clients.DownloadString(apiUrl));
+                                        }
+                                    }
                                 }
                                 else if (ServiceType.ShoppingCards.ToString() == serviceType)
                                 {
                                     model.OperatorName = GetShoppingCardsOperatorName(operatorName);
                                     int id = UpdateShoppingCardDetailsToDB(mobileNumber, rechargeType, operatorName, paymentID, status, trackID, tranID, reference, model);
+                                    if (ConfigurationManager.AppSettings.AllKeys.Contains("ApiUrl")) // Key exists
+                                    {
+                                        apiUrl += "api/MessageApi/ShoppingCardsSendMessage?MobileNumber=" + mobileNumber + "&OperatorCode=" + operatorName + "&RechargeCode=" + result.RechargeCode + "&Amount=" + amount + "&TranID=" + tranID;
+                                        WriteLog("DataCards apiUrl", apiUrl);
+                                        using (var clients = new WebClient())
+                                        {
+                                            var resFrmApi = JsonConvert.DeserializeObject<string>(clients.DownloadString(apiUrl));
+                                        }
+                                    }
                                 }
                                 else
                                 { int id = UpdateRechargeDetailsToDB(mobileNumber, rechargeType, operatorName, paymentID, status, trackID, tranID, reference, model); }
                                 if (ConfigurationManager.AppSettings.AllKeys.Contains("ApiUrl")) // Key exists
                                 {
-
-                                    apiUrl += "api/MessageApi/SendMessage?MobileNumber=" + mobileNumber + "&OperatorCode=" + operatorName + "&RechargeCode=" + result.RechargeCode + "&Amount=" + amount;
+                                    apiUrl += "api/MessageApi/SendMessage?MobileNumber=" + mobileNumber + "&OperatorCode=" + operatorName + "&RechargeCode=" + result.RechargeCode + "&Amount=" + amount + "&TranID=" + tranID;
                                     WriteLog("VoucherTranfer apiUrl", apiUrl);
                                     using (var clients = new WebClient())
                                     {
@@ -966,11 +983,32 @@ namespace OnlineRecharge.Controllers
                             }
                             else//Failed
                             {
-                                apiUrl += "api/MessageApi/FailedMessage?MobileNumber=" + mobileNumber + "&OperatorCode=" + operatorName;
-                                WriteLog("VoucherTranfer apiUrl failed ", apiUrl);
-                                using (var clients = new WebClient())
+                                if (ServiceType.DataCards.ToString() == serviceType)
                                 {
-                                    var resFrmApi = JsonConvert.DeserializeObject<string>(clients.DownloadString(apiUrl));
+                                    apiUrl += "api/MessageApi/DataCardsFailedMessage?MobileNumber=" + mobileNumber + "&OperatorCode=" + operatorName + "&TrackID=" + trackID; ;
+                                    WriteLog("DataCards apiUrl failed ", apiUrl);
+                                    using (var clients = new WebClient())
+                                    {
+                                        var resFrmApi = JsonConvert.DeserializeObject<string>(clients.DownloadString(apiUrl));
+                                    }
+                                }
+                                else if (ServiceType.ShoppingCards.ToString() == serviceType)
+                                {
+                                    apiUrl += "api/MessageApi/ShoppingCardsFailedMessage?MobileNumber=" + mobileNumber + "&OperatorCode=" + operatorName + "&TrackID=" + trackID; ;
+                                    WriteLog("ShoppingCards apiUrl failed ", apiUrl);
+                                    using (var clients = new WebClient())
+                                    {
+                                        var resFrmApi = JsonConvert.DeserializeObject<string>(clients.DownloadString(apiUrl));
+                                    }
+                                }
+                                else//Mobile Vouchers
+                                {
+                                    apiUrl += "api/MessageApi/FailedMessage?MobileNumber=" + mobileNumber + "&OperatorCode=" + operatorName + "&TrackID=" + trackID; ;
+                                    WriteLog("VoucherTranfer apiUrl failed ", apiUrl);
+                                    using (var clients = new WebClient())
+                                    {
+                                        var resFrmApi = JsonConvert.DeserializeObject<string>(clients.DownloadString(apiUrl));
+                                    }
                                 }
                             }
                         }

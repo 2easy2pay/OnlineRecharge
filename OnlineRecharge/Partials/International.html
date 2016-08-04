@@ -9,25 +9,24 @@
                             <div class="form-group margin-top20">
                                 <label translate="MobileNumber"></label>
                                 <input id="MobileNumber" name="MobileNumber" type="tel" international-phone-number only-countries="in,pk,eg,lk,ph" preferred-countries="in"
-                                       ng-model="mobileNumber" required>
-                                <p ng-show="InternationalTopupValidation.Response=='F'" class="valid-message">{{InternationalTopupValidation.ResponseDescription}}</p>
+                                       ng-model="mobileNumber" required numbers-only />
+                                <p ng-show="InternationalTopupValidation.Response=='F'" class="valid-message apivalidation" translate="{{InternationalTopupValidation.ResponseDescription}}"></p>
                                 <p ng-model="validationRef" ng-show="CheckValidationForMobileNumer()" class="valid-message">{{ validationRef | translate }}</p>
-                                <!--<p ng-show="rechargeForm.MobileNumber.$invalid && !rechargeForm.MobileNumber.$pristine" class="valid-message">Please enter valid Mobile Number.</p>-->
-                                <!--ng-keydown="setOperater();"-->
                             </div>
 
                             <div class="form-group">
                                 <label translate="Operator"></label>
-                                <select class="form-control" id="operatorCode" name="Operator" ng-model="operatorCode" ng-options="s.Code as s.Name for s in InternationalServiceProviders"
-                                        ng-change="ClearAmount();" required></select>
-                                <p ng-show="rechargeForm.Operator.$invalid && !rechargeForm.Operator.$pristine" class="valid-message">Your Operator is required.</p>
-                               
-                            </div>
+                                <select selectpicker="" class="select-dropdown" ng-model="operatorCode" ng-change="ClearAmount()" toggle-dropdown>
+                                    <option ng-repeat="item in InternationalServiceProviders" ng-bind-html="PopulateSpan(item)" value="{{item.Code}}"></option>
+                                </select>
+                                   
+                                <p ng-show="CheckValidationForOperator()" class="valid-message" translate="Validation_NationalRecharge_Operator_Required"></p>
+
+</div>
                                     <div class="form-group">
                                         <label for="#" translate="RechargeAmount"></label><div class="input-grp">
-                                            <input type="text" class="form-control" ng-model="amount" name="amount" placeholder="Enter Amount" required>
-                                            <!--<a href="#" class="browse-plan">Browse Plan</a>-->
-                                            <p ng-show="rechargeForm.amount.$invalid && !rechargeForm.amount.$pristine" class="help-block">Amount is required.</p>
+                                            <input type="text" class="form-control" ng-model="amount" name="amount" placeholder="Enter Amount" required ng-change="CheckValidationForAmount()" numbers-only />
+                                        <p ng-show="CheckValidationForAmount()" class="valid-message" translate="Validation_NationalRecharge_Amount_Required"></p>
 
                                         </div>
                                     </div>
